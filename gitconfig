@@ -1,0 +1,36 @@
+
+[user]
+	name = "Luc Hayward"
+	email = luchay10@gmail.com
+
+[color]
+	ui = auto
+
+[push]
+	default = simple
+
+[core]
+    pager = less -FMRiX
+	excludesfile = ~/.gitignore_global
+
+[alias]
+    dag = log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order --all
+    last = log -1 HEAD
+    co = checkout
+    # See changelist for one file across renames https://stackoverflow.com/a/5493663/14555505
+    history = log --follow --stat -p --
+	yolo = !git add -A && git commit -m \"¯\\_(ツ)_/¯ $(curl --silent --fail https://whatthecommit.com/index.txt)\"
+	uncommit = !git reset --soft HEAD^
+
+[pull]
+	rebase = true
+
+[rebase]
+    # Make the rebase command stashes before running, and pops after running
+    autoStash = true
+
+[init]
+    defaultBranch = main
+
+[merge]
+    ff = only
