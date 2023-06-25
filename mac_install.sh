@@ -87,7 +87,6 @@ for app in "cfprefsd" \
 	"Dock" \
 	"Finder" \
 	"SystemUIServer" \
-	"Terminal" \
 	"iCal"; do
 	killall "${app}" &> /dev/null
 done
@@ -113,7 +112,8 @@ brew install \
  git \
  exa \
  miniconda \
- pandoc
+ pandoc \
+ gh
 
 # =============
 # Install casks
@@ -129,7 +129,9 @@ brew install --cask \
  iterm2 \
  jetbrains-toolbox \
  Visual-studio-code \
- mactex-no-gui
+ mactex-no-gui \
+ discord \
+ todoist
 
 
 # =========================

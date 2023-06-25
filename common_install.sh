@@ -4,7 +4,7 @@
 # Runs specific scripts for macOS and ubuntu
 # ==========================================
 
-Source ~/.dotfiles/define_colours.sh
+source ~/.dotfiles/define_colours.sh
 
 # Ask for the administrator password upfront
 sudo -v
@@ -14,6 +14,7 @@ sudo -v
 # ======================================
 ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
+ln -sf ~/.dotfiles/.zshrc ~/.zshrc
 
 # ==============================
 # Run OS specific install script	
@@ -49,10 +50,10 @@ if [[ $set_zsh == [yY] ]]; then
     echo -e "$RESET"
 fi
 
-# echo -ne "$BOLD Install zsh plugins? (y/n): $RESET"
-# read -p " " set_zsh
-# if [[ $set_zsh == [yY] ]]; then
-#     echo -e "$RESET[D] Installing zsh plugins$RESET$RED"
-#     git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
-#     echo -e "$RESET"
-# fi
+echo -ne "$BOLD Install zsh plugins? (y/n): $RESET"
+read -p " " set_zsh
+if [[ $set_zsh == [yY] ]]; then
+    echo -e "$RESET[D] Installing zsh plugins$RESET$RED"
+    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+    echo -e "$RESET"
+fi
