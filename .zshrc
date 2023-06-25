@@ -100,6 +100,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export TERM="xterm-256color"
 
 autoload -Uz compinit && compinit
+autoload bashcompinit && bashcompinit
 
 # ==================
 # Completion stylyes

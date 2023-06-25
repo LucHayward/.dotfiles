@@ -143,6 +143,6 @@ Brew install --cask \
 
 
 # Install the One Dark theme for iTerm
-open "${HOME}/.dotfiles/One Dark.itermcolors"
+open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
 
 conda init "$(basename "${SHELL}")"
