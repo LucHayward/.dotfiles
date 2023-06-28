@@ -38,7 +38,7 @@ alias ga="git add"
 alias gap="git add -p" # add interactively
 alias gd="git dag"
 alias gy="git yolo"
-Alias gp="git push"
+alias gp="git push"
 alias G="git"
 
 
@@ -54,11 +54,11 @@ export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
 
 
-# ====================================================================================
+# =============================================================================
 # Super handy: After changing directory, list the contents of that directory
 # Note that if there's an absurd number of files in a directory, this will list
-# them all which can be annoying if you're often changing in and out of it, see cd_()
-# ====================================================================================
+# them all which can be annoying if you're often changing in and out of it
+# =============================================================================
 function cd() {
     builtin cd "$*" && ls
 }

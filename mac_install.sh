@@ -14,6 +14,7 @@ osascript -e 'tell application "System Preferences" to quit'
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
@@ -81,6 +82,8 @@ defaults write com.apple.dock showhidden -bool true
 # Remove dock autohide delay
 defaults write com.apple.dock autohide-delay -float 0
 
+# Restart the System?
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
 # Restart all the affected apps
 for app in "cfprefsd" \
@@ -133,11 +136,20 @@ brew install --cask \
  discord \
  todoist
 
+# =================
+# Install Nerdfonts
+# https://github.com/ryanoasis/nerd-fonts/discussions/1103
+# Nerd Font Mono: Strictly monospaced (programming maybe?)
+# Nerd Font: Monospaced but potentially overlapping (terminal maybe?)
+# Nerd Font Propo: Proportional (text/writing)
+# =================
+brew tap homebrew/cask-fonts && brew install --cask  font-jetbrains-mono-nerd-font font-fira-code-nerd-font
+
 
 # =========================
 # Install quicklook plugins
 # =========================
-Brew install --cask \
+brew install --cask \
  qlstephen \
  qlcolorcode
 
@@ -145,4 +157,10 @@ Brew install --cask \
 # Install the One Dark theme for iTerm
 open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
 
+# Initialise conda
 conda init "$(basename "${SHELL}")"
+
+# ==========================
+# Symlink Sublim Preferences
+# ==========================
+ln -s ~/.dotfiles/Preferences.sublime_settings /Users/luchayward/Library/Application Support/Sublime Text/Packages/User/
