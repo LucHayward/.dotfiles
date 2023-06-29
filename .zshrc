@@ -1,6 +1,7 @@
 # =============================
 # Zshrc - configuration for zsh
 # =============================
+# zmodload zsh/zprof
 source ~/.dotfiles/define_colours.sh
 
 # Enable colours for macOS
@@ -100,7 +101,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 export TERM="xterm-256color"
 
 autoload -Uz compinit && compinit
-autoload bashcompinit && bashcompinit
+autoload -U bashcompinit && bashcompinit
 
 # ==================
 # Completion stylyes
@@ -147,3 +148,4 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+# zprof
