@@ -14,7 +14,10 @@ sudo -v
 # ======================================
 ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
+
 ln -sf ~/.dotfiles/.zshrc ~/.zshrc
+
+ln -s ~/.dotfiles/.pandoc ~/.pandoc
 
 # ==============================
 # Run OS specific install script	

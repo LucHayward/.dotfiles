@@ -100,8 +100,14 @@ export PATH=/usr/local/bin:$HOME/.local/bin:$PATH
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export TERM="xterm-256color"
 
+
+# ===============================
+# Load completions related things
+# ===============================
 autoload -Uz compinit && compinit
 autoload -U bashcompinit && bashcompinit
+
+eval "$(pandoc --bash-completion)"
 
 # ==================
 # Completion stylyes

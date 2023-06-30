@@ -122,7 +122,7 @@ brew install \
 # Install casks
 # =============
 
-brew install --cask \
+brew install --cask --no-quarentine\
  whatsapp \
  telegram \
  rectangle \
@@ -134,7 +134,9 @@ brew install --cask \
  Visual-studio-code \
  mactex-no-gui \
  discord \
- todoist
+ todoist \
+ qlmarkdown \
+ syntax-highlight
 
 # =================
 # Install Nerdfonts
@@ -145,13 +147,6 @@ brew install --cask \
 # =================
 brew tap homebrew/cask-fonts && brew install --cask  font-jetbrains-mono-nerd-font font-fira-code-nerd-font
 
-
-# =========================
-# Install quicklook plugins
-# =========================
-brew install --cask \
- qlstephen \
- qlcolorcode
 
 
 # Install the One Dark theme for iTerm
