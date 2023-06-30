@@ -17,7 +17,10 @@ ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
 
 ln -sf ~/.dotfiles/.zshrc ~/.zshrc
 
-ln -s ~/.dotfiles/.pandoc ~/.pandoc
+# =====
+# Move directories to ~/
+# =====
+mv ~/.dotfiles/.pandoc ~/.pandoc
 
 # ==============================
 # Run OS specific install script	
