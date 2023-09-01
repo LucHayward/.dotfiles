@@ -1,1 +1,17 @@
-/Users/luchayward/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings
+{
+	// Test nerd fonts: 
+	// Find all font names (https://github.com/ryanoasis/nerd-fonts/issues/440#issuecomment-788702159) 
+	// fc-list | grep -i "fira" | column -t -s":"
+	"font_face": "FiraCode Nerd Font Propo Ret",
+	// "font_face": "JetBrainsMono Nerd Font",
+	"font_size": 14,
+
+	// Valid values are "smooth", "phase", "blink" and "solid". Previous
+	// versions of Sublime Text used "smooth" by default.
+	"caret_style": "blink",
+	// These settings control the size of the caret
+	"caret_extra_top": 1,
+	"caret_extra_bottom": 1,
+	"caret_extra_width": 1,
+	"theme": "Adaptive.sublime-theme",
+}
