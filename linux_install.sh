@@ -55,8 +55,8 @@ sudo apt install -y pandoc
 
 # Install additional software using Snap (similar to Homebrew casks)
 sudo snap install --classic \
-  iterm2 \
-  code
+  code \
+  sublime-text
 
 # Install Jetbrains Toolbox (replace URL with the latest version)
 wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.19.7784.tar.gz -O jetbrains-toolbox.tar.gz
@@ -67,7 +67,7 @@ rm jetbrains-toolbox.tar.gz
 # Install LaTeX (TeX Live)
 sudo apt install -y texlive
 
-# Install Github LI
+# Install Github CLI
 type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
 && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
