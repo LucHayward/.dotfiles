@@ -28,7 +28,6 @@ else
 fi
 
 
-
 # ================
 # Install packages
 # ================
@@ -39,16 +38,23 @@ sudo apt update
 # Install packages using apt
 sudo apt install -y \
   git \
-  exa
+
+# exa doesn't install correctly on ubuntu
+sudo apt install -y cargo
+cargo install exa
+echo 'export PATH=$PATH:$HOME/.cargo/bin'
+
 
 # Install Miniconda (replace URL with the latest version)
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-bash miniconda.sh -b -p $HOME/miniconda
-rm miniconda.sh
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm -rf ~/miniconda3/miniconda.sh
+~/miniconda3/bin/conda init zsh
 
 # Add Conda to PATH (optional, remove if not needed)
-echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> $HOME/.bashrc
-source $HOME/.bashrc
+echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> $HOME/.zshrc
+source $HOME/.zshrc
 
 # Install Pandoc
 sudo apt install -y pandoc
