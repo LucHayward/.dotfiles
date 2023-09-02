@@ -52,16 +52,12 @@ bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
 rm -rf ~/miniconda3/miniconda.sh
 ~/miniconda3/bin/conda init zsh
 
-# Add Conda to PATH (optional, remove if not needed)
-echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> $HOME/.zshrc
-source $HOME/.zshrc
-
 # Install Pandoc
 sudo apt install -y pandoc
 
 # Install additional software using Snap (similar to Homebrew casks)
 sudo snap install --classic \
-  code \
+  code-insiders \
   sublime-text
 
 # Install Jetbrains Toolbox (replace URL with the latest version)
