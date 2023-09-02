@@ -42,7 +42,10 @@ sudo apt install -y \
 # exa doesn't install correctly on ubuntu
 sudo apt install -y cargo
 cargo install exa
-echo 'export PATH=$PATH:$HOME/.cargo/bin'
+echo '# ================================
+# Add cargo to PATH
+# ================================
+export PATH=$PATH:$HOME/.cargo/bin' >> .zshrc
 
 
 # Install Miniconda (replace URL with the latest version)
