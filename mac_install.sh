@@ -124,7 +124,7 @@ fi
 if ask_confirmation "Install packages"; then
     brew install \
     git \
-    exa \
+    eza \
     miniconda \
     pandoc \
     gh
