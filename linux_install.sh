@@ -111,3 +111,10 @@ if ask_confirmation "Install GitHub CLI"; then
     && sudo apt update \
     && sudo apt install gh -y
 fi
+
+# ================
+# Install Starship.rs
+# ================
+if ask_confirmation "Install Starship.rs prompt"; then
+    curl -fsSL https://starship.rs/install.sh | sh
+fi

@@ -28,6 +28,7 @@ if ask_confirmation "Symmlink various dotfiles"; then
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
     ln -sf ~/.dotfiles/.pandoc ~/.pandoc
+    ln -sf ~/.dotfiles/.config ~/.config
 
 fi
 
@@ -54,7 +55,7 @@ if ask_confirmation "Run OS specific install script"; then
 fi
 
 # ==================================
-# Setup zsh and nice-to-have plugins
+# Setup zsh
 # MacOS already has zsh installed
 # ==================================
 if ask_confirmation "Set zsh to default shell"; then
@@ -63,8 +64,18 @@ if ask_confirmation "Set zsh to default shell"; then
     echo -e "$RESET"
 fi
 
-if ask_confirmation "Install zsh plugins"; then
-    echo -e "$RESET[D] Installing zsh plugins$RESET$RED"
-    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
-    echo -e "$RESET"
+
+# =================
+# Install zsh-bench
+# According to the author any value below the following is imperceptible:
+# | latency (ms)          |      |
+# |-----------------------|-----:|
+# | **first prompt lag**  |   50 |
+# | **first command lag** |  150 |
+# | **command lag**       |   10 |
+# | **input lag**         |   20 |
+# =================
+if ask_confirmation "Install and run zsh-bench"; then
+    git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
+    ~/zsh-bench/zsh-bench
 fi

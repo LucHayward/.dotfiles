@@ -172,3 +172,10 @@ fi
 if ask_confirmation "Symlink Sublime Preferences"; then
     ln -s ~/.dotfiles/Preferences.sublime_settings /Users/luchayward/Library/Application Support/Sublime Text/Packages/User/
 fi
+
+# ================
+# Install Starship.rs
+# ================
+if ask_confirmation "Install Starship.rs prompt"; then
+    brew install starship
+fi
