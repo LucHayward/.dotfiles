@@ -25,6 +25,7 @@ sudo -v
 if ask_confirmation "Symmlink various dotfiles"; then
     ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
     ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
+    ln -s ~/.dotfiles/.condarc ~/.condarc
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
     ln -sf ~/.dotfiles/.pandoc ~/.pandoc
