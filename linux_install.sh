@@ -61,7 +61,7 @@ fi
 if ask_confirmation "Install 'exa' using Cargo"; then
     # exa doesn't install correctly on Ubuntu
     # sudo apt install -y cargo
-    cargo install exa
+    cargo install eza
     echo '# ================================
     # Add cargo to PATH
     # ================================
