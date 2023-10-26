@@ -28,7 +28,8 @@ if ask_confirmation "Symmlink various dotfiles"; then
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
     ln -sf ~/.dotfiles/.pandoc ~/.pandoc
-    ln -sf ~/.dotfiles/.config ~/.config
+    mkdir -p ~/.config
+    ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
 
 fi
 
