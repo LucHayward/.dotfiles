@@ -10,6 +10,7 @@
 	default = simple
 
 [core]
+	# pager = delta --color-only # https://github.com/dandavison/delta
     pager = less -FMRiX
 	excludesfile = ~/.gitignore_global
 
@@ -21,6 +22,10 @@
     history = log --follow --stat -p --
     yolo = !git add -A && git commit -m \"¯\\_(ツ)_/¯ $(curl --silent --fail https://whatthecommit.com/index.txt)\" && git fetch origin && git push origin HEAD
     uncommit = !git reset --soft HEAD^
+
+# You might want a commit template like https://github.com/beyarkay/dotfiles/blob/main/.gitmessage
+# [commit]
+# 	template = ~/.gitmessage
 
 [pull]
 	rebase = true
