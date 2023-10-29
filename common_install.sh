@@ -31,7 +31,7 @@ if ask_confirmation "Symmlink various dotfiles"; then
     ln -sf ~/.dotfiles/.pandoc ~/.pandoc
     mkdir -p ~/.config
     ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
-
+    ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 fi
 
 # ==============================
