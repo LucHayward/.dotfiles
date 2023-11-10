@@ -4,7 +4,7 @@
 	// fc-list | grep -i "fira" | column -t -s":"
 	"font_face": "FiraCode Nerd Font Propo Ret",
 	// "font_face": "JetBrainsMono Nerd Font",
-	"font_size": 10,
+	"font_size": 15,
 	// test ligatures: != <=
 	"font_options": ["dlig", "gray_antialias"],
 
