@@ -13,6 +13,8 @@
 	# pager = delta --color-only # https://github.com/dandavison/delta
     pager = less -FMRiX
 	excludesfile = ~/.gitignore_global
+    editor = subl -nw
+
 
 [alias]
     dag = log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order --all
@@ -40,8 +42,10 @@
 [merge]
     ff = only
 [credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+    helper = 
+    helper = !sh -c 'path=$(which gh) && $path auth git-credential'
 [credential "https://gist.github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+    helper = 
+    helper = !sh -c 'path=$(which gh) && $path auth git-credential'
+
+
