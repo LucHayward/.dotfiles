@@ -56,10 +56,10 @@ fi
 
 if ask_confirmation "Install rustup"; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    source "$HOME/.cargo/env"
 fi
 
-if ask_confirmation "Install 'exa' using Cargo"; then
-    # exa doesn't install correctly on Ubuntu
+if ask_confirmation "Install 'eza' using Cargo"; then
     # sudo apt install -y cargo
     cargo install eza
     echo '# ================================
