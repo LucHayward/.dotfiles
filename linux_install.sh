@@ -51,7 +51,8 @@ if ask_confirmation "Update package lists and install essential packages"; then
     # Install packages using apt
     sudo apt install -y \
       git \
-      gnome-tweaks
+      gnome-tweaks \
+      build-essential
 fi
 
 if ask_confirmation "Install rustup"; then
