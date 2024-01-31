@@ -90,9 +90,8 @@ fi
 
 if ask_confirmation "Install additional software using Snap"; then
     # Install additional software using Snap (similar to Homebrew casks)
-    sudo snap install --classic \
-      code-insiders \
-      sublime-text
+    sudo snap install --classic code
+    sudo snap install --clasic sublime-text
 fi
 
 if ask_confirmation "Install JetBrains Toolbox"; then
