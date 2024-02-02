@@ -96,7 +96,7 @@ fi
 # =============================
 # Symlink sublime text settings
 # =============================
-ln -s ~/.dotfiles/Preferences.sublime_settings ~/.config/sublime-text/Packages/User/
+ln -s ~/.dotfiles/Preferences.sublime-settings ~/.config/sublime-text/Packages/User/
 
 
 if ask_confirmation "Install JetBrains Toolbox"; then
