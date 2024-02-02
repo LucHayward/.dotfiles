@@ -1,2 +1,6 @@
+
+# Disable starting on a new line
+add_newline = false
+
 [directory]
 fish_style_pwd_dir_length = 3

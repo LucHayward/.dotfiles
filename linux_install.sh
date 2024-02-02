@@ -93,6 +93,11 @@ if ask_confirmation "Install additional software using Snap"; then
     sudo snap install --classic code
     sudo snap install --clasic sublime-text
 fi
+# =============================
+# Symlink sublime text settings
+# =============================
+ln -s ~/.dotfiles/Preferences.sublime_settings ~/.config/sublime-text/Packages/User/
+
 
 if ask_confirmation "Install JetBrains Toolbox"; then
     # Install JetBrains Toolbox (replace URL with the latest version)
