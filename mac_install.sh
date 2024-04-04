@@ -179,9 +179,16 @@ if ask_confirmation "Symlink Sublime Preferences"; then
    ln -s ~/.dotfiles/Preferences.sublime_settings "~/Library/Application Support/Sublime Text/Packages/User/"
 fi
 
-# ================
+# ===================
 # Install Starship.rs
-# ================
+# ===================
 if ask_confirmation "Install Starship.rs prompt"; then
     brew install starship
+fi
+
+# ============
+# Install rust
+# ============
+if ask_confirmat "Install Rust using rustup: then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 fi
