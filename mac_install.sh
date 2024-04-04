@@ -175,7 +175,8 @@ fi
 # Symlink Sublim Preferences
 # ==========================
 if ask_confirmation "Symlink Sublime Preferences"; then
-    ln -s ~/.dotfiles/Preferences.sublime_settings "~/Library/Application Support/Sublime Text/Packages/User/"
+   mkdir -p "~/Library/Application Support/Sublime Text/Packages/User/"
+   ln -s ~/.dotfiles/Preferences.sublime_settings "~/Library/Application Support/Sublime Text/Packages/User/"
 fi
 
 # ================
