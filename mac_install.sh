@@ -119,6 +119,7 @@ if ask_confirmation "Install homebrew"; then
     
     # Add Homebrew to $PATH
     (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 
