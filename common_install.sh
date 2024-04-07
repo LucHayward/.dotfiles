@@ -67,6 +67,13 @@ if ask_confirmation "Set zsh to default shell"; then
 fi
 
 
+# =====================
+# Setup git credentials
+# =====================
+if ask_confirmation "Setup git credentials using gh"; then
+    gh auth login
+fi
+
 # =================
 # Install zsh-bench
 # According to the author any value below the following is imperceptible:
@@ -81,3 +88,5 @@ if ask_confirmation "Install and run zsh-bench"; then
     git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
     ~/zsh-bench/zsh-bench
 fi
+
+

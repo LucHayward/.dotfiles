@@ -190,6 +190,6 @@ fi
 # ============
 # Install rust
 # ============
-if ask_confirmat "Install Rust using rustup: then
+if ask_confirmat "Install Rust using rustup"; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 fi
