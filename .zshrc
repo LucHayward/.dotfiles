@@ -246,12 +246,6 @@ export PATH=$PATH:/usr/local/go/bin
 eval "$(starship init zsh)"
 eval "$(starship completions zsh)"
 
-
-# ===================
-# Add Arc Completions
-# ===================
-
-
 # =========================
 # Add Syntax Highlighting
 # =========================
@@ -270,9 +264,15 @@ if [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" && -s "$NVM_DIR/bash_completion" ]];
     . "$NVM_DIR/nvm.sh"             # This loads nvm
     . "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
 fi
-# zprof# 
+
 # ================================
 # Add cargo to PATH
 # ================================
 export PATH=$PATH:$HOME/.cargo/bin
-# ================================
+
+# =======================
+# Add kubectl completions
+# =======================
+source <(kubectl completion zsh)
+
+# zprof# 
