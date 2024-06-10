@@ -25,8 +25,8 @@ if ask_confirmation "Install Zsh and set it as the default shell"; then
         echo "Zsh is already installed."
     else
         # Install Zsh
-        sudo apt update
-        sudo apt install -y zsh
+        sudo yum update
+        sudo yum install -y zsh
 
         # Set Zsh as the default shell
         chsh -s $(command -v zsh)
@@ -46,10 +46,10 @@ fi
 
 if ask_confirmation "Update package lists and install essential packages"; then
     # Update package lists
-    sudo apt update && sudo apt upgrade -y && sudo apt autoremove && sudo apt autoclean
+    sudo yum update && sudo yum upgrade -y && sudo yum autoremove && sudo yum autoclean
 
-    # Install packages using apt
-    sudo apt install -y \
+    # Install packages using yum
+    sudo yum install -y \
       git \
       gnome-tweaks \
       build-essential
@@ -66,7 +66,7 @@ fi
 
 
 if ask_confirmation "Install 'eza' using Cargo"; then
-    # sudo apt install -y cargo
+    # sudo yum install -y cargo
     cargo install eza
     echo '# ================================
     # Add cargo to PATH
@@ -85,7 +85,7 @@ fi
 
 if ask_confirmation "Install Pandoc"; then
     # Install Pandoc
-    sudo apt install -y pandoc
+    sudo yum install -y pandoc
 fi
 
 if ask_confirmation "Install additional software using Snap"; then
@@ -109,17 +109,17 @@ fi
 
 if ask_confirmation "Install LaTeX (TeX Live)"; then
     # Install LaTeX (TeX Live)
-    sudo apt install -y texlive
+    sudo yum install -y texlive
 fi
 
 if ask_confirmation "Install GitHub CLI"; then
     # Install Github CLI
-    type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+    type -p curl >/dev/null || (sudo yum update && sudo yum install curl -y)
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh -y
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/yum/sources.list.d/github-cli.list > /dev/null \
+    && sudo yum update \
+    && sudo yum install gh -y
 fi
 
 # ================
