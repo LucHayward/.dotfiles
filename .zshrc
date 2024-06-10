@@ -34,7 +34,7 @@ bindkey -M main ' ' expand-alias
 # =======================
 # Use eza instead of tree
 # =======================
-alias tree="eza --tree -lFa --git --git-ignore --ignore-glob=.git"
+alias tree="eza --tree -la --classify --git --git-ignore --ignore-glob=.git"
 # Search for all TODOs / FIXMEs from the current directory
 alias gtd="grep -ri --exclude-dir=build --exclude-dir=.git -E \"(TODO|FIXME)\" *"
 # List long showing filetypes, all files, and git info
@@ -162,7 +162,7 @@ fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
 autoload -Uz compinit
 autoload -U bashcompinit
-autoload -Uz compinit
+# autoload -Uz compinit
 if [[ "$OSTYPE" == "darwin"* ]]; then
     stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
 else
@@ -273,6 +273,14 @@ export PATH=$PATH:$HOME/.cargo/bin
 # =======================
 # Add kubectl completions
 # =======================
-source <(kubectl completion zsh)
+# source <(kubectl completion zsh)
 
-# zprof# 
+# zprof
+export PATH=$PATH:/Users/luchay/.toolbox/bin
+eval "$(/opt/homebrew/bin/brew shellenv)"
+# Set up mise for runtime management
+eval "$(mise activate zsh)"
+source /Users/luchay/.brazil_completion/zsh_completion
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+

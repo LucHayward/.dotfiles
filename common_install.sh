@@ -88,5 +88,3 @@ if ask_confirmation "Install and run zsh-bench"; then
     git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
     ~/zsh-bench/zsh-bench
 fi
-
-
