@@ -44,16 +44,16 @@ fi
 # Install packages
 # ================
 
-if ask_confirmation "Update package lists and install essential packages"; then
-    # Update package lists
-    sudo yum update && sudo yum upgrade -y && sudo yum autoremove && sudo yum autoclean
+# if ask_confirmation "Update package lists and install essential packages"; then
+#     # Update package lists
+#     sudo yum update && sudo yum upgrade -y && sudo yum autoremove && sudo yum autoclean
 
-    # Install packages using yum
-    sudo yum install -y \
-      git \
-      gnome-tweaks \
-      build-essential
-fi
+#     # Install packages using yum
+#     sudo yum install -y \
+#       git \
+#       gnome-tweaks \
+#       build-essential
+# fi
 
 if command -v rustup > /dev/null; then
     echo "Rustup already installed."
@@ -93,6 +93,7 @@ if ask_confirmation "Install additional software using Snap"; then
     sudo snap install --classic code
     sudo snap install --clasic sublime-text
 fi
+
 # =============================
 # Symlink sublime text settings
 # =============================
