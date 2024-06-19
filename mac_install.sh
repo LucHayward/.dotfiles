@@ -132,7 +132,8 @@ if ask_confirmation "Install packages"; then
     eza \
     miniconda \
     pandoc \
-    gh
+    gh \
+	bat
 fi
 
 # =============
