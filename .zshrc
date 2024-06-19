@@ -44,10 +44,10 @@ export PATH=$HOME/.toolbox/bin:$PATH
 
 
 # Set up mise for runtime management
-eval "$(/home/luchay/.local/bin/mise activate zsh)"
+eval "$($HOME/.local/bin/mise activate zsh)"
 autoload -Uz compinit && compinit
 source ~/.local/share/mise/completions.zsh
-source /home/luchay/.brazil_completion/zsh_completion
+source $HOME/.brazil_completion/zsh_completion
 
 
 # =============================
@@ -281,12 +281,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-# ================================
-# Add cargo to PATH
-# ================================
-export PATH=$HOME/.cargo/bin:$PATH
-export MODULAR_HOME="/home/luc/.modular"
-export PATH="/home/luc/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
 # ==============
 # Add Go to PATH
