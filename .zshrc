@@ -83,6 +83,12 @@ function expand-alias() {
 zle -N expand-alias
 bindkey -M main ' ' expand-alias
 
+# ====================================
+# Fix move to line start/end Jetbrains
+# ====================================
+bindkey "[D" beginning-of-line
+bindkey "[C" end-of-line
+
 # =======================
 # Use eza instead of tree
 # =======================
@@ -112,6 +118,21 @@ alias gy="git yolo"
 alias gp="git push"
 alias G="git"
 
+# ==============
+# Brazil aliases
+# ==============
+alias bb=brazil-build
+alias bba='brazil-build apollo-pkg'
+alias bre='brazil-runtime-exec'
+alias brc='brazil-recursive-cmd'
+alias bws='brazil ws'
+alias bwsuse='bws use -p'
+alias bwscreate='bws create -n'
+alias brc=brazil-recursive-cmd
+alias bbr='brc brazil-build'
+alias bball='brc --allPackages'
+alias bbb='brc --allPackages brazil-build'
+alias bbra='bbr apollo-pkg'
 
 # =================================
 # Add colours to the less/man pages
@@ -151,33 +172,6 @@ function cd() {
 # local WHITE='255'
 # local FG_RED='196'
 
-
-# # =============================================================================
-# # Calculate a short-form of pwd, where instead of /User/boyd/Documents you have
-# # /U/b/Documents in order to save space
-# # Really not needed now with starship
-# # =============================================================================
-# function short_pwd {
-#     directories=(${(s:/:)PWD})
-
-#     shortened_path=""
-#     for ((i = 0; i <= ${#directories[@]}; ++i)); do
-#         directory=${directories[$i]}
-#         if [ $i = ${#directories} ]; then
-#             # The final directory in the path should be left as-is, unshortened
-#             shortened_path+="%F{$FG_LIGHTGREY}${directory}%F{$FG_GREY}"
-#         else
-#             # Set the shortened path to be just the first character of the
-#             # current directory
-#             shortened_path+="${directory:0:1}/"
-#         fi
-#     done
-#     echo "${shortened_path}"
-# }
-
-# https://github.com/beyarkay/dotfiles/blob/8b12553925d959d2ec6759564323595e5aeb182e/.zshrc#L138
-# precmd()
-
 # ==========================
 # Enable zsh Autosuggestions
 # ==========================
@@ -200,7 +194,6 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export PATH=/usr/local/bin:$HOME/.local/bin:$PATH
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export TERM="xterm-256color"
-
 
 # ===================================================
 # Load completions related things
@@ -263,7 +256,16 @@ setopt AUTO_CD
 # Turn off the annoying beep
 setopt NO_LIST_BEEP
 
-# 
+
+# =========================
+# Add Syntax Highlighting
+# =========================
+if [ ! -d ~/.zsh/zsh-syntax-highlighting ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
+fi
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+#
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -297,13 +299,6 @@ export PATH=$PATH:/usr/local/go/bin
 eval "$(starship init zsh)"
 eval "$(starship completions zsh)"
 
-# =========================
-# Add Syntax Highlighting
-# =========================
-if [ ! -d ~/.zsh/zsh-syntax-highlighting ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
-fi
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ==========================
 # Add NVM to path with compl
