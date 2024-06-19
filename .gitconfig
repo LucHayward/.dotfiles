@@ -12,8 +12,8 @@
 [core]
 	# pager = delta --color-only # https://github.com/dandavison/delta
     pager = less -FMRiX
-	excludesfile = ~/.gitignore_global
-    editor = subl -nw
+	excludesfile = /Users/luchay/.config/git/excludes
+    # editor = subl -nw
 
 
 [alias]
