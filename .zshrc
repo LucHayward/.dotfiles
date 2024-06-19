@@ -1,3 +1,55 @@
+# ========================
+# Original .zshrc settings
+# ========================
+export BRAZIL_WORKSPACE_DEFAULT_LAYOUT=short
+
+export AUTO_TITLE_SCREENS="NO"
+
+# if you wish to use IMDS set AWS_EC2_METADATA_DISABLED=false
+export AWS_EC2_METADATA_DISABLED=true
+
+# export PROMPT="
+# %{$fg[white]%}(%D %*) <%?> [%~] $program %{$fg[default]%}
+# %{$fg[cyan]%}%m %#%{$fg[default]%} "
+
+# export RPROMPT=
+
+set-title() {
+    echo -e "\e]0;$*\007"
+}
+
+ssh() {
+    set-title $*;
+    /usr/bin/ssh -2 $*;
+    set-title $HOST
+}
+
+alias e=emacs
+alias bb=brazil-build
+
+alias bba='brazil-build apollo-pkg'
+alias bre='brazil-runtime-exec'
+alias brc='brazil-recursive-cmd'
+alias bws='brazil ws'
+alias bwsuse='bws use -p'
+alias bwscreate='bws create -n'
+alias brc=brazil-recursive-cmd
+alias bbr='brc brazil-build'
+alias bball='brc --allPackages'
+alias bbb='brc --allPackages brazil-build'
+alias bbra='bbr apollo-pkg'
+
+
+export PATH=$HOME/.toolbox/bin:$PATH
+
+
+# Set up mise for runtime management
+eval "$(/home/luchay/.local/bin/mise activate zsh)"
+autoload -Uz compinit && compinit
+source ~/.local/share/mise/completions.zsh
+source /home/luchay/.brazil_completion/zsh_completion
+
+
 # =============================
 # Zshrc - configuration for zsh
 # TODO: explore antigen
@@ -178,7 +230,7 @@ else
     compinit -C
     bashcompinit -C
 fi
-eval "$(pandoc --bash-completion)"
+# eval "$(pandoc --bash-completion)"
 
 # ==================
 # Completion stylyes
@@ -234,7 +286,6 @@ export PATH=$HOME/.cargo/bin:$PATH
 export MODULAR_HOME="/home/luc/.modular"
 export PATH="/home/luc/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
-
 # ==============
 # Add Go to PATH
 # ==============
@@ -276,11 +327,9 @@ export PATH=$PATH:$HOME/.cargo/bin
 # source <(kubectl completion zsh)
 
 # zprof
-export PATH=$PATH:/Users/luchay/.toolbox/bin
-eval "$(/opt/homebrew/bin/brew shellenv)"
-# Set up mise for runtime management
-eval "$(mise activate zsh)"
-source /Users/luchay/.brazil_completion/zsh_completion
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# ================================
+# Add cargo to PATH
+# ================================
+export PATH=$PATH:$HOME/.cargo/bin
 

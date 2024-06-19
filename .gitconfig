@@ -1,13 +1,13 @@
 
 [user]
 	name = "Luc Hayward"
-	email = luchay10@gmail.com
+	email = luchay@amazon.com
 
 [color]
 	ui = auto
 
-[push]
-	default = simple
+# [push]
+# 	default = simple
 
 [core]
 	# pager = delta --color-only # https://github.com/dandavison/delta
@@ -29,24 +29,24 @@
 # [commit]
 # 	template = ~/.gitmessage
 
-[pull]
-	rebase = true
+# [pull]
+# 	rebase = true
 
-[rebase]
-    # Make the rebase command stashes before running, and pops after running
-    autoStash = true
+# [rebase]
+#     # Make the rebase command stashes before running, and pops after running
+#     autoStash = true
 
-[init]
-    defaultBranch = main
+# [init]
+#     defaultBranch = main
 
-[merge]
-    ff = only
-[credential "https://github.com"]
-    helper = 
-    helper = !gh auth git-credential
-[credential "https://gist.github.com"]
-    helper = 
-    helper = !gh auth git-credential
+# [merge]
+#     ff = only
+# [credential "https://github.com"]
+#     helper = 
+#     helper = !gh auth git-credential
+# [credential "https://gist.github.com"]
+#     helper = 
+#     helper = !gh auth git-credential
 
 
 
