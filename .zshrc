@@ -1,3 +1,5 @@
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 # ========================
 # Original .zshrc settings
 # ========================
@@ -8,47 +10,7 @@ export AUTO_TITLE_SCREENS="NO"
 # if you wish to use IMDS set AWS_EC2_METADATA_DISABLED=false
 export AWS_EC2_METADATA_DISABLED=true
 
-# export PROMPT="
-# %{$fg[white]%}(%D %*) <%?> [%~] $program %{$fg[default]%}
-# %{$fg[cyan]%}%m %#%{$fg[default]%} "
-
-# export RPROMPT=
-
-set-title() {
-    echo -e "\e]0;$*\007"
-}
-
-ssh() {
-    set-title $*;
-    /usr/bin/ssh -2 $*;
-    set-title $HOST
-}
-
-alias e=emacs
-alias bb=brazil-build
-
-alias bba='brazil-build apollo-pkg'
-alias bre='brazil-runtime-exec'
-alias brc='brazil-recursive-cmd'
-alias bws='brazil ws'
-alias bwsuse='bws use -p'
-alias bwscreate='bws create -n'
-alias brc=brazil-recursive-cmd
-alias bbr='brc brazil-build'
-alias bball='brc --allPackages'
-alias bbb='brc --allPackages brazil-build'
-alias bbra='bbr apollo-pkg'
-
-
 export PATH=$HOME/.toolbox/bin:$PATH
-
-
-# Set up mise for runtime management
-eval "$($HOME/.local/bin/mise activate zsh)"
-autoload -Uz compinit && compinit
-source ~/.local/share/mise/completions.zsh
-source $HOME/.brazil_completion/zsh_completion
-
 
 # =============================
 # Zshrc - configuration for zsh
@@ -134,6 +96,33 @@ alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbra='bbr apollo-pkg'
 
+# ==================
+# Convert Gif to mp4
+# ==================
+gif2vid() {
+    if [[ $# -ne 2 ]]; then
+        echo "Usage: convert_gif_to_mp4 <input_path> <output_path>"
+        return 1
+    fi
+    local input_path="$1"
+    local output_path="$2"
+    ffmpeg -loglevel error -i "$input_path" -movflags faststart -pix_fmt yuv420p -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" "$output_path"
+}
+
+
+ssh-ops () {
+	export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
+	ssh -t $OPSHOST "PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH sudo -u awsadmin logbash"
+}
+ssh-ops2 () {
+	export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
+	ssh $OPSHOST "sudo -u awsadmin PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH logbash"
+}
+
+alias tc="ssh -A -t dev-dsk-luchay-1b-1434e271.eu-west-1.amazon.com /apollo/env/envImprovement/bin/tmux -u -CC new-session -A -s tc"
+
+alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
+
 # =================================
 # Add colours to the less/man pages
 # =================================
@@ -205,9 +194,10 @@ if [ ! -d ~/.zsh/zsh-completions ]; then
       git clone https://github.com/zsh-users/zsh-completions.git ~/.zsh/zsh-completions
 fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
+fpath=($(brew --prefix)/share/zsh/site-functions ${fpath})  # For https://code.amazon.com/packages/AmazonZshFunctions/trees/mainline/--#
+source /Users/luchay/.brazil_completion/zsh_completion
 autoload -Uz compinit
 autoload -U bashcompinit
-# autoload -Uz compinit
 if [[ "$OSTYPE" == "darwin"* ]]; then
     stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
 else
@@ -224,6 +214,11 @@ else
     bashcompinit -C
 fi
 # eval "$(pandoc --bash-completion)"
+
+# Set up mise for runtime management
+eval "$($HOME/.local/bin/mise activate zsh)"
+source ~/.local/share/mise/completions.zsh
+source $HOME/.brazil_completion/zsh_completion
 
 # ==================
 # Completion stylyes
@@ -310,15 +305,11 @@ fi
 # ================================
 export PATH=$PATH:$HOME/.cargo/bin
 
-# =======================
-# Add kubectl completions
-# =======================
-# source <(kubectl completion zsh)
+# ============================
+# Add git-review-tools to PATH
+# ============================
+export PATH=$PATH:$HOME/Git-review-tools/bin
 
-# zprof
 
-# ================================
-# Add cargo to PATH
-# ================================
-export PATH=$PATH:$HOME/.cargo/bin
-
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"

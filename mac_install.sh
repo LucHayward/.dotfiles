@@ -191,6 +191,16 @@ fi
 # ============
 # Install rust
 # ============
-if ask_confirmat "Install Rust using rustup"; then
+if ask_confirmation "Install Rust using rustup"; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+fi
+
+# ========================
+# Install git-review-tools
+# ========================
+if ask_confirmation "Install git-review-tools from https://w.amazon.com/bin/view/Git-review-tools/"; then
+	start_dir=pwd
+	cd ~
+	git clone ssh://git.amazon.com/pkg/Git-review-tools
+	cd $start_dir
 fi
