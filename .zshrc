@@ -114,10 +114,6 @@ ssh-ops () {
 	export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
 	ssh -t $OPSHOST "PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH sudo -u awsadmin logbash"
 }
-ssh-ops2 () {
-	export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
-	ssh $OPSHOST "sudo -u awsadmin PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH logbash"
-}
 
 alias tc="ssh -A -t dev-dsk-luchay-1b-1434e271.eu-west-1.amazon.com /apollo/env/envImprovement/bin/tmux -u -CC new-session -A -s tc"
 
