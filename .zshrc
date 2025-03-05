@@ -1,9 +1,3 @@
-# Amazon Q pre block. Keep at the top of this file.
-if [[ "$HOME" == /Users/* ]]; then
-  [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-else
-  [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh"
-fi
 # ========================
 # Original .zshrc settings
 # ========================
@@ -115,6 +109,22 @@ alias bbr='brc brazil-build'
 alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbra='bbr apollo-pkg'
+
+# ====================================================================
+#                            Amazon Helpers
+# https://docs.mango.ec2.aws.dev/Pawelmas%20Tips/CodeReviews/#crselect
+# ====================================================================
+# Create a new workspace for a package, and then include that package in the workspace:
+# Usage: cws EC2SpacesDocsWebsite
+function new-ws() {
+  cd ~/workplace/
+  brazil ws create --name ${1}
+  cd ~/workplace/${1}
+
+  brazil ws use -p ${1}
+  wd ${1}
+}
+alias cws="new-ws"
 
 # ==================
 # Convert Gif to mp4
@@ -327,76 +337,3 @@ export PATH=$PATH:$HOME/.cargo/bin
 # Add git-review-tools to PATH
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
-
-if [[ "$HOME" == /Users/* ]]; then
-    [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-else
-
-    # ==========================
-    # Add envImprovement to PATH
-    # ==========================
-    export PATH=/apollo/env/envImprovement/bin:$PATH
-
-    # =====================
-    # Add SlamUtils to PATH
-    # =====================
-    export PATH=$PATH:$HOME/workplace/SlamUtils/src/SlamUtils/bin
-    ssh-ops () {
-        export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
-        ssh -t $OPSHOST "PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH sudo -u awsadmin logbash"
-    }
-
-    rm-ssh-key () {
-        if [ -z "$1" ]; then
-            echo "Usage: remove-ssh-key <hostname>"
-            return 1
-        fi
-        ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
-    }
-
-    ssh-ops22() {
-        echo "Starting ssh-ops function..."
-        
-        # Get the ops host
-        echo "Getting OPSHOST..."
-        export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
-        echo "OPSHOST set to: $OPSHOST"
-
-        # Store the SSH command in a variable for clarity
-        SSH_CMD="ssh -t $OPSHOST PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH sudo -u awsadmin logbash"
-        
-        echo "Attempting initial SSH connection..."
-        
-        # Try SSH connection and capture output
-        OUTPUT=$($SSH_CMD 2>&1)
-        SSH_EXIT_CODE=$?
-        
-        echo "SSH command output: $OUTPUT"
-        echo "SSH exit code: $SSH_EXIT_CODE"
-
-        if echo "$OUTPUT" | grep -q "REMOTE HOST IDENTIFICATION HAS CHANGED"; then
-            echo "Host key mismatch detected. Removing old key..."
-            ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$OPSHOST"
-            echo "Retrying SSH connection..."
-            $SSH_CMD
-        else
-            echo "No host key mismatch detected."
-            # If the first attempt didn't succeed, try again
-            if [ $SSH_EXIT_CODE -ne 0 ]; then
-                echo "Initial connection failed, retrying..."
-                $SSH_CMD
-            fi
-        fi
-        
-        echo "ssh-ops function completed."
-    }
-
-    export PYTHONPATH=$PYTHONPATH:/home/luchay/.local/share/mise/installs/python/3.12.3/lib/python3.12/site-packages
-
-    # Enable autocompletion for mechanic.
-    [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
-
-    # Amazon Q post block. Keep at the bottom of this file.
-    [[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"
-fi
-
