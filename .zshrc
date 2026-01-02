@@ -28,6 +28,11 @@ ssh() {
 
 export PATH=$HOME/.toolbox/bin:$PATH
 
+# ================================
+# Initialize rbenv
+# ================================
+eval "$(rbenv init - zsh)"
+
 # =============================
 # Zshrc - configuration for zsh
 # TODO: explore antigen
