@@ -1,5 +1,5 @@
 # Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 # ========================
 # Original .zshrc settings
 # ========================
@@ -111,6 +111,11 @@ alias bbr='brc brazil-build'
 alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbra='bbr apollo-pkg'
+
+# =============
+# Kiro CLI alias
+# =============
+alias kiro='kiro-cli'
 
 # ====================================================================
 #                            Amazon Helpers
@@ -310,7 +315,7 @@ unset __conda_setup
 # ==============
 # Add Go to PATH
 # ==============
-export PATH=$PATH:/usr/local/go/bin
+# export PATH=$PATH:/usr/local/go/bin  # Commented out - using Homebrew Go instead
 
 # =================================
 # Set Starship.rs as custom prompt
@@ -341,4 +346,4 @@ export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/Git-review-tools/bin
 
 # Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
