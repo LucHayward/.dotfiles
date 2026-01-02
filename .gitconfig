@@ -35,7 +35,8 @@
 # [pull]
 # 	rebase = true
 
-# [rebase]
+[rebase]
+      autosquash = true
 #     # Make the rebase command stashes before running, and pops after running
 #     autoStash = true
 
