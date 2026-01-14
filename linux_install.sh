@@ -74,6 +74,15 @@ if ask_confirmation "Install 'eza' using Cargo"; then
     export PATH=$PATH:$HOME/.cargo/bin' >> .zshrc
 fi
 
+if ask_confirmation "Install 'fzf' from GitHub"; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --key-bindings --completion --update-rc
+fi
+
+if ask_confirmation "Install 'fd' using Cargo"; then
+    cargo install fd-find
+fi
+
 if ask_confirmation "Install Miniconda and configure it"; then
     # Install Miniconda (replace URL with the latest version)
     mkdir -p ~/miniconda3
