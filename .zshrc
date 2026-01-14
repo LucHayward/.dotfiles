@@ -212,8 +212,15 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # ===========================
 # Fzf options and preferences
 # ===========================
-# https://github.com/beyarkay/dotfiles/blob/8b12553925d959d2ec6759564323595e5aeb182e/.zshrc#L305
-# https://github.com/beyarkay/dotfiles/blob/8b12553925d959d2ec6759564323595e5aeb182e/.zshrc#L336
+source <(fzf --zsh)
+
+# Exclude .unison and .git directories from all fzf commands using fd
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .unison --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .unison --exclude .git'
+
+# Bind the ç character (Alt+C on macOS) to fzf-cd-widget
+bindkey 'ç' fzf-cd-widget
 
 # ===============
 # Set ZSH options
@@ -349,6 +356,21 @@ export PATH=$PATH:$HOME/.cargo/bin
 # Add git-review-tools to PATH
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
+
+# ============================
+# Unison file sync management
+# ============================
+unison-load() {
+    launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
+}
+
+unison-unload() {
+    launchctl unload ~/Library/LaunchAgents/local.unison-file-sync.plist
+}
+
+unison-status() {
+    tail -n 20 ~/.unison/unison-launchd.log
+}
 
 # Amazon Q post block. Keep at the bottom of this file.
 # [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
