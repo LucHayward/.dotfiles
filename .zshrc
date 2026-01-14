@@ -1,5 +1,5 @@
-# Amazon Q pre block. Keep at the top of this file.
-# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh"
 # ========================
 # Original .zshrc settings
 # ========================
@@ -31,7 +31,9 @@ export PATH=$HOME/.toolbox/bin:$PATH
 # ================================
 # Initialize rbenv
 # ================================
-eval "$(rbenv init - zsh)"
+if command -v rbenv &> /dev/null; then
+    eval "$(rbenv init - zsh)"
+fi
 
 # =============================
 # Zshrc - configuration for zsh
@@ -105,8 +107,10 @@ alias G="git"
 # Brazil aliases
 # ==============
 alias bb=brazil-build
+alias bbf='brazil-build format'
 alias bba='brazil-build apollo-pkg'
 alias bre='brazil-runtime-exec'
+alias bte='brazil-test-exec'
 alias brc='brazil-recursive-cmd'
 alias bws='brazil ws'
 alias bwsuse='bws use -p'
@@ -116,6 +120,12 @@ alias bbr='brc brazil-build'
 alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbra='bbr apollo-pkg'
+
+alias cr='cr --destination-branch mainline'
+
+alias unison-status='tail -f ~/.unison/unison-launchd.log'
+
+alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 
 # =============
 # Kiro CLI alias
@@ -151,10 +161,12 @@ gif2vid() {
     ffmpeg -loglevel error -i "$input_path" -movflags faststart -pix_fmt yuv420p -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" "$output_path"
 }
 
+ ssh-ops() {
+    sshenv FoundryOps/CORP --auto --ssh "ssh -t" "sudo -u awsadmin env PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:\$PATH bash -c 'mkdir -p /local/tmp/\$SUDO_USER && chmod g+w /local/tmp/\$SUDO_USER 2>/dev/null; cd /local/tmp/\$SUDO_USER && exec logbash'"
+}
 
-ssh-ops () {
-	export OPSHOST="$(~/workplace/SlamUtils/src/SlamUtils/bin/expand-hostclass --one-host AWS-FOUNDRY-OPS-CORP)"
-	ssh -t $OPSHOST "PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:$PATH sudo -u awsadmin logbash"
+ ssh-ops-ro() {
+    sshenv FoundryOps/CORP --auto --ssh "ssh -t" "sudo -u foundry-ops-ro env PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:\$PATH bash -c 'mkdir -p /local/tmp/\$SUDO_USER && chmod g+w /local/tmp/\$SUDO_USER 2>/dev/null; cd /local/tmp/\$SUDO_USER && exec logbash'"
 }
 
 alias tc="ssh -A -t dev-dsk-luchay-1b-1434e271.eu-west-1.amazon.com /apollo/env/envImprovement/bin/tmux -u -CC new-session -A -s tc"
@@ -212,15 +224,22 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # ===========================
 # Fzf options and preferences
 # ===========================
-source <(fzf --zsh)
+# Add fzf to PATH on Linux (Homebrew handles this on macOS)
+if [[ "$OSTYPE" == "linux-gnu"* ]] && [[ -d "$HOME/.fzf/bin" ]]; then
+    export PATH="$HOME/.fzf/bin:$PATH"
+fi
 
-# Exclude .unison and .git directories from all fzf commands using fd
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .unison --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .unison --exclude .git'
+if command -v fzf &> /dev/null; then
+    source <(fzf --zsh)
 
-# Bind the ç character (Alt+C on macOS) to fzf-cd-widget
-bindkey 'ç' fzf-cd-widget
+    # Exclude .unison, .git, and build directories from all fzf commands using fd
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .unison --exclude .git --exclude build'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .unison --exclude .git --exclude build'
+
+    # Bind the ç character (Alt+C on macOS) to fzf-cd-widget
+    bindkey 'ç' fzf-cd-widget
+fi
 
 # ===============
 # Set ZSH options
@@ -261,6 +280,9 @@ else
     bashcompinit -C
 fi
 # eval "$(pandoc --bash-completion)"
+
+# Enable autocompletion for mechanic.
+[ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
 
 # Set up mise for runtime management
 eval "$($HOME/.local/bin/mise activate zsh)"
@@ -368,9 +390,26 @@ unison-unload() {
     launchctl unload ~/Library/LaunchAgents/local.unison-file-sync.plist
 }
 
-unison-status() {
-    tail -n 20 ~/.unison/unison-launchd.log
+# =====================
+# Add SlamUtils to PATH
+# =====================
+export PATH=$PATH:$HOME/workplace/SlamUtils/src/SlamUtils/bin
+
+rm-ssh-key () {
+    if [ -z "$1" ]; then
+        echo "Usage: remove-ssh-key <hostname>"
+        return 1
+    fi
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 }
 
-# Amazon Q post block. Keep at the bottom of this file.
-# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+# export PYTHONPATH=$PYTHONPATH:/home/luchay/.local/share/mise/installs/python/3.12.3/lib/python3.12/site-packages
+export PYTHONPATH=$PYTHONPATH:/workplace/luchay/ProfileDumper/src/Kmoroe_Isengard_Profile_Dumper/BotoCoreAmazon
+
+# Enable autocompletion for mechanic.
+[ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
+
+export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"

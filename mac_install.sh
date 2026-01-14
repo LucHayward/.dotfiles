@@ -133,7 +133,9 @@ if ask_confirmation "Install packages"; then
     miniconda \
     pandoc \
     gh \
-	bat
+    bat \
+    fzf \
+    fd
 fi
 
 # =============
