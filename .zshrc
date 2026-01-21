@@ -121,7 +121,7 @@ alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbra='bbr apollo-pkg'
 
-alias cr='cr --destination-branch mainline'
+alias cr='cr --destination-branch mainline --parent mainline'
 
 # ==============
 # Unison aliases
