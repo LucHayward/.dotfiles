@@ -1,5 +1,10 @@
 # Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh"
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh"
+else
+    [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+fi
+
 # ========================
 # Original .zshrc settings
 # ========================
@@ -384,10 +389,6 @@ export PATH=$PATH:$HOME/.cargo/bin
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
 
-# =====================
-# Add SlamUtils to PATH
-# =====================
-export PATH=$PATH:$HOME/workplace/SlamUtils/src/SlamUtils/bin
 
 rm-ssh-key () {
     if [ -z "$1" ]; then
@@ -397,13 +398,23 @@ rm-ssh-key () {
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 }
 
-# export PYTHONPATH=$PYTHONPATH:/home/luchay/.local/share/mise/installs/python/3.12.3/lib/python3.12/site-packages
-export PYTHONPATH=$PYTHONPATH:/workplace/luchay/ProfileDumper/src/Kmoroe_Isengard_Profile_Dumper/BotoCoreAmazon
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # =====================
+    # Add SlamUtils to PATH
+    # =====================
+    export PATH=$PATH:$HOME/workplace/SlamUtils/src/SlamUtils/bin
 
-# Enable autocompletion for mechanic.
-[ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
+    # export PYTHONPATH=$PYTHONPATH:/home/luchay/.local/share/mise/installs/python/3.12.3/lib/python3.12/site-packages
+    export PYTHONPATH=$PYTHONPATH:/workplace/luchay/ProfileDumper/src/Kmoroe_Isengard_Profile_Dumper/BotoCoreAmazon
 
-export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
+    # Enable autocompletion for mechanic.
+    [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
 
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"
+    export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
+
+    # Kiro CLI post block. Keep at the bottom of this file.
+    [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"
+else
+    # Kiro CLI post block. Keep at the bottom of this file.
+    [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+fi
