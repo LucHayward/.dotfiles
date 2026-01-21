@@ -123,7 +123,12 @@ alias bbra='bbr apollo-pkg'
 
 alias cr='cr --destination-branch mainline'
 
+# ==============
+# Unison aliases
+# ==============
 alias unison-status='tail -f ~/.unison/unison-launchd.log'
+alias unison-load='launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist'
+alias unison-unload='launchctl unload ~/Library/LaunchAgents/local.unison-file-sync.plist'
 
 alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 
@@ -378,17 +383,6 @@ export PATH=$PATH:$HOME/.cargo/bin
 # Add git-review-tools to PATH
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
-
-# ============================
-# Unison file sync management
-# ============================
-unison-load() {
-    launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
-}
-
-unison-unload() {
-    launchctl unload ~/Library/LaunchAgents/local.unison-file-sync.plist
-}
 
 # =====================
 # Add SlamUtils to PATH
