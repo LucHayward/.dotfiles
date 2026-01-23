@@ -44,7 +44,6 @@ fi
 # Zshrc - configuration for zsh
 # TODO: explore antigen
 # =============================
-# zmodload zsh/zprof
 source ~/.dotfiles/define_colours.sh
 
 # Enable colours for macOS
@@ -206,20 +205,7 @@ function cd() {
 
 
 # Setup colours and variables for the prompt
-# local BG_GREY='236'
-# local FG_RED='160'
-# local FG_ORANGE='208'
-# local FG_YELLOW='226'
-# local FG_LIGHTGREY='251'
-# local FG_GREY='244'
-# local FG_DARKGREY='238'
-# local FG_GREEN='46'
-# local FG_CYAN='51'
-# local FG_TURQUOISE='39'
-# local FG_DEEPBLUE='75'
-# local NO_BG='234'
-# local WHITE='255'
-# local FG_RED='196'
+
 
 # ==========================
 # Enable zsh Autosuggestions
@@ -233,6 +219,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # ===========================
 # Fzf options and preferences
+# https://github.com/beyarkay/dotfiles/blob/main/.zshrc#L305C1-L305C30
 # ===========================
 # Add fzf to PATH on Linux (Homebrew handles this on macOS)
 if [[ "$OSTYPE" == "linux-gnu"* ]] && [[ -d "$HOME/.fzf/bin" ]]; then
@@ -418,3 +405,4 @@ else
     # Kiro CLI post block. Keep at the bottom of this file.
     [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 fi
+# zmodload zsh/zprof
