@@ -83,6 +83,10 @@ if ask_confirmation "Install 'fd' using Cargo"; then
     cargo install fd-find
 fi
 
+if ask_confirmation "Install 'bat' using Cargo"; then
+    cargo install bat
+fi
+
 if ask_confirmation "Install Miniconda and configure it"; then
     # Install Miniconda (replace URL with the latest version)
     mkdir -p ~/miniconda3

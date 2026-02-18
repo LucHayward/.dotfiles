@@ -32,8 +32,8 @@
 # [commit]
 # 	template = ~/.gitmessage
 
-# [pull]
-# 	rebase = true
+[pull]
+	rebase = true
 
 [rebase]
       autosquash = true
