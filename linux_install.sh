@@ -142,3 +142,22 @@ fi
 if ask_confirmation "Install Starship.rs prompt"; then
     curl -fsSL https://starship.rs/install.sh | sh
 fi
+
+# ================
+# Amazon Internal Tools
+# ================
+if ask_confirmation "Setup Amazon internal tools (mwinit, toolbox, etc)"; then
+    echo "Running mwinit -o -s..."
+    mwinit -o -s
+    
+    echo "Installing toolbox packages..."
+    toolbox install lpt brazilcli bemol ada cr batscli ripcli gordian-knot barium axe aim builder-mcp gitlfs ironhide mechanic
+    toolbox install kiro-cli --channel nightly
+    toolbox completion zsh
+    
+    echo "Installing build dependencies..."
+    sudo yum install -y gcc gcc-c++ autoconf automake wget
+    
+    echo "Initializing axe builder-tools..."
+    axe init builder-tools
+fi
