@@ -130,9 +130,9 @@ alias cr='cr --destination-branch mainline --parent mainline'
 # ==============
 # Unison aliases
 # ==============
-alias unison-status='tail -f ~/.unison/unison-launchd.log'
-alias unison-load='launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist'
-alias unison-unload='launchctl unload ~/Library/LaunchAgents/local.unison-file-sync.plist'
+alias unison-status='tail -f ~/.unison/unison-launchd.log ~/.unison/unison-obsidian.log'
+alias unison-load='launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-file-sync.plist; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-obsidian-sync.plist'
+alias unison-unload='launchctl bootout gui/$(id -u)/local.unison-file-sync; launchctl bootout gui/$(id -u)/local.unison-obsidian-sync'
 
 alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 
