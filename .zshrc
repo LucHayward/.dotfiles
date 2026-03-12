@@ -372,6 +372,16 @@ fi
 export PATH=$PATH:$HOME/.cargo/bin
 
 # ============================
+# Use GNU sed over BSD sed
+# ============================
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# ============================
+# Use GNU grep over BSD grep
+# ============================
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+
+# ============================
 # Add git-review-tools to PATH
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
