@@ -395,6 +395,33 @@ rm-ssh-key () {
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 }
 
+update-all() {
+    echo "🔄 Updating tools..."
+    if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+        brew update && brew upgrade && brew cleanup
+    fi
+    toolbox update
+    mise upgrade
+    aim agents update
+    aim mcp update
+    aim skill update
+    echo "\n🔧 Patching peon-ping hooks into Kiro agents..."
+    bash ~/.kiro/patch-peon-hooks.sh
+    echo "\n✅ All done!"
+}
+
+
+# Added by AIM CLI
+export PATH="$HOME/.aim/mcp-servers:$PATH"
+
+# Peon-ping relay reminder (mac only — linux checks the reverse direction)
+if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+  if command -v peon &>/dev/null && ! peon relay --status &>/dev/null; then
+    echo "⚠️  peon relay is not running. Start it with:"
+    echo "  peon relay --daemon"
+  fi
+fi
+
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # =====================
     # Add SlamUtils to PATH
