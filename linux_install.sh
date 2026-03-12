@@ -74,6 +74,10 @@ if ask_confirmation "Install 'eza' using Cargo"; then
     export PATH=$PATH:$HOME/.cargo/bin' >> .zshrc
 fi
 
+if ask_confirmation "Install Go"; then
+    sudo yum install -y golang
+fi
+
 if ask_confirmation "Install 'fzf' from GitHub"; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install --key-bindings --completion --update-rc
@@ -99,6 +103,10 @@ fi
 if ask_confirmation "Install Pandoc"; then
     # Install Pandoc
     sudo yum install -y pandoc
+fi
+
+if ask_confirmation "Install htop"; then
+    sudo yum install -y htop
 fi
 
 if ask_confirmation "Install additional software using Snap"; then
