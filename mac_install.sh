@@ -135,7 +135,8 @@ if ask_confirmation "Install packages"; then
     gh \
     bat \
     fzf \
-    fd
+    fd \
+    htop
 fi
 
 # =============
