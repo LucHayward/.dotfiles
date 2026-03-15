@@ -1,6 +1,21 @@
-
 # Disable starting on a new line
 add_newline = false
+
+# Starship's default prompt format includes a line break (multi-line prompt).
+# cship sets `CSHIP_SESSION_ID` when invoking Starship; use that signal to
+# suppress the line break in the cship statusline while keeping it in normal
+# terminals.
+format = "$all${custom.maybe_line_break}$character"
+
+[line_break]
+disabled = true
+
+[custom.maybe_line_break]
+when = 'test -z "$CSHIP_SESSION_ID"'
+command = 'echo ""'
+format = """
+
+"""
 
 [directory]
 fish_style_pwd_dir_length = 3
