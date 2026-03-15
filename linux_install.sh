@@ -15,6 +15,32 @@ function ask_confirmation() {
     esac
 }
 
+# Detect supported package manager
+if command -v apt >/dev/null 2>&1; then
+    PKG_MANAGER="apt"
+elif command -v pacman >/dev/null 2>&1; then
+    PKG_MANAGER="pacman"
+else
+    echo "Unsupported package manager. This script currently supports apt and pacman."
+    exit 1
+fi
+
+function update_system() {
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        sudo apt update && sudo apt upgrade -y && sudo apt autoremove && sudo apt autoclean
+    else
+        sudo pacman -Syu --noconfirm
+    fi
+}
+
+function install_packages() {
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        sudo apt install -y "$@"
+    else
+        sudo pacman -S --noconfirm --needed "$@"
+    fi
+}
+
 # =================
 # First install ZSH
 # =================
@@ -25,8 +51,8 @@ if ask_confirmation "Install Zsh and set it as the default shell"; then
         echo "Zsh is already installed."
     else
         # Install Zsh
-        sudo apt update
-        sudo apt install -y zsh
+        update_system
+        install_packages zsh
 
         # Set Zsh as the default shell
         chsh -s $(command -v zsh)
@@ -45,14 +71,19 @@ fi
 # ================
 
 if ask_confirmation "Update package lists and install essential packages"; then
-    # Update package lists
-    sudo apt update && sudo apt upgrade -y && sudo apt autoremove && sudo apt autoclean
+    update_system
 
-    # Install packages using apt
-    sudo apt install -y \
-      git \
-      gnome-tweaks \
-      build-essential
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        install_packages \
+          git \
+          gnome-tweaks \
+          build-essential
+    else
+        install_packages \
+          git \
+          gnome-tweaks \
+          base-devel
+    fi
 fi
 
 if command -v rustup > /dev/null; then
@@ -85,7 +116,7 @@ fi
 
 if ask_confirmation "Install Pandoc"; then
     # Install Pandoc
-    sudo apt install -y pandoc
+    install_packages pandoc
 fi
 
 if ask_confirmation "Install additional software using Snap"; then
@@ -109,17 +140,26 @@ fi
 
 if ask_confirmation "Install LaTeX (TeX Live)"; then
     # Install LaTeX (TeX Live)
-    sudo apt install -y texlive
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        install_packages texlive
+    else
+        install_packages texlive-most
+    fi
 fi
 
 if ask_confirmation "Install GitHub CLI"; then
     # Install Github CLI
-    type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && sudo apt update \
-    && sudo apt install gh -y
+    type -p curl >/dev/null || install_packages curl
+
+    if [[ "$PKG_MANAGER" == "apt" ]]; then
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && sudo apt update \
+        && sudo apt install gh -y
+    else
+        install_packages github-cli
+    fi
 fi
 
 # ================
