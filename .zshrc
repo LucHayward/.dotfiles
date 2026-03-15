@@ -178,7 +178,7 @@ else
     compinit -C
     bashcompinit -C
 fi
-eval "$(pandoc --bash-completion)"
+command -v pandoc &>/dev/null && eval "$(pandoc --bash-completion)"
 
 # ==================
 # Completion stylyes
@@ -276,11 +276,10 @@ export PATH=$PATH:$HOME/.cargo/bin
 # source <(kubectl completion zsh)
 
 # zprof
-export PATH=$PATH:/Users/luchay/.toolbox/bin
-eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ -d "/Users/luchay/.toolbox/bin" ]] && export PATH=$PATH:/Users/luchay/.toolbox/bin
+[[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 # Set up mise for runtime management
-eval "$(mise activate zsh)"
-source /Users/luchay/.brazil_completion/zsh_completion
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
+command -v mise &>/dev/null && eval "$(mise activate zsh)"
+[[ -d "/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk" ]] && export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
