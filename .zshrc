@@ -178,7 +178,7 @@ gif2vid() {
     sshenv FoundryOps/CORP --auto --ssh "ssh -t" "sudo -u foundry-ops-ro env PATH=/apollo/env/FoundryOpsCli/bin:/apollo/env/FoundryOps/bin:/apollo/env/FoundryServiceCopy/bin:\$PATH bash -c 'mkdir -p /local/tmp/\$SUDO_USER && chmod g+w /local/tmp/\$SUDO_USER 2>/dev/null; cd /local/tmp/\$SUDO_USER && exec logbash'"
 }
 
-alias tc="ssh -A -t dev-dsk-luchay-1b-ab941678.eu-west-1.amazon.com /apollo/env/envImprovement/bin/tmux -u -CC new-session -A -s tc"
+alias tc="ssh -A -t clouddesk /apollo/env/envImprovement/bin/tmux -u -CC new-session -A -s tc"
 
 alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
 
