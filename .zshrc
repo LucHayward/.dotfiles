@@ -282,7 +282,11 @@ fi
 [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
 
 # Set up mise for runtime management
-eval "$($HOME/.local/bin/mise activate zsh)"
+if [[ "$(uname)" == "Linux" ]]; then
+  eval "$(/usr/local/bin/mise activate zsh)"
+else
+  eval "$($HOME/.local/bin/mise activate zsh)"
+fi
 source ~/.local/share/mise/completions.zsh
 source $HOME/.brazil_completion/zsh_completion
 
