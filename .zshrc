@@ -442,6 +442,10 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
 
+    # peon-ping quick controls (not in PATH on Linux, unlike Homebrew on Mac)
+    alias peon="bash $HOME/.claude/hooks/peon-ping/peon.sh"
+    [ -f "$HOME/.claude/hooks/peon-ping/completions.bash" ] && source "$HOME/.claude/hooks/peon-ping/completions.bash"
+
     # Kiro CLI post block. Keep at the bottom of this file.
     [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"
 else
