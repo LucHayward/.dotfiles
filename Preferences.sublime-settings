@@ -4,10 +4,10 @@
 	// fc-list | grep -i "fira" | column -t -s":"
 	"font_face": "FiraCode Nerd Font Propo Ret",
 	// "font_face": "JetBrainsMono Nerd Font",
-	"font_size": 11,
+	"font_size": 13,
 
 	// test ligatures: != <=
-	"font_options": ["dlig", "gray_antialias"],
+	/*"font_options": ["dlig", "gray_antialias"],*/
 
 	// Valid values are "smooth", "phase", "blink" and "solid". Previous
 	// versions of Sublime Text used "smooth" by default.
