@@ -405,6 +405,8 @@ update-all() {
     echo "🔄 Updating tools..."
     if [[ "$OSTYPE" != "linux-gnu"* ]]; then
         brew update && brew upgrade && brew cleanup
+    else
+        peon update
     fi
     toolbox update
     mise upgrade
