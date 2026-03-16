@@ -410,7 +410,7 @@ update-all() {
     mise upgrade
     aim agents update
     aim mcp update
-    aim skill update
+    aim skills update
     echo "\n🔧 Patching peon-ping hooks into Kiro agents..."
     bash ~/.kiro/patch-peon-hooks.sh
     echo "\n✅ All done!"
