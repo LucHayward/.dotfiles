@@ -261,7 +261,9 @@ if [[ "$HOME" == /Users/* ]]; then
 fi
 autoload -Uz compinit
 autoload -U bashcompinit
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
+    stat_cmd=""
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
 else
     mod_time=$(/usr/bin/stat --format='%Y' ${ZDOTDIR:-$HOME}/.zcompdump)
