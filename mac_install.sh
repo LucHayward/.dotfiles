@@ -130,10 +130,11 @@ if ask_confirmation "Install packages"; then
     brew install \
     git \
     eza \
-    miniconda \
-    pandoc \
     gh \
-	bat
+    bat \
+    fzf \
+    fd \
+    htop
 fi
 
 # =============
@@ -143,6 +144,7 @@ if ask_confirmation "Install casks"; then
     brew install --cask --no-quarantine \
     whatsapp \
     telegram \
+    raycast \
     rectangle \
     transmission \
     vlc \
@@ -150,12 +152,20 @@ if ask_confirmation "Install casks"; then
     iterm2 \
     jetbrains-toolbox \
     visual-studio-code \
-    mactex-no-gui \
     discord \
     todoist \
     qlmarkdown \
-    syntax-highlight \
-    sublime-text
+    syntax-highlight
+fi
+
+# ==========================================
+# Install document/notebook tools (optional)
+# ==========================================
+if ask_confirmation "Install document/notebook tools (optional)"; then
+    brew install \
+    miniconda \
+    pandoc
+    brew install --cask --no-quarantine mactex-no-gui
 fi
 
 # =================
@@ -173,14 +183,6 @@ if ask_confirmation "Install and setup iTerm2"; then
     conda init "$(basename "${SHELL}")"
 fi
 
-# ==========================
-# Symlink Sublim Preferences
-# ==========================
-if ask_confirmation "Symlink Sublime Preferences"; then
-   mkdir -p "~/Library/Application Support/Sublime Text/Packages/User/"
-   ln -s ~/.dotfiles/Preferences.sublime_settings "~/Library/Application Support/Sublime Text/Packages/User/"
-fi
-
 # ===================
 # Install Starship.rs
 # ===================
@@ -191,6 +193,6 @@ fi
 # ============
 # Install rust
 # ============
-if ask_confirmat "Install Rust using rustup"; then
+if ask_confirmation "Install Rust using rustup"; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 fi
