@@ -19,7 +19,7 @@ critical_threshold = 5.0
 critical_style     = "bold fg:#f7768e"
 
 [cship.context_bar]
-symbol             = ""
+symbol             = " "
 format             = "[$symbol$value]($style)"
 width              = 10
 style              = "fg:#7dcfff"
