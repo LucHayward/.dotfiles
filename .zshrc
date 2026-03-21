@@ -277,7 +277,13 @@ export PATH=$PATH:$HOME/.cargo/bin
 
 # zprof
 [[ -d "/Users/luchay/.toolbox/bin" ]] && export PATH=$PATH:/Users/luchay/.toolbox/bin
-[[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
 # Set up mise for runtime management
 command -v mise &>/dev/null && eval "$(mise activate zsh)"
 [[ -d "/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk" ]] && export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"

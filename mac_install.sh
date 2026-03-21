@@ -117,8 +117,8 @@ if ask_confirmation "Install homebrew"; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo -e "$BOLD Homebrew installation finished$RESET"
     
-    # Add Homebrew to $PATH
-    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    # Add Homebrew to $PATH (only if not already present)
+    grep -qF 'brew shellenv' ~/.zprofile || (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
