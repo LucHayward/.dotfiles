@@ -154,7 +154,8 @@ if ask_confirmation "Install casks"; then
     discord \
     todoist \
     qlmarkdown \
-    syntax-highlight
+    syntax-highlight \
+    obsidian
 fi
 
 # ==========================================
