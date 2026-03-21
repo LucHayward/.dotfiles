@@ -231,8 +231,8 @@ unset __conda_setup
 # Add cargo to PATH
 # ================================
 export PATH=$HOME/.cargo/bin:$PATH
-export MODULAR_HOME="/home/luc/.modular"
-export PATH="/home/luc/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
 
 # ==============
@@ -265,18 +265,13 @@ if [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" && -s "$NVM_DIR/bash_completion" ]];
     . "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
 fi
 
-# ================================
-# Add cargo to PATH
-# ================================
-export PATH=$PATH:$HOME/.cargo/bin
-
 # =======================
 # Add kubectl completions
 # =======================
 # source <(kubectl completion zsh)
 
 # zprof
-[[ -d "/Users/luchay/.toolbox/bin" ]] && export PATH=$PATH:/Users/luchay/.toolbox/bin
+[[ -d "$HOME/.toolbox/bin" ]] && export PATH=$PATH:$HOME/.toolbox/bin
 if [[ "$OSTYPE" == "darwin"* ]]; then
   if [[ -f /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"

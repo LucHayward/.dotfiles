@@ -89,3 +89,12 @@ if ask_confirmation "Install and run zsh-bench"; then
     git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
     ~/zsh-bench/zsh-bench
 fi
+
+# ================
+# Install cship (Claude Code statusline)
+# Requires cargo (install rustup first via OS-specific script)
+# ================
+if ask_confirmation "Install eza and cship via Cargo"; then
+    cargo install eza
+    cargo install cship
+fi

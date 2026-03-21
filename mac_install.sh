@@ -129,7 +129,6 @@ fi
 if ask_confirmation "Install packages"; then
     brew install \
     git \
-    eza \
     gh \
     bat \
     fzf \

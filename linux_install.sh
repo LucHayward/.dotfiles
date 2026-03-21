@@ -96,15 +96,6 @@ else
 fi
 
 
-if ask_confirmation "Install 'eza' using Cargo"; then
-    # sudo apt install -y cargo
-    cargo install eza
-    echo '# ================================
-    # Add cargo to PATH
-    # ================================
-    export PATH=$PATH:$HOME/.cargo/bin' >> .zshrc
-fi
-
 if ask_confirmation "Install Miniconda and configure it"; then
     # Install Miniconda (replace URL with the latest version)
     mkdir -p ~/miniconda3
@@ -122,11 +113,12 @@ fi
 if ask_confirmation "Install additional software using Snap"; then
     # Install additional software using Snap (similar to Homebrew casks)
     sudo snap install --classic code
-    sudo snap install --clasic sublime-text
+    sudo snap install --classic sublime-text
 fi
 # =============================
 # Symlink sublime text settings
 # =============================
+mkdir -p ~/.config/sublime-text/Packages/User
 ln -s ~/.dotfiles/Preferences.sublime-settings ~/.config/sublime-text/Packages/User/
 
 
