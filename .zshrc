@@ -239,6 +239,10 @@ export PATH=$HOME/.cargo/bin:$PATH
 export MODULAR_HOME="$HOME/.modular"
 export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
+# =======================
+# Add bun globals to path
+# =======================
+export PATH="/home/luch/.bun/bin:$PATH"
 
 # ==============
 # Add Go to PATH
