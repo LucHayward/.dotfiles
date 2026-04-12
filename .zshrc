@@ -147,6 +147,23 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 # https://github.com/beyarkay/dotfiles/blob/8b12553925d959d2ec6759564323595e5aeb182e/.zshrc#L305
 # https://github.com/beyarkay/dotfiles/blob/8b12553925d959d2ec6759564323595e5aeb182e/.zshrc#L336
 
+# Add fzf to PATH on Linux (Homebrew handles this on macOS)
+if [[ "$OSTYPE" == "linux-gnu"* ]] && [[ -d "$HOME/.fzf/bin" ]]; then
+    export PATH="$HOME/.fzf/bin:$PATH"
+fi
+
+if command -v fzf &> /dev/null; then
+    source <(fzf --zsh)
+
+    # Exclude .unison, .git, and build directories from all fzf commands using fd
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .unison --exclude .git --exclude build'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .unison --exclude .git --exclude build'
+
+    # Bind the ç character (Alt+C on macOS) to fzf-cd-widget
+    bindkey 'ç' fzf-cd-widget
+fi
+
 # ===============
 # Set ZSH options
 # ===============
