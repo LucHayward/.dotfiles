@@ -60,6 +60,11 @@ alias gy="git yolo"
 alias gp="git push"
 alias G="git"
 
+# ================
+# claude aliases
+# ================
+# Allow permission bypass while using default (prompt on first use) mode
+alias claude="claude --allow-dangerously-skip-permissions --permission-mode default"
 
 # =================================
 # Add colours to the less/man pages
