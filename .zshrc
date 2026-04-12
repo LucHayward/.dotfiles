@@ -279,6 +279,12 @@ fi
 # =======================
 # source <(kubectl completion zsh)
 
+# ==================
+# Add uv completions
+# ==================
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
+
 # zprof
 [[ -d "$HOME/.toolbox/bin" ]] && export PATH=$PATH:$HOME/.toolbox/bin
 if [[ "$OSTYPE" == "darwin"* ]]; then
