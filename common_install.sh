@@ -98,4 +98,5 @@ if ask_confirmation "Install eza and cship via Cargo"; then
     cargo install eza
     cargo install cship
     cargo install uv
+    cargo install ast-grep
 fi
