@@ -226,6 +226,7 @@ setopt NO_CASE_GLOB
 # Automatic command correction
 setopt CORRECT
 setopt CORRECT_ALL
+CORRECT_IGNORE_FILE='.{git,settings}'
 
 # Auto cd
 setopt AUTO_CD
@@ -315,4 +316,5 @@ fi
 command -v mise &>/dev/null && eval "$(mise activate zsh)"
 [[ -d "/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk" ]] && export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
 
