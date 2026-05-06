@@ -316,6 +316,7 @@ setopt NO_CASE_GLOB
 # Automatic command correction
 setopt CORRECT
 setopt CORRECT_ALL
+CORRECT_IGNORE_FILE='.{git,settings}'
 
 # Auto cd
 setopt AUTO_CD
@@ -352,6 +353,9 @@ unset __conda_setup
 # ==============
 # Add Go to PATH
 # ==============
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  export PATH=$PATH:$HOME/go/bin
+fi
 # export PATH=$PATH:/usr/local/go/bin  # Commented out - using Homebrew Go instead
 
 # =================================
@@ -472,3 +476,6 @@ else
     [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 fi
 # zmodload zsh/zprof
+
+# Added by AIM CLI
+export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
