@@ -134,6 +134,10 @@ alias unison-status='tail -f ~/.unison/unison-launchd.log ~/.unison/unison-obsid
 alias unison-load='launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-file-sync.plist; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-obsidian-sync.plist'
 alias unison-unload='launchctl bootout gui/$(id -u)/local.unison-file-sync; launchctl bootout gui/$(id -u)/local.unison-obsidian-sync'
 
+alias meshclaw-status='cat /tmp/meshclaw-tunnel.err; pgrep -f "autossh.*7777" >/dev/null && echo "✓ tunnel running" || echo "✗ tunnel not running"'
+alias meshclaw-load='launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.meshclaw.tunnel.plist'
+alias meshclaw-unload='launchctl bootout gui/$(id -u)/com.meshclaw.tunnel'
+
 alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 
 # =============
@@ -395,6 +399,13 @@ export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
 # Add git-review-tools to PATH
 # ============================
 export PATH=$PATH:$HOME/Git-review-tools/bin
+
+# =========
+# NVM setup
+# =========
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 
 rm-ssh-key () {
