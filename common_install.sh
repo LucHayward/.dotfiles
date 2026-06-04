@@ -25,13 +25,25 @@ sudo -v
 if ask_confirmation "Symmlink various dotfiles"; then
     ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
     ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
-    ln -s ~/.dotfiles/.condarc ~/.condarc
+
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
     ln -sf ~/.dotfiles/.pandoc ~/.pandoc
     mkdir -p ~/.config
     ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
     ln -sf ~/.dotfiles/.zlogin ~/.zlogin
+
+    # Unison sync profiles
+    mkdir -p ~/.unison
+    ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf
+    ln -sf ~/.dotfiles/unison/obsidian.prf ~/.unison/obsidian.prf
+
+    # Unison LaunchAgents (macOS only)
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        mkdir -p ~/Library/LaunchAgents
+        ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
+        ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+    fi
 fi
 
 # ==============================

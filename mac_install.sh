@@ -130,7 +130,7 @@ if ask_confirmation "Install packages"; then
     brew install \
     git \
     eza \
-    miniconda \
+
     pandoc \
     gh \
     bat \
@@ -173,7 +173,6 @@ fi
 # ==========================
 if ask_confirmation "Install and setup iTerm2"; then
     open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
-    conda init "$(basename "${SHELL}")"
 fi
 
 # ==========================
@@ -206,4 +205,77 @@ if ask_confirmation "Install git-review-tools from https://w.amazon.com/bin/view
 	cd ~
 	git clone ssh://git.amazon.com/pkg/Git-review-tools
 	cd $start_dir
+fi
+
+# ========================
+# SSH, Midway, and WSSH
+# ========================
+if ask_confirmation "Setup SSH key, mwinit, and WSSH"; then
+    echo "--- SSH Key ---"
+    if [ ! -f ~/.ssh/id_ecdsa ]; then
+        echo "Generating ECDSA SSH key..."
+        ssh-keygen -t ecdsa
+    else
+        echo "SSH key already exists at ~/.ssh/id_ecdsa"
+    fi
+
+    echo ""
+    echo "--- Midway (mwinit) ---"
+    echo "Run: mwinit -f"
+    echo "If mwinit is not installed, install it from Self Service (ACME) or: brew install amazon/amazon/mwinit"
+    echo ""
+    read -p "Press enter once mwinit is working..."
+
+    echo ""
+    echo "--- WSSH ---"
+    echo "Install WSSH from Self Service (ACME) > search 'WSSH'"
+    echo "After install, close and reopen terminal, then verify with: wssh --version"
+    echo "Docs: https://w.amazon.com/bin/view/WSSH/setup/macos"
+    echo ""
+    read -p "Press enter once WSSH is installed..."
+fi
+
+# ========================
+# Install and configure Unison
+# ========================
+if ask_confirmation "Install Unison file sync (requires SSH to cloud desktop)"; then
+    brew install unison unison-fsmonitor
+
+    echo ""
+    echo "Unison profiles and LaunchAgents have been symlinked from ~/.dotfiles/unison/"
+    echo ""
+    echo "NOTE: You may need to update the remote host in the .prf files if your cloud desktop hostname has changed."
+    echo "  Edit: ~/.unison/default.prf"
+    echo "  Edit: ~/.unison/obsidian.prf"
+    echo ""
+    read -p "Press enter to load the LaunchAgents (starts sync)..."
+
+    launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
+    launchctl load ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+fi
+
+# ================================
+# Install Builder Toolbox and tools
+# ================================
+if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwinit first)"; then
+    # Bootstrap Builder Toolbox
+    curl -X POST \
+      --data '{"os":"osx"}' \
+      -H "Authorization: $(curl -L --cookie $HOME/.midway/cookie --cookie-jar $HOME/.midway/cookie \
+        "https://midway-auth.amazon.com/SSO?client_id=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev&response_type=id_token&nonce=$RANDOM&redirect_uri=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev:443")" \
+      https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev/v1/bootstrap \
+      > ~/toolbox-bootstrap.sh
+    bash ~/toolbox-bootstrap.sh
+    rm ~/toolbox-bootstrap.sh
+    source ~/.$(basename "$SHELL")rc
+
+    # Install core tools
+    toolbox install aim kiro-cli builder-mcp
+
+    # AxE installs most common tools (brazilcli, cr, ada, etc.)
+    toolbox install axe
+    axe init builder-tools
+
+    # AIM agents and MCP servers
+    aim agents install AIPowerUserCapabilities
 fi
