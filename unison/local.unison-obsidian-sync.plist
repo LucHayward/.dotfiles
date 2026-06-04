@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>/Users/luchay</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/luchay/.unison/unison-obsidian.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/luchay/.unison/unison-obsidian.log</string>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    <key>Label</key>
+    <string>local.unison-obsidian-sync</string>
+    <key>Program</key>
+    <string>/opt/homebrew/bin/unison</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/unison</string>
+        <string>-ui</string>
+        <string>text</string>
+        <string>obsidian</string>
+        <string>-repeat</string>
+        <string>watch</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
