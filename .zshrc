@@ -1,9 +1,10 @@
+# zmodload zsh/zprof
 # Kiro CLI pre block. Keep at the top of this file.
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh"
-else
-    [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
-fi
+# if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+#     [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.pre.zsh"
+# else
+#     [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+# fi
 
 # ========================
 # Original .zshrc settings
@@ -34,10 +35,14 @@ ssh() {
 export PATH=$HOME/.toolbox/bin:$PATH
 
 # ================================
-# Initialize rbenv
+# Initialize rbenv (lazy-loaded)
 # ================================
 if command -v rbenv &> /dev/null; then
-    eval "$(rbenv init - zsh)"
+    rbenv() {
+        unfunction rbenv
+        eval "$(command rbenv init - zsh)"
+        rbenv "$@"
+    }
 fi
 
 # =============================
@@ -260,7 +265,7 @@ if [ ! -d ~/.zsh/zsh-completions ]; then
 fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
 if [[ "$HOME" == /Users/* ]]; then
-    fpath=($(brew --prefix)/share/zsh/site-functions ${fpath})  # For https://code.amazon.com/packages/AmazonZshFunctions/trees/mainline/--#
+    fpath=(${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh/site-functions ${fpath})  # For https://code.amazon.com/packages/AmazonZshFunctions/trees/mainline/--#
     source /Users/luchay/.brazil_completion/zsh_completion
 fi
 autoload -Uz compinit
@@ -268,7 +273,7 @@ autoload -U bashcompinit
 if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
     stat_cmd=""
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
+    stat_cmd=$(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump)
 else
     mod_time=$(/usr/bin/stat --format='%Y' ${ZDOTDIR:-$HOME}/.zcompdump)
     stat_cmd=$(date +'%j' -d @$mod_time)
@@ -357,15 +362,19 @@ eval "$(starship completions zsh)"
 
 
 # ==========================
-# Add NVM to path with compl
+# NVM (lazy-loaded)
 # ==========================
 export NVM_DIR="$HOME/.nvm"
 
-# Check if NVM is installed by testing the existence of the NVM directory and scripts
-if [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" && -s "$NVM_DIR/bash_completion" ]]; then
-    . "$NVM_DIR/nvm.sh"             # This loads nvm
-    . "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
-fi
+_load_nvm() {
+    unfunction nvm node npm npx 2>/dev/null
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+}
+nvm() { _load_nvm; nvm "$@"; }
+node() { _load_nvm; node "$@"; }
+npm() { _load_nvm; npm "$@"; }
+npx() { _load_nvm; npx "$@"; }
 
 # ================================
 # Add cargo to PATH
@@ -388,11 +397,8 @@ export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
 export PATH=$PATH:$HOME/Git-review-tools/bin
 
 # =========
-# NVM setup
+# NVM setup (handled above via lazy-load)
 # =========
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 
 rm-ssh-key () {
@@ -468,12 +474,13 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     [ -f "$HOME/.claude/hooks/peon-ping/completions.bash" ] && source "$HOME/.claude/hooks/peon-ping/completions.bash"
 
     # Kiro CLI post block. Keep at the bottom of this file.
-    [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"
+    # [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"
 else
     # Kiro CLI post block. Keep at the bottom of this file.
-    [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+    # [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 fi
-# zmodload zsh/zprof
+# zprof
 
 # Added by AIM CLI
 export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
+
