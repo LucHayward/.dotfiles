@@ -44,6 +44,11 @@ if ask_confirmation "Symmlink various dotfiles"; then
         mkdir -p ~/Library/LaunchAgents
         ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
         ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+
+        # Obsidian vault registry (points Obsidian at ~/ObsidianVault)
+        mkdir -p ~/Library/Application\ Support/obsidian
+        ln -sf ~/.dotfiles/obsidian.json ~/Library/Application\ Support/obsidian/obsidian.json
+        sed -i '' "s|/Users/[^/]*/ObsidianVault|$HOME/ObsidianVault|g" ~/.dotfiles/obsidian.json
     fi
 fi
 
