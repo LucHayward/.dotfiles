@@ -203,6 +203,13 @@ if ask_confirmation "Restore Firefox extensions and preferences"; then
         echo "  NOTE: prefs.js is backed up but NOT auto-restored (can conflict)."
         echo "  To restore settings manually: cp ~/.dotfiles/firefox/prefs.js \"$FIREFOX_PROFILE/\""
     fi
+
+    echo ""
+    echo "--- Tampermonkey Scripts ---"
+    echo "  Tampermonkey backup is at: ~/.dotfiles/firefox/tampermonkey-backup.txt"
+    echo "  To restore: Tampermonkey > Dashboard > Utilities > Import > File"
+    echo "  (Not auto-imported because it contains auth tokens)"
+    read -p "  Press enter once Tampermonkey scripts are restored..."
 fi
 
 
