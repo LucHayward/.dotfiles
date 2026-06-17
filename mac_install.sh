@@ -159,7 +159,7 @@ if ask_confirmation "Install casks"; then
     qlmarkdown \
     syntax-highlight \
     obsidian \
-    sublime-text
+    signal
 fi
 
 # =================
