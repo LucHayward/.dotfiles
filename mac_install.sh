@@ -243,8 +243,9 @@ if ask_confirmation "Install and setup iTerm2"; then
 	# Import saved preferences if they exist in the repo
 	if [[ -f "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" ]]; then
 		echo "Importing iTerm2 preferences from dotfiles..."
-		cp "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" \
-		   "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+		# Remove active prefs so iTerm2 reads from custom folder on next launch
+		rm -f "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+		defaults delete com.googlecode.iterm2 2>/dev/null
 		defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${HOME}/.dotfiles/iterm2"
 		defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
 	else
