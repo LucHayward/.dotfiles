@@ -166,7 +166,8 @@ if ask_confirmation "Install casks"; then
     todoist \
     qlmarkdown \
     syntax-highlight \
-    obsidian
+    obsidian \
+    signal
 fi
 
 # ==========================================
