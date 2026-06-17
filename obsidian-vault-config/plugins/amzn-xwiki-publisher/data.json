@@ -1,0 +1,11 @@
+{
+  "defaultSpace": "Users/luchay",
+  "transformCallouts": true,
+  "processInternalLinks": true,
+  "unpublishedLinkHandling": "preserve",
+  "username": "luchay",
+  "pandocPath": "/opt/homebrew/bin/pandoc",
+  "rawPath": "/Users/luchay/.toolbox/bin/raw",
+  "xwikiBaseUrl": "https://w.amazon.com/bin/view/",
+  "authType": "midway"
+}

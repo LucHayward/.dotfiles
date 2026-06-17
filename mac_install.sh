@@ -245,6 +245,10 @@ if ask_confirmation "Install Unison file sync (requires SSH to cloud desktop)"; 
     # Create the ObsidianVault directory if it doesn't exist
     mkdir -p ~/ObsidianVault
 
+    # Restore Obsidian settings and plugin configs from dotfiles
+    cp -r ~/.dotfiles/obsidian-vault-config/ ~/ObsidianVault/.obsidian/
+    # Plugins will auto-download their JS on first launch based on manifest.json
+
     echo ""
     echo "Unison profiles and LaunchAgents have been symlinked from ~/.dotfiles/unison/"
     echo ""

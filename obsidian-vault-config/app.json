@@ -1,0 +1,10 @@
+{
+  "showLineNumber": false,
+  "promptDelete": false,
+  "tabSize": 2,
+  "alwaysUpdateLinks": true,
+  "readableLineLength": true,
+  "attachmentFolderPath": "./attachments",
+  "useMarkdownLinks": true,
+  "newFileLocation": "current"
+}

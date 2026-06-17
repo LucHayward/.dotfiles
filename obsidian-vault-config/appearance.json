@@ -1,0 +1,10 @@
+{
+  "nativeMenus": true,
+  "translucency": false,
+  "showRibbon": true,
+  "baseFontSizeAction": true,
+  "enabledCssSnippets": [
+    "wider-lines"
+  ],
+  "baseFontSize": 18
+}

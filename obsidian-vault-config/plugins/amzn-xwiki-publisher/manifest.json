@@ -1,0 +1,11 @@
+{
+	"id": "amzn-xwiki-publisher",
+	"name": "Amazon XWiki Publisher",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Publish Obsidian markdown documents to XWiki with callout transformation support.",
+	"author": "Vinay Augustine <vinayaug@amazon.com>",
+	"authorUrl": "https://phonetool.amazon.com/users/vinayaug",
+	"fundingUrl": "",
+	"isDesktopOnly": true
+}
