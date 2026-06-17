@@ -47,6 +47,9 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/.pandoc ~/.pandoc
 	mkdir -p ~/.config
 	ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
+	mkdir -p ~/.config/mise
+	ln -sf ~/.dotfiles/mise/config.toml ~/.config/mise/config.toml
+	mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
 	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 
 	# Unison sync profiles

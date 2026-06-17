@@ -316,7 +316,8 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 	if [[ -f "$HOME/.dotfiles/firefox/tampermonkey-backup.zip" ]]; then
 		echo "	Tampermonkey: Dashboard → Utilities → Zip → Import → ~/.dotfiles/firefox/tampermonkey-backup.zip"
 	fi
-	if [[ -d "$HOME/.dotfiles/firefox/userscripts" ]] && ls "$HOME/.dotfiles/firefox/userscripts/"*.js &>/dev/null; then
+	local -a userscripts=("$HOME/.dotfiles/firefox/userscripts/"*.js(N))
+	if (( ${#userscripts} )); then
 		echo "	Userscripts: Open each .js file in Firefox (Tampermonkey will offer to install)"
 	fi
 
@@ -462,6 +463,25 @@ if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwin
 fi
 
 # ================================
+# Configure mise (runtime version manager)
+# ================================
+if ask_confirmation "Configure mise (node 22+, python 3.12 for MCP servers)"; then
+	if ! command -v mise &>/dev/null; then
+		echo "mise not found — it should have been installed by 'axe init builder-tools'."
+		echo "Run that step first, then re-run this section."
+	else
+		# Symlink global mise config from dotfiles
+		mkdir -p ~/.config/mise
+		ln -sf ~/.dotfiles/mise/config.toml ~/.config/mise/config.toml
+
+		# Install the runtimes declared in the config
+		mise install
+
+		echo "✓ mise configured with node $(mise current node) and python $(mise current python)"
+	fi
+fi
+
+# ================================
 # Install Language Servers (for kiro-cli Code Intelligence)
 # ================================
 if ask_confirmation "Install LSPs for kiro-cli (Python, Java, TypeScript)"; then
@@ -535,7 +555,13 @@ if ask_confirmation "Run installation validation checks"; then
 		((failed++))
 	fi
 	if command -v node &>/dev/null; then
-		echo "	✓ node ($(node --version))"
+		NODE_MAJOR=$(node --version | sed 's/v//' | cut -d. -f1)
+		if (( NODE_MAJOR >= 22 )); then
+			echo "	✓ node ($(node --version))"
+		else
+			echo "	⚠ node ($(node --version)) — v22+ recommended for MCP servers"
+			((failed++))
+		fi
 	else
 		echo "	✗ node NOT FOUND"
 		((failed++))

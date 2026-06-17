@@ -179,4 +179,10 @@ if ask_confirmation "Setup Amazon internal tools (mwinit, toolbox, etc)"; then
 	
 	echo "Initializing axe builder-tools..."
 	axe init builder-tools
+
+	# Configure mise runtimes (node 22+ needed for MCP servers)
+	if command -v mise &>/dev/null; then
+		mise install
+		echo "✓ mise runtimes installed: node $(mise current node), python $(mise current python)"
+	fi
 fi
