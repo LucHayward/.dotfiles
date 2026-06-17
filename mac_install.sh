@@ -439,7 +439,7 @@ if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwin
 		source ~/.$(basename "$SHELL")rc
 
 		# Install core tools
-		toolbox install aim kiro-cli builder-mcp claude-code
+		toolbox install aim kiro-cli builder-mcp claude-code ada
 
 		# AxE installs most common tools (brazilcli, cr, ada, etc.)
 		toolbox install axe
