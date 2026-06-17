@@ -22,22 +22,15 @@ function ask_confirmation() {
 sudo -v
 
 # ==========================================
-# Pre-flight: Terminal setup
+# Pre-flight
 # ==========================================
 echo ""
 echo "========================================"
 echo "  DOTFILES INSTALLER"
 echo "========================================"
 echo ""
-echo "IMPORTANT: Before continuing, open a SECOND terminal window/pane."
-echo "Some steps require you to run commands manually (e.g. mwinit -f)"
-echo "while this script waits."
+echo "This script will prompt for each section. Use -y to skip prompts."
 echo ""
-echo "Recommended setup:"
-echo "  - This terminal: runs the install script"
-echo "  - Second terminal: for manual commands (mwinit, brew trust, etc.)"
-echo ""
-read "?Press enter when your second terminal is ready..."
 
 # ======================================
 # Symllink to various dotfiles and directories
