@@ -48,7 +48,6 @@ if ask_confirmation "Symmlink various dotfiles"; then
         # Obsidian vault registry (points Obsidian at ~/ObsidianVault)
         mkdir -p ~/Library/Application\ Support/obsidian
         ln -sf ~/.dotfiles/obsidian.json ~/Library/Application\ Support/obsidian/obsidian.json
-        sed -i '' "s|/Users/[^/]*/ObsidianVault|$HOME/ObsidianVault|g" ~/.dotfiles/obsidian.json
     fi
 fi
 
