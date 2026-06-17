@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # ==========================================
 # Common installation script
 # Runs specific scripts for macOS and ubuntu
@@ -6,102 +6,113 @@
 
 source ~/.dotfiles/define_colours.sh
 
+# Parse flags
+AUTO_YES=false
+[[ "${1:-}" == "-y" || "${1:-}" == "--yes" ]] && AUTO_YES=true
+
 # Function to ask for confirmation with a description
 function ask_confirmation() {
-    local description="$1"
-    read -p "Do you want to run the following section? (y/n): $description : " choice
-    case "$choice" in
-        [Yy]* ) return 0;;
-        * ) return 1;;
-    esac
+	[[ "$AUTO_YES" == true ]] && return 0
+	local choice
+	read "choice?Do you want to run: $1? (y/n): "
+	[[ "$choice" =~ ^[Yy] ]]
 }
 
 # Ask for the administrator password upfront
+echo "Enter SUDO password:"
 sudo -v
 
+# ==========================================
+# Pre-flight
+# ==========================================
+echo ""
+echo "========================================"
+echo "	DOTFILES INSTALLER"
+echo "========================================"
+echo ""
+echo "This script will prompt for each section. Use -y to skip prompts."
+echo "Some steps require YubiKey interaction (mwinit) or a reboot (Brazil CLI)."
+echo ""
+
 # ======================================
-# Symllink to various dotfiles and directories
+# Symlink various dotfiles and directories
 # ======================================
-if ask_confirmation "Symmlink various dotfiles"; then
-    ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
-    ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
+if ask_confirmation "Symlink various dotfiles"; then
+	ln -sf ~/.dotfiles/.gitconfig ~/.gitconfig
+	ln -sf ~/.dotfiles/.gitignore_global ~/.gitignore_global
 
 
-    ln -sf ~/.dotfiles/.zshrc ~/.zshrc
-    ln -sf ~/.dotfiles/.zprofile ~/.zprofile
-    ln -sf ~/.dotfiles/.pandoc ~/.pandoc
-    mkdir -p ~/.config
-    ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
-    ln -sf ~/.dotfiles/.zlogin ~/.zlogin
+	ln -sf ~/.dotfiles/.zshrc ~/.zshrc
+	ln -sf ~/.dotfiles/.zprofile ~/.zprofile
+	ln -sf ~/.dotfiles/.pandoc ~/.pandoc
+	mkdir -p ~/.config
+	ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
+	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 
-    # Unison sync profiles
-    mkdir -p ~/.unison
-    ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf
-    ln -sf ~/.dotfiles/unison/obsidian.prf ~/.unison/obsidian.prf
+	# Unison sync profiles
+	mkdir -p ~/.unison
+	ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf
+	ln -sf ~/.dotfiles/unison/obsidian.prf ~/.unison/obsidian.prf
 
-    # Unison LaunchAgents (macOS only)
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-        mkdir -p ~/Library/LaunchAgents
-        ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
-        ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+	# Unison LaunchAgents (macOS only)
+	if [[ "$(uname -s)" == "Darwin" ]]; then
+		mkdir -p ~/Library/LaunchAgents
+		ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
+		ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
 
-        # Obsidian vault registry (points Obsidian at ~/ObsidianVault)
-        mkdir -p ~/Library/Application\ Support/obsidian
-        ln -sf ~/.dotfiles/obsidian.json ~/Library/Application\ Support/obsidian/obsidian.json
-    fi
+		# Obsidian vault registry (points Obsidian at ~/ObsidianVault)
+		mkdir -p ~/Library/Application\ Support/obsidian
+		ln -sf ~/.dotfiles/obsidian.json ~/Library/Application\ Support/obsidian/obsidian.json
+	fi
 fi
 
 # ==============================
-# Run OS specific install script    
+# Run OS specific install script	
 # ==============================
 if ask_confirmation "Run OS specific install script"; then
-    unameOut="$(uname -s)"
-    case "${unameOut}" in
-        Linux*)     machine=Linux;;
-        Darwin*)    machine=Mac;;
-        *)          machine="UNKNOWN:${unameOut}"
-    esac
-    echo -e "Running on ${machine}"
+	unameOut="$(uname -s)"
+	case "${unameOut}" in
+		Linux*)		machine=Linux;;
+		Darwin*)	machine=Mac;;
+		*)			machine="UNKNOWN:${unameOut}"
+	esac
+	echo -e "Running on ${machine}"
 
-    # Check the current operating system and source the appropriate script
-    if [[ "${machine}" == "Mac" ]]; then
-        source mac_install.sh
-    elif [[ "${machine}" == "Linux" ]]; then
-        source linux_install.sh
-    else
-        echo "Operating system is not macOS or Linux. Skipping installation."
-    fi
+	# Check the current operating system and source the appropriate script
+	if [[ "${machine}" == "Mac" ]]; then
+		source mac_install.sh
+	elif [[ "${machine}" == "Linux" ]]; then
+		source linux_install.sh
+	else
+		echo "Operating system is not macOS or Linux. Skipping installation."
+	fi
 fi
 
 # ==================================
-# Setup zsh
-# MacOS already has zsh installed
+# Setup zsh (Linux only, macOS already uses zsh)
 # ==================================
-if ask_confirmation "Set zsh to default shell"; then
-    echo -e "$RESET[D] Sudo-ing to make zsh default shell$RESET$RED"
-    sudo sh -c "echo $(which zsh) >> /etc/shells" && chsh -s $(which zsh)
-    echo -e "$RESET"
+if [[ "$(uname -s)" != "Darwin" ]]; then
+	if ask_confirmation "Set zsh to default shell"; then
+		ZSH_PATH="$(which zsh)"
+		if ! grep -q "$ZSH_PATH" /etc/shells; then
+			echo "$ZSH_PATH" | sudo tee -a /etc/shells
+		fi
+		chsh -s "$ZSH_PATH"
+	fi
 fi
 
-
-# =====================
-# Setup git credentials
-# =====================
-if ask_confirmation "Setup git credentials using gh"; then
-    gh auth login
-fi
 
 # =================
 # Install zsh-bench
 # According to the author any value below the following is imperceptible:
-# | latency (ms)          |      |
+# | latency (ms)		  |		 |
 # |-----------------------|-----:|
-# | **first prompt lag**  |   50 |
-# | **first command lag** |  150 |
-# | **command lag**       |   10 |
-# | **input lag**         |   20 |
+# | **first prompt lag**  |	  50 |
+# | **first command lag** |	 150 |
+# | **command lag**		  |	  10 |
+# | **input lag**		  |	  20 |
 # =================
 if ask_confirmation "Install and run zsh-bench"; then
-    git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
-    ~/zsh-bench/zsh-bench
+	git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
+	~/zsh-bench/zsh-bench
 fi

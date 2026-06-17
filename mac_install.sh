@@ -1,27 +1,24 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # ==============================================================================
 # Set some macOS preferences
 # Heavily inspired by https://github.com/mathiasbynens/dotfiles/blob/main/.macos
 # and https://github.com/beyarkay/dotfiles/
 # ==============================================================================
 
-# Function to ask for confirmation with a description
-function ask_confirmation() {
-    local description="$1"
-    read -p "Do you want to run the following section? (y/n): $description : " choice
-    case "$choice" in
-        [Yy]* ) return 0;;
-        * ) return 1;;
-    esac
+# Ensure a cask is installed (no-op if already present)
+function ensure_cask() {
+	if ! brew list --cask "$1" &>/dev/null; then
+		brew install --cask "$1"
+	fi
 }
 
 # ========================
 # Set mac system settings
 # ========================
 if ask_confirmation "Set mac system settings"; then
-	# Close any open System Preferences panes, to prevent them from overriding
+	# Close any open System Settings panes, to prevent them from overriding
 	# settings we're about to change
-	osascript -e 'tell application "System Preferences" to quit'
+	osascript -e 'tell application "System Settings" to quit'
 
 	# Trackpad: enable tap to click for this user and for the login screen
 	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
@@ -29,10 +26,13 @@ if ask_confirmation "Set mac system settings"; then
 	defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 	defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 
-	# Disable the sound effects on boot
-	sudo nvram SystemAudioVolume=" "
+	# Disable the sound effects on boot (Intel Macs only)
+	if [[ "$(uname -m)" != "arm64" ]]; then
+		sudo nvram SystemAudioVolume=" "
+	fi
 
 	# Require password immediately after sleep or screen saver begins
+	# Note: On macOS Ventura+, configure via System Settings → Lock Screen
 	defaults write com.apple.screensaver askForPassword -int 1
 	defaults write com.apple.screensaver askForPasswordDelay -int 0
 
@@ -84,7 +84,9 @@ if ask_confirmation "Set mac system settings"; then
 	defaults write com.apple.dock persistent-apps -array
 
 	# Show only open applications in the Dock
-	defaults write com.apple.dock static-only -bool true
+	# Note: static-only removes persistent-others (Downloads stack etc.), so we
+	# keep it off and just wipe persistent-apps above instead
+	defaults write com.apple.dock static-only -bool false
 
 	# Automatically hide and show the Dock
 	defaults write com.apple.dock autohide -bool true
@@ -95,6 +97,39 @@ if ask_confirmation "Set mac system settings"; then
 	# Remove dock autohide delay
 	defaults write com.apple.dock autohide-delay -float 0
 
+	# Add Downloads folder to the Dock (right side, as a stack sorted by date)
+	defaults write com.apple.dock persistent-others -array \
+		"<dict>
+			<key>tile-data</key>
+			<dict>
+				<key>file-data</key>
+				<dict>
+					<key>_CFURLString</key>
+					<string>file://${HOME}/Downloads/</string>
+					<key>_CFURLStringType</key>
+					<integer>15</integer>
+				</dict>
+				<key>file-label</key>
+				<string>Downloads</string>
+				<key>file-type</key>
+				<integer>2</integer>
+				<key>arrangement</key>
+				<integer>2</integer>
+				<key>displayas</key>
+				<integer>0</integer>
+				<key>showas</key>
+				<integer>1</integer>
+			</dict>
+			<key>tile-type</key>
+			<string>directory-tile</string>
+		</dict>"
+
+	# Show battery percentage in menu bar
+	defaults write com.apple.controlcenter BatteryShowPercentage -bool true
+
+	# Set dark mode
+	defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+
 	# Restart the System?
 	/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
@@ -103,7 +138,7 @@ if ask_confirmation "Set mac system settings"; then
 		"Dock" \
 		"Finder" \
 		"SystemUIServer" \
-		"iCal"; do
+		"ControlCenter"; do
 		killall "${app}" &> /dev/null
 	done
 
@@ -112,14 +147,16 @@ fi
 # ================
 # Install homebrew
 # ================
-if ask_confirmation "Install homebrew"; then
-    echo -e "$RESET$BOLD Installing homebrew$RESET"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo -e "$BOLD Homebrew installation finished$RESET"
-    
-    # Add Homebrew to $PATH
-    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+if ! command -v brew &>/dev/null; then
+	if ask_confirmation "Install homebrew"; then
+		echo -e "$RESET$BOLD Installing homebrew$RESET"
+		NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		echo -e "$BOLD Homebrew installation finished$RESET"
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+	fi
+else
+	echo "Homebrew already installed, skipping."
+	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 
@@ -127,195 +164,420 @@ fi
 # Install packages
 # ================
 if ask_confirmation "Install packages"; then
-    brew install \
-    git \
-    eza \
+	brew install \
+	git \
+	eza \
+	pandoc \
+	gh \
+	bat \
+	fzf \
+	fd \
+	htop \
+	tmux \
+	starship
+fi
 
-    pandoc \
-    gh \
-    bat \
-    fzf \
-    fd \
-    htop
+# ==========================
+# Authenticate GitHub CLI
+# ==========================
+if command -v gh &>/dev/null; then
+	if ask_confirmation "Authenticate GitHub CLI (gh auth login)"; then
+		gh auth login
+	fi
 fi
 
 # =============
 # Install casks
 # =============
 if ask_confirmation "Install casks"; then
-    brew install --cask --no-quarantine \
-    whatsapp \
-    telegram \
-    rectangle \
-    transmission \
-    vlc \
-    macs-fan-control \
-    iterm2 \
-    jetbrains-toolbox \
-    visual-studio-code \
-    mactex-no-gui \
-    discord \
-    todoist \
-    qlmarkdown \
-    syntax-highlight \
-    obsidian \
-    signal
+	brew install --cask \
+	whatsapp \
+	telegram \
+	raycast \
+	rectangle \
+	transmission \
+	vlc \
+	macs-fan-control \
+	iterm2 \
+	jetbrains-toolbox \
+	visual-studio-code \
+	mactex-no-gui \
+	discord \
+	todoist \
+	qlmarkdown \
+	syntax-highlight \
+	obsidian \
+	sublime-text \
+	signal
 fi
 
 # =================
 # Install Nerdfonts
 # =================
 if ask_confirmation "Install Nerdfonts"; then
-    brew tap homebrew/cask-fonts && brew install --cask  font-jetbrains-mono-nerd-font font-fira-code-nerd-font
+	brew install --cask font-jetbrains-mono-nerd-font font-fira-code-nerd-font
 fi
+
+# ==================================
+# Enable QuickLook plugins
+# ==================================
+# qlmarkdown and syntax-highlight require removing quarantine to work
+if [[ -d "/Applications/QLMarkdown.app" ]]; then
+	xattr -r -d com.apple.quarantine /Applications/QLMarkdown.app 2>/dev/null
+fi
+if [[ -d "/Applications/Syntax Highlight.app" ]]; then
+	xattr -r -d com.apple.quarantine "/Applications/Syntax Highlight.app" 2>/dev/null
+fi
+echo "NOTE: QuickLook plugins may need manual approval in:"
+echo "	System Settings → Privacy & Security → Extensions → Quick Look"
 
 # ==========================
 # Install and setup iTerm2
 # ==========================
 if ask_confirmation "Install and setup iTerm2"; then
-    # Load iTerm2 preferences from dotfiles (includes profiles, colours, keybindings)
-    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.dotfiles/iterm2"
-    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
-    echo "iTerm2 will load preferences from ~/.dotfiles/iterm2/ on next launch"
+	ensure_cask iterm2
+
+	# Import saved preferences if they exist in the repo
+	if [[ -f "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" ]]; then
+		echo "Importing iTerm2 preferences from dotfiles..."
+		cp "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" \
+		   "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+		defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${HOME}/.dotfiles/iterm2"
+		defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+	else
+		echo "No saved iTerm2 preferences found. Importing color scheme..."
+		open "${HOME}/.dotfiles/iterm2/One Dark whiter.itermcolors"
+	fi
+
+	echo ""
+	echo "To save your iTerm2 settings (keybindings, profiles, etc.) for future machines:"
+	echo "	mkdir -p ~/.dotfiles/iterm2"
+	echo "	cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/.dotfiles/iterm2/"
+	echo "	cd ~/.dotfiles && git add iterm2/ && git commit -m 'feat: Save iTerm2 preferences'"
 fi
 
 # ==========================
-# Restore Firefox profile
+# Symlink Sublim Preferences
 # ==========================
-if ask_confirmation "Restore Firefox extensions and preferences"; then
-    echo "Firefox profile backup is stored in ~/.dotfiles/firefox/"
-    echo ""
-    echo "To restore:"
-    echo "  1. Open Firefox and let it create a new profile"
-    echo "  2. Close Firefox"
-    echo "  3. Copy the backed-up files into your new profile:"
-    echo ""
-    FIREFOX_PROFILE=$(find ~/Library/Application\ Support/Firefox/Profiles -maxdepth 0 -name "*.default-release" 2>/dev/null | head -1)
-    if [ -z "$FIREFOX_PROFILE" ]; then
-        echo "  No Firefox profile found. Open Firefox once first, then re-run this section."
-    else
-        cp ~/.dotfiles/firefox/extensions.json "$FIREFOX_PROFILE/"
-        cp ~/.dotfiles/firefox/extension-preferences.json "$FIREFOX_PROFILE/"
-        cp ~/.dotfiles/firefox/handlers.json "$FIREFOX_PROFILE/"
-        echo "  Copied extension list and handlers to: $FIREFOX_PROFILE"
-        echo "  Firefox will re-download extensions on next launch."
-        echo ""
-        echo "  NOTE: prefs.js is backed up but NOT auto-restored (can conflict)."
-        echo "  To restore settings manually: cp ~/.dotfiles/firefox/prefs.js \"$FIREFOX_PROFILE/\""
-    fi
-
-    echo ""
-    echo "--- Tampermonkey Scripts ---"
-    echo "  Tampermonkey backup is at: ~/.dotfiles/firefox/tampermonkey-backup.txt"
-    echo "  To restore: Tampermonkey > Dashboard > Utilities > Import > File"
-    echo "  (Not auto-imported because it contains auth tokens)"
-    read -p "  Press enter once Tampermonkey scripts are restored..."
+if ask_confirmation "Symlink Sublime Preferences"; then
+   mkdir -p "$HOME/Library/Application Support/Sublime Text/Packages/User/"
+   ln -sf ~/.dotfiles/Preferences.sublime-settings "$HOME/Library/Application Support/Sublime Text/Packages/User/"
 fi
 
+# ==========================
+# Setup Firefox
+# ==========================
+if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
+	# Firefox is typically pre-installed via MDM on managed Macs
+	if [[ ! -d "/Applications/Firefox.app" ]]; then
+		echo "Firefox not found. Install it from Self Service or:"
+		echo "	brew install --cask firefox"
+		read "?Press enter once Firefox is installed..."
+	fi
 
+	# Find Firefox profile directory (created on first launch)
+	FF_PROFILES="$HOME/Library/Application Support/Firefox/Profiles"
+	if [[ ! -d "$FF_PROFILES" ]]; then
+		echo "Firefox profile not found. Launching Firefox to create one..."
+		open -a Firefox
+		read "?Close Firefox and press enter once it has created a profile..."
+	fi
 
-# ===================
-# Install Starship.rs
-# ===================
-if ask_confirmation "Install Starship.rs prompt"; then
-    brew install starship
+	FF_PROFILE=$(find "$FF_PROFILES" -maxdepth 1 -name "*.default-release" 2>/dev/null | head -1)
+	if [[ -z "$FF_PROFILE" ]]; then
+		FF_PROFILE=$(find "$FF_PROFILES" -maxdepth 1 -type d ! -name Profiles | head -1)
+	fi
+
+	if [[ -n "$FF_PROFILE" ]]; then
+		# Enable userChrome.css via user.js
+		if ! grep -q "legacyUserProfileCustomizations" "$FF_PROFILE/user.js" 2>/dev/null; then
+			echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' >> "$FF_PROFILE/user.js"
+			echo "✓ Enabled userChrome.css support"
+		fi
+
+		# Symlink userChrome.css if it exists in dotfiles
+		if [[ -f "$HOME/.dotfiles/firefox/chrome/userChrome.css" ]]; then
+			mkdir -p "$FF_PROFILE/chrome"
+			ln -sf "$HOME/.dotfiles/firefox/chrome/userChrome.css" "$FF_PROFILE/chrome/userChrome.css"
+			echo "✓ userChrome.css symlinked"
+		fi
+
+		# Auto-install extensions via policies.json
+		if [[ -f "$HOME/.dotfiles/firefox/policies.json" ]]; then
+			sudo mkdir -p "/Applications/Firefox.app/Contents/Resources/distribution"
+			sudo cp "$HOME/.dotfiles/firefox/policies.json" "/Applications/Firefox.app/Contents/Resources/distribution/"
+			echo "✓ policies.json deployed (extensions will auto-install on next launch)"
+		fi
+	else
+		echo "WARNING: Could not find Firefox profile directory."
+	fi
+
+	echo ""
+	echo "━━━ Firefox: What to import manually ━━━"
+	echo ""
+	if [[ -f "$HOME/.dotfiles/firefox/sideberry-settings.json" ]]; then
+		echo "	Sideberry: Settings → Help → Import → ~/.dotfiles/firefox/sideberry-settings.json"
+	fi
+	if [[ -f "$HOME/.dotfiles/firefox/tampermonkey-backup.zip" ]]; then
+		echo "	Tampermonkey: Dashboard → Utilities → Zip → Import → ~/.dotfiles/firefox/tampermonkey-backup.zip"
+	fi
+	if [[ -d "$HOME/.dotfiles/firefox/userscripts" ]] && ls "$HOME/.dotfiles/firefox/userscripts/"*.js &>/dev/null; then
+		echo "	Userscripts: Open each .js file in Firefox (Tampermonkey will offer to install)"
+	fi
+
+	echo ""
+	echo "━━━ Firefox: How to export FROM your old machine ━━━"
+	echo ""
+	echo "	# 1. userChrome.css"
+	echo "	cp \"\$(find ~/Library/Application\\ Support/Firefox/Profiles -name '*.default-release')/chrome/userChrome.css\" ~/.dotfiles/firefox/chrome/"
+	echo ""
+	echo "	# 2. Sideberry config"
+	echo "	# Sideberry → Settings → Help → Export → save as ~/.dotfiles/firefox/sideberry-settings.json"
+	echo ""
+	echo "	# 3. Tampermonkey scripts"
+	echo "	# Tampermonkey → Dashboard → Utilities → Zip → Export → save as ~/.dotfiles/firefox/tampermonkey-backup.zip"
+	echo ""
+	echo "	# 4. Extensions list (for policies.json)"
+	echo "	# Create ~/.dotfiles/firefox/policies.json with Install URLs:"
+	echo '	# {"policies":{"Extensions":{"Install":["https://addons.mozilla.org/firefox/downloads/latest/sidebery/latest.xpi","https://addons.mozilla.org/firefox/downloads/latest/tampermonkey/latest.xpi","https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"]}}}'
+	echo ""
 fi
 
 # ============
 # Install rust
 # ============
 if ask_confirmation "Install Rust using rustup"; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
+
+# ========================
+# Install ccusage
+# ========================
+if ask_confirmation "Install ccusage (code context tool)"; then
+	cargo install ccusage
+fi
+
+# ========================
+# SSH, Midway, and WSSH
+# ========================
+if ask_confirmation "Setup SSH key and authenticate Midway"; then
+	echo "--- SSH Key ---"
+	if [ ! -f ~/.ssh/id_ecdsa ]; then
+		echo "Generating ECDSA SSH key..."
+		ssh-keygen -t ecdsa
+	else
+		echo "SSH key already exists at ~/.ssh/id_ecdsa"
+	fi
+
+	echo ""
+	echo "--- Midway (mwinit) ---"
+	echo "Authenticating with Midway (touch your YubiKey when prompted)..."
+	mwinit -f
+
+	echo ""
+	echo "--- WSSH ---"
+	echo "✓ wssh $(wssh --version 2>&1 | head -1)"
 fi
 
 # ========================
 # Install git-review-tools
 # ========================
 if ask_confirmation "Install git-review-tools from https://w.amazon.com/bin/view/Git-review-tools/"; then
-	start_dir=pwd
-	cd ~
-	git clone ssh://git.amazon.com/pkg/Git-review-tools
-	cd $start_dir
-fi
-
-# ========================
-# SSH, Midway, and WSSH
-# ========================
-if ask_confirmation "Setup SSH key, mwinit, and WSSH"; then
-    echo "--- SSH Key ---"
-    if [ ! -f ~/.ssh/id_ecdsa ]; then
-        echo "Generating ECDSA SSH key..."
-        ssh-keygen -t ecdsa
-    else
-        echo "SSH key already exists at ~/.ssh/id_ecdsa"
-    fi
-
-    echo ""
-    echo "--- Midway (mwinit) ---"
-    echo "Run: mwinit -f"
-    echo "If mwinit is not installed, install it from Self Service (ACME) or: brew install amazon/amazon/mwinit"
-    echo ""
-    read -p "Press enter once mwinit is working..."
-
-    echo ""
-    echo "--- WSSH ---"
-    echo "Install WSSH from Self Service (ACME) > search 'WSSH'"
-    echo "After install, close and reopen terminal, then verify with: wssh --version"
-    echo "Docs: https://w.amazon.com/bin/view/WSSH/setup/macos"
-    echo ""
-    read -p "Press enter once WSSH is installed..."
+	if [[ -d "$HOME/Git-review-tools" ]]; then
+		echo "Git-review-tools already cloned at ~/Git-review-tools"
+	else
+		echo "Cloning git-review-tools (requires SSH access to git.amazon.com)..."
+		if ! git clone ssh://git.amazon.com/pkg/Git-review-tools "$HOME/Git-review-tools" 2>/dev/null; then
+			echo "WARNING: Failed to clone git-review-tools. Ensure mwinit has been run and SSH key is signed."
+			echo "You can retry later with: git clone ssh://git.amazon.com/pkg/Git-review-tools ~/Git-review-tools"
+		fi
+	fi
 fi
 
 # ========================
 # Install and configure Unison
 # ========================
 if ask_confirmation "Install Unison file sync (requires SSH to cloud desktop)"; then
-    brew install unison unison-fsmonitor
+	brew install unison autozimu/homebrew-formulas/unison-fsmonitor
 
-    # Create the ObsidianVault directory if it doesn't exist
-    mkdir -p ~/ObsidianVault
+	# Create the ObsidianVault directory if it doesn't exist
+	mkdir -p ~/ObsidianVault
 
-    # Restore Obsidian settings and plugin configs from dotfiles
-    cp -r ~/.dotfiles/obsidian-vault-config/ ~/ObsidianVault/.obsidian/
-    # Plugins will auto-download their JS on first launch based on manifest.json
+	# Restore Obsidian settings and plugin configs from dotfiles
+	cp -r ~/.dotfiles/obsidian-vault-config/ ~/ObsidianVault/.obsidian/
+	# Plugins will auto-download their JS on first launch based on manifest.json
 
-    echo ""
-    echo "Unison profiles and LaunchAgents have been symlinked from ~/.dotfiles/unison/"
-    echo ""
-    echo "NOTE: You may need to update the remote host in the .prf files if your cloud desktop hostname has changed."
-    echo "  Edit: ~/.unison/default.prf"
-    echo "  Edit: ~/.unison/obsidian.prf"
-    echo ""
-    echo "NOTE: Open Obsidian and point it at ~/ObsidianVault once sync is running."
-    echo ""
-    read -p "Press enter to load the LaunchAgents (starts sync)..."
+	echo ""
+	echo "Unison profiles and LaunchAgents have been symlinked from ~/.dotfiles/unison/"
+	echo ""
+	echo "NOTE: You may need to update the remote host in the .prf files if your cloud desktop hostname has changed."
+	echo "	Edit: ~/.unison/default.prf"
+	echo "	Edit: ~/.unison/obsidian.prf"
+	echo ""
+	echo "NOTE: Open Obsidian and point it at ~/ObsidianVault once sync is running."
+	echo ""
+	read "?Press enter to load the LaunchAgents (starts sync)..."
 
-    launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
-    launchctl load ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+	launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
+	launchctl load ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
 fi
 
 # ================================
 # Install Builder Toolbox and tools
 # ================================
 if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwinit first)"; then
-    # Bootstrap Builder Toolbox
-    curl -X POST \
-      --data '{"os":"osx"}' \
-      -H "Authorization: $(curl -L --cookie $HOME/.midway/cookie --cookie-jar $HOME/.midway/cookie \
-        "https://midway-auth.amazon.com/SSO?client_id=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev&response_type=id_token&nonce=$RANDOM&redirect_uri=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev:443")" \
-      https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev/v1/bootstrap \
-      > ~/toolbox-bootstrap.sh
-    bash ~/toolbox-bootstrap.sh
-    rm ~/toolbox-bootstrap.sh
-    source ~/.$(basename "$SHELL")rc
+	# Verify midway is authenticated
+	if [[ ! -f "$HOME/.midway/cookie" ]]; then
+		echo "ERROR: Midway cookie not found. Run 'mwinit -f' first."
+		echo "Skipping toolbox installation."
+	else
+		# Bootstrap Builder Toolbox
+		curl -X POST \
+		  --data '{"os":"osx"}' \
+		  -H "Authorization: $(curl -L --cookie $HOME/.midway/cookie --cookie-jar $HOME/.midway/cookie \
+			"https://midway-auth.amazon.com/SSO?client_id=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev&response_type=id_token&nonce=$RANDOM&redirect_uri=https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev:443")" \
+		  https://us-east-1.prod.release-service.toolbox.builder-tools.aws.dev/v1/bootstrap \
+		  > ~/toolbox-bootstrap.sh
+		bash ~/toolbox-bootstrap.sh
+		rm ~/toolbox-bootstrap.sh
+		source ~/.$(basename "$SHELL")rc
 
-    # Install core tools
-    toolbox install aim kiro-cli builder-mcp
+		# Install core tools
+		toolbox install aim kiro-cli builder-mcp
 
-    # AxE installs most common tools (brazilcli, cr, ada, etc.)
-    toolbox install axe
-    axe init builder-tools
+		# AxE installs most common tools (brazilcli, cr, ada, etc.)
+		toolbox install axe
+		axe init builder-tools
 
-    # AIM agents and MCP servers
-    aim agents install AIPowerUserCapabilities
+		echo ""
+		echo "Trusting amazon/amazon tap..."
+		brew trust amazon/amazon 2>/dev/null || true
+
+		if ! command -v brazil-build &>/dev/null; then
+			echo ""
+			echo "⚠ Brazil CLI requires a reboot to complete installation."
+			echo "After rebooting, run: axe init builder-tools"
+			echo "Then re-run this script (completed sections will be skipped)."
+			read "?Press enter to continue with remaining steps..."
+		fi
+
+		# AIM agents and MCP servers
+		aim agents install AIPowerUserCapabilities
+	fi
+fi
+
+# ================================
+# Install Language Servers (for kiro-cli Code Intelligence)
+# ================================
+if ask_confirmation "Install LSPs for kiro-cli (Python, Java, TypeScript)"; then
+	# TypeScript/JavaScript LSP
+	echo "Installing typescript-language-server..."
+	npm install -g typescript-language-server typescript
+
+	# Python LSP (pyright via pipx for isolation)
+	echo "Installing pyright..."
+	if ! command -v pipx &>/dev/null; then
+		brew install pipx
+		pipx ensurepath
+	fi
+	pipx install pyright
+
+	# Java LSP (Eclipse JDT Language Server - requires Java 17+)
+	# Java itself comes from Amazon Corretto via axe init builder-tools
+	echo "Installing jdtls..."
+	brew install jdtls
+
+	echo ""
+	echo "LSPs installed. In kiro-cli, run '/code init' per-project to activate."
+	echo "For Brazil Java workspaces, run 'bemol' first to generate project files."
+fi
+
+# ================================
+# Validation - verify installation
+# ================================
+if ask_confirmation "Run installation validation checks"; then
+	echo ""
+	echo "========================================"
+	echo "	Installation Validation Report"
+	echo "========================================"
+	echo ""
+
+	failed=0
+
+	# Check critical commands
+	for cmd in git brew starship eza bat fzf fd tmux; do
+		if command -v $cmd &>/dev/null; then
+			echo "	✓ $cmd"
+		else
+			echo "	✗ $cmd NOT FOUND"
+			((failed++))
+		fi
+	done
+
+	echo ""
+	echo "--- Amazon Tools ---"
+	for cmd in toolbox mwinit cr brazil-build aim; do
+		if command -v $cmd &>/dev/null; then
+			echo "	✓ $cmd"
+		else
+			echo "	✗ $cmd NOT FOUND"
+			((failed++))
+		fi
+	done
+
+	echo ""
+	echo "--- Runtime Managers ---"
+	if command -v mise &>/dev/null; then
+		echo "	✓ mise ($(mise --version 2>/dev/null | head -1))"
+	else
+		echo "	✗ mise NOT FOUND"
+		((failed++))
+	fi
+	if command -v rustc &>/dev/null; then
+		echo "	✓ rustc ($(rustc --version))"
+	else
+		echo "	✗ rustc NOT FOUND"
+		((failed++))
+	fi
+	if command -v node &>/dev/null; then
+		echo "	✓ node ($(node --version))"
+	else
+		echo "	✗ node NOT FOUND"
+		((failed++))
+	fi
+
+	echo ""
+	echo "--- Shell Config ---"
+	if zsh -n ~/.zshrc 2>/dev/null; then
+		echo "	✓ .zshrc passes syntax check"
+	else
+		echo "	✗ .zshrc has syntax errors"
+		((failed++))
+	fi
+
+	echo ""
+	echo "--- Language Servers ---"
+	for cmd in typescript-language-server pyright jdtls; do
+		if command -v $cmd &>/dev/null; then
+			echo "	✓ $cmd"
+		else
+			echo "	✗ $cmd NOT FOUND"
+			((failed++))
+		fi
+	done
+
+	echo ""
+	echo "--- Critical Paths ---"
+	[[ -f "$HOME/.midway/cookie" ]] && echo "  ✓ Midway cookie exists" || echo "  ✗ Midway cookie missing (run mwinit -f)"
+	[[ -d "$HOME/.toolbox" ]] && echo "	 ✓ Toolbox directory exists" || echo "	✗ Toolbox not installed"
+	[[ -f "$HOME/.gitconfig" ]] && echo "  ✓ .gitconfig symlinked" || echo "  ✗ .gitconfig missing"
+	[[ -f "$HOME/.config/starship.toml" ]] && echo "  ✓ starship.toml symlinked" || echo "	✗ starship.toml missing"
+
+	echo ""
+	if (( failed == 0 )); then
+		echo "	★ All checks passed!"
+	else
+		echo "	⚠ $failed check(s) failed - review above"
+	fi
+	echo ""
 fi
