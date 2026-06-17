@@ -5,15 +5,16 @@
 # and https://github.com/beyarkay/dotfiles/
 # ==============================================================================
 
+# Parse flags
+AUTO_YES=false
+[[ "${1:-}" == "-y" || "${1:-}" == "--yes" ]] && AUTO_YES=true
+
 # Function to ask for confirmation with a description
 function ask_confirmation() {
-    local description="$1"
-    echo -n "Do you want to run the following section? (y/n): $description : "
-    read choice
-    case "$choice" in
-        [Yy]* ) return 0;;
-        * ) return 1;;
-    esac
+    [[ "$AUTO_YES" == true ]] && return 0
+    local choice
+    read "choice?Do you want to run: $1? (y/n): "
+    [[ "$choice" =~ ^[Yy] ]]
 }
 
 # Ensure a cask is installed (no-op if already present)

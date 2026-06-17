@@ -6,15 +6,16 @@
 
 source ~/.dotfiles/define_colours.sh
 
+# Parse flags
+AUTO_YES=false
+[[ "${1:-}" == "-y" || "${1:-}" == "--yes" ]] && AUTO_YES=true
+
 # Function to ask for confirmation with a description
 function ask_confirmation() {
-    local description="$1"
-    echo -n "Do you want to run the following section? (y/n): $description : "
-    read choice
-    case "$choice" in
-        [Yy]* ) return 0;;
-        * ) return 1;;
-    esac
+    [[ "$AUTO_YES" == true ]] && return 0
+    local choice
+    read "choice?Do you want to run: $1? (y/n): "
+    [[ "$choice" =~ ^[Yy] ]]
 }
 
 # Ask for the administrator password upfront
@@ -36,8 +37,7 @@ echo "Recommended setup:"
 echo "  - This terminal: runs the install script"
 echo "  - Second terminal: for manual commands (mwinit, brew trust, etc.)"
 echo ""
-echo -n "Press enter when your second terminal is ready..."
-read
+read "?Press enter when your second terminal is ready..."
 
 # ======================================
 # Symllink to various dotfiles and directories
