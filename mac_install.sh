@@ -133,7 +133,9 @@ if ask_confirmation "Install packages"; then
     bat \
     fzf \
     fd \
-    htop
+    htop \
+    gnu-sed \
+    grep
 fi
 
 # =============

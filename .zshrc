@@ -89,20 +89,6 @@ function cd() {
 
 
 # Setup colours and variables for the prompt
-# local BG_GREY='236'
-# local FG_RED='160'
-# local FG_ORANGE='208'
-# local FG_YELLOW='226'
-# local FG_LIGHTGREY='251'
-# local FG_GREY='244'
-# local FG_DARKGREY='238'
-# local FG_GREEN='46'
-# local FG_CYAN='51'
-# local FG_TURQUOISE='39'
-# local FG_DEEPBLUE='75'
-# local NO_BG='234'
-# local WHITE='255'
-# local FG_RED='196'
 
 
 # # =============================================================================
@@ -187,7 +173,7 @@ autoload -U bashcompinit
 if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
     stat_cmd=""
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
+    stat_cmd=$(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump)
 else
     mod_time=$(/usr/bin/stat --format='%Y' ${ZDOTDIR:-$HOME}/.zcompdump)
     stat_cmd=$(date +'%j' -d @$mod_time)
@@ -255,6 +241,17 @@ unset __conda_setup
 # Add cargo to PATH
 # ================================
 export PATH=$HOME/.cargo/bin:$PATH
+
+# ============================
+# Use GNU sed over BSD sed
+# ============================
+export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+
+# ============================
+# Use GNU grep over BSD grep
+# ============================
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+
 export MODULAR_HOME="$HOME/.modular"
 export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
@@ -283,15 +280,19 @@ fi
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ==========================
-# Add NVM to path with compl
+# NVM (lazy-loaded)
 # ==========================
 export NVM_DIR="$HOME/.nvm"
 
-# Check if NVM is installed by testing the existence of the NVM directory and scripts
-if [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" && -s "$NVM_DIR/bash_completion" ]]; then
-    . "$NVM_DIR/nvm.sh"             # This loads nvm
-    . "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
-fi
+_load_nvm() {
+    unfunction nvm node npm npx 2>/dev/null
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+}
+nvm() { _load_nvm; nvm "$@"; }
+node() { _load_nvm; node "$@"; }
+npm() { _load_nvm; npm "$@"; }
+npx() { _load_nvm; npx "$@"; }
 
 # =======================
 # Add kubectl completions
