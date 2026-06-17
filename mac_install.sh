@@ -179,6 +179,32 @@ if ask_confirmation "Install and setup iTerm2"; then
     echo "iTerm2 will load preferences from ~/.dotfiles/iterm2/ on next launch"
 fi
 
+# ==========================
+# Restore Firefox profile
+# ==========================
+if ask_confirmation "Restore Firefox extensions and preferences"; then
+    echo "Firefox profile backup is stored in ~/.dotfiles/firefox/"
+    echo ""
+    echo "To restore:"
+    echo "  1. Open Firefox and let it create a new profile"
+    echo "  2. Close Firefox"
+    echo "  3. Copy the backed-up files into your new profile:"
+    echo ""
+    FIREFOX_PROFILE=$(find ~/Library/Application\ Support/Firefox/Profiles -maxdepth 0 -name "*.default-release" 2>/dev/null | head -1)
+    if [ -z "$FIREFOX_PROFILE" ]; then
+        echo "  No Firefox profile found. Open Firefox once first, then re-run this section."
+    else
+        cp ~/.dotfiles/firefox/extensions.json "$FIREFOX_PROFILE/"
+        cp ~/.dotfiles/firefox/extension-preferences.json "$FIREFOX_PROFILE/"
+        cp ~/.dotfiles/firefox/handlers.json "$FIREFOX_PROFILE/"
+        echo "  Copied extension list and handlers to: $FIREFOX_PROFILE"
+        echo "  Firefox will re-download extensions on next launch."
+        echo ""
+        echo "  NOTE: prefs.js is backed up but NOT auto-restored (can conflict)."
+        echo "  To restore settings manually: cp ~/.dotfiles/firefox/prefs.js \"$FIREFOX_PROFILE/\""
+    fi
+fi
+
 
 
 # ===================
