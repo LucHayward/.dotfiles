@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # ==========================================
 # Common installation script
 # Runs specific scripts for macOS and ubuntu
@@ -9,7 +9,8 @@ source ~/.dotfiles/define_colours.sh
 # Function to ask for confirmation with a description
 function ask_confirmation() {
     local description="$1"
-    read -p "Do you want to run the following section? (y/n): $description : " choice
+    echo -n "Do you want to run the following section? (y/n): $description : "
+    read choice
     case "$choice" in
         [Yy]* ) return 0;;
         * ) return 1;;
@@ -18,6 +19,25 @@ function ask_confirmation() {
 
 # Ask for the administrator password upfront
 sudo -v
+
+# ==========================================
+# Pre-flight: Terminal setup
+# ==========================================
+echo ""
+echo "========================================"
+echo "  DOTFILES INSTALLER"
+echo "========================================"
+echo ""
+echo "IMPORTANT: Before continuing, open a SECOND terminal window/pane."
+echo "Some steps require you to run commands manually (e.g. mwinit -f)"
+echo "while this script waits."
+echo ""
+echo "Recommended setup:"
+echo "  - This terminal: runs the install script"
+echo "  - Second terminal: for manual commands (mwinit, brew trust, etc.)"
+echo ""
+echo -n "Press enter when your second terminal is ready..."
+read
 
 # ======================================
 # Symllink to various dotfiles and directories

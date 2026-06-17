@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # ==============================================================================
 # Set some macOS preferences
 # Heavily inspired by https://github.com/mathiasbynens/dotfiles/blob/main/.macos
@@ -8,11 +8,19 @@
 # Function to ask for confirmation with a description
 function ask_confirmation() {
     local description="$1"
-    read -p "Do you want to run the following section? (y/n): $description : " choice
+    echo -n "Do you want to run the following section? (y/n): $description : "
+    read choice
     case "$choice" in
         [Yy]* ) return 0;;
         * ) return 1;;
     esac
+}
+
+# Ensure a cask is installed (no-op if already present)
+function ensure_cask() {
+    if ! brew list --cask "$1" &>/dev/null; then
+        brew install --cask "$1"
+    fi
 }
 
 # ========================
@@ -133,6 +141,9 @@ if ask_confirmation "Install packages"; then
     bat \
     fzf \
     fd \
+    tmux \
+    reattach-to-user-namespace \
+    recast \
     htop
 fi
 
@@ -140,7 +151,7 @@ fi
 # Install casks
 # =============
 if ask_confirmation "Install casks"; then
-    brew install --cask --no-quarantine \
+    brew install --cask \
     whatsapp \
     telegram \
     raycast \
@@ -165,22 +176,39 @@ if ask_confirmation "Install document/notebook tools (optional)"; then
     brew install \
     miniconda \
     pandoc
-    brew install --cask --no-quarantine mactex-no-gui
+    brew install --cask mactex-no-gui
 fi
 
 # =================
 # Install Nerdfonts
 # =================
 if ask_confirmation "Install Nerdfonts"; then
-    brew tap homebrew/cask-fonts && brew install --cask  font-jetbrains-mono-nerd-font font-fira-code-nerd-font
+    brew install --cask font-jetbrains-mono-nerd-font font-fira-code-nerd-font
 fi
 
 # ==========================
 # Install and setup iTerm2
 # ==========================
 if ask_confirmation "Install and setup iTerm2"; then
-    open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
-    conda init "$(basename "${SHELL}")"
+    ensure_cask iterm2
+
+    # Import saved preferences if they exist in the repo
+    if [[ -f "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" ]]; then
+        echo "Importing iTerm2 preferences from dotfiles..."
+        cp "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" \
+           "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+        defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${HOME}/.dotfiles/iterm2"
+        defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+    else
+        echo "No saved iTerm2 preferences found. Importing color scheme..."
+        open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
+    fi
+
+    echo ""
+    echo "To save your iTerm2 settings (keybindings, profiles, etc.) for future machines:"
+    echo "  mkdir -p ~/.dotfiles/iterm2"
+    echo "  cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/.dotfiles/iterm2/"
+    echo "  cd ~/.dotfiles && git add iterm2/ && git commit -m 'feat: Save iTerm2 preferences'"
 fi
 
 # ===================

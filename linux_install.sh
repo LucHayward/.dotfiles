@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # ==============================================================================
 # Set some Linux preferences
 # Heavily inspired by https://github.com/mathiasbynens/dotfiles/blob/main/.macos
@@ -8,7 +8,8 @@
 # Function to ask for confirmation with a description
 function ask_confirmation() {
     local description="$1"
-    read -p "Do you want to run the following section? (y/n): $description : " choice
+    echo -n "Do you want to run the following section? (y/n): $description : "
+    read choice
     case "$choice" in
         [Yy]* ) return 0;;
         * ) return 1;;
