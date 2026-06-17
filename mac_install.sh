@@ -173,16 +173,13 @@ fi
 # Install and setup iTerm2
 # ==========================
 if ask_confirmation "Install and setup iTerm2"; then
-    open "${HOME}/.dotfiles/One Dark whiter.itermcolors"
+    # Load iTerm2 preferences from dotfiles (includes profiles, colours, keybindings)
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.dotfiles/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+    echo "iTerm2 will load preferences from ~/.dotfiles/iterm2/ on next launch"
 fi
 
-# ==========================
-# Symlink Sublim Preferences
-# ==========================
-if ask_confirmation "Symlink Sublime Preferences"; then
-   mkdir -p "~/Library/Application Support/Sublime Text/Packages/User/"
-   ln -s ~/.dotfiles/Preferences.sublime_settings "~/Library/Application Support/Sublime Text/Packages/User/"
-fi
+
 
 # ===================
 # Install Starship.rs
