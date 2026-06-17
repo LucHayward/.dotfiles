@@ -261,14 +261,6 @@ if ask_confirmation "Install and setup iTerm2"; then
 fi
 
 # ==========================
-# Symlink Sublim Preferences
-# ==========================
-if ask_confirmation "Symlink Sublime Preferences"; then
-   mkdir -p "$HOME/Library/Application Support/Sublime Text/Packages/User/"
-   ln -sf ~/.dotfiles/Preferences.sublime-settings "$HOME/Library/Application Support/Sublime Text/Packages/User/"
-fi
-
-# ==========================
 # Setup Firefox
 # ==========================
 if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
