@@ -158,6 +158,7 @@ if ask_confirmation "Install casks"; then
     todoist \
     qlmarkdown \
     syntax-highlight \
+    obsidian \
     sublime-text
 fi
 
@@ -241,12 +242,17 @@ fi
 if ask_confirmation "Install Unison file sync (requires SSH to cloud desktop)"; then
     brew install unison unison-fsmonitor
 
+    # Create the ObsidianVault directory if it doesn't exist
+    mkdir -p ~/ObsidianVault
+
     echo ""
     echo "Unison profiles and LaunchAgents have been symlinked from ~/.dotfiles/unison/"
     echo ""
     echo "NOTE: You may need to update the remote host in the .prf files if your cloud desktop hostname has changed."
     echo "  Edit: ~/.unison/default.prf"
     echo "  Edit: ~/.unison/obsidian.prf"
+    echo ""
+    echo "NOTE: Open Obsidian and point it at ~/ObsidianVault once sync is running."
     echo ""
     read -p "Press enter to load the LaunchAgents (starts sync)..."
 
