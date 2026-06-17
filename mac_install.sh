@@ -237,6 +237,9 @@ echo "	System Settings → Privacy & Security → Extensions → Quick Look"
 if ask_confirmation "Install and setup iTerm2"; then
 	ensure_cask iterm2
 
+	# Kill iTerm2 if running (it overwrites preferences on quit)
+	killall iTerm2 2>/dev/null && sleep 1
+
 	# Import saved preferences if they exist in the repo
 	if [[ -f "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" ]]; then
 		echo "Importing iTerm2 preferences from dotfiles..."
@@ -443,7 +446,7 @@ if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwin
 		source ~/.$(basename "$SHELL")rc
 
 		# Install core tools
-		toolbox install aim kiro-cli builder-mcp
+		toolbox install aim kiro-cli builder-mcp claude-code
 
 		# AxE installs most common tools (brazilcli, cr, ada, etc.)
 		toolbox install axe
