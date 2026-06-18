@@ -266,7 +266,11 @@ fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
 if [[ "$HOME" == /Users/* ]]; then
     fpath=(${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh/site-functions ${fpath})  # For https://code.amazon.com/packages/AmazonZshFunctions/trees/mainline/--#
-    source /Users/luchay/.brazil_completion/zsh_completion
+    if [[ -f $HOME/.brazil_completion/zsh_completion ]]; then
+        source $HOME/.brazil_completion/zsh_completion
+    else
+        echo "⚠ Brazil completions not found. Run: brazil setup completion" >&2
+    fi
 fi
 autoload -Uz compinit
 autoload -U bashcompinit
@@ -296,7 +300,6 @@ fi
 if command -v mise &>/dev/null; then
   eval "$(mise activate zsh)"
 fi
-source $HOME/.brazil_completion/zsh_completion
 
 # ==================
 # Completion stylyes
@@ -481,3 +484,4 @@ fi
 # Added by AIM CLI
 export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
 
+source /Users/luchay/.brazil_completion/zsh_completion

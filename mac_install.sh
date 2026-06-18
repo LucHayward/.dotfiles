@@ -45,6 +45,9 @@ if ask_confirmation "Set mac system settings"; then
 	# Finder: show all filename extensions
 	defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
+	# Finder: show hidden/dot files
+	defaults write com.apple.finder AppleShowAllFiles -bool true
+
 	# Finder: show status bar
 	defaults write com.apple.finder ShowStatusBar -bool false
 
@@ -284,17 +287,17 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 	fi
 
 	if [[ -n "$FF_PROFILE" ]]; then
-		# Enable userChrome.css via user.js
-		if ! grep -q "legacyUserProfileCustomizations" "$FF_PROFILE/user.js" 2>/dev/null; then
-			echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' >> "$FF_PROFILE/user.js"
-			echo "✓ Enabled userChrome.css support"
+		# Symlink user.js (Firefox preferences)
+		if [[ -f "$HOME/.dotfiles/firefox/user.js" ]]; then
+			ln -sf "$HOME/.dotfiles/firefox/user.js" "$FF_PROFILE/user.js"
+			echo "✓ user.js symlinked"
 		fi
 
-		# Symlink userChrome.css if it exists in dotfiles
-		if [[ -f "$HOME/.dotfiles/firefox/chrome/userChrome.css" ]]; then
-			mkdir -p "$FF_PROFILE/chrome"
-			ln -sf "$HOME/.dotfiles/firefox/chrome/userChrome.css" "$FF_PROFILE/chrome/userChrome.css"
-			echo "✓ userChrome.css symlinked"
+		# Symlink chrome directory (userChrome.css + supporting CSS)
+		if [[ -d "$HOME/.dotfiles/firefox/chrome" ]]; then
+			rm -rf "$FF_PROFILE/chrome"
+			ln -sf "$HOME/.dotfiles/firefox/chrome" "$FF_PROFILE/chrome"
+			echo "✓ chrome/ directory symlinked"
 		fi
 
 		# Auto-install extensions via policies.json
@@ -324,18 +327,11 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 	echo ""
 	echo "━━━ Firefox: How to export FROM your old machine ━━━"
 	echo ""
-	echo "	# 1. userChrome.css"
-	echo "	cp \"\$(find ~/Library/Application\\ Support/Firefox/Profiles -name '*.default-release')/chrome/userChrome.css\" ~/.dotfiles/firefox/chrome/"
+	echo "	~/.dotfiles/firefox/export.sh"
 	echo ""
-	echo "	# 2. Sideberry config"
+	echo "	# Then manually:"
 	echo "	# Sideberry → Settings → Help → Export → save as ~/.dotfiles/firefox/sideberry-settings.json"
-	echo ""
-	echo "	# 3. Tampermonkey scripts"
 	echo "	# Tampermonkey → Dashboard → Utilities → Zip → Export → save as ~/.dotfiles/firefox/tampermonkey-backup.zip"
-	echo ""
-	echo "	# 4. Extensions list (for policies.json)"
-	echo "	# Create ~/.dotfiles/firefox/policies.json with Install URLs:"
-	echo '	# {"policies":{"Extensions":{"Install":["https://addons.mozilla.org/firefox/downloads/latest/sidebery/latest.xpi","https://addons.mozilla.org/firefox/downloads/latest/tampermonkey/latest.xpi","https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"]}}}'
 	echo ""
 fi
 
@@ -455,6 +451,8 @@ if ask_confirmation "Install Builder Toolbox and Amazon dev tools (requires mwin
 			echo "After rebooting, run: axe init builder-tools"
 			echo "Then re-run this script (completed sections will be skipped)."
 			read "?Press enter to continue with remaining steps..."
+		else
+			brazil setup completion
 		fi
 
 		# AIM agents and MCP servers

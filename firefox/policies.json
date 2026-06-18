@@ -2,14 +2,15 @@
   "policies": {
     "Extensions": {
       "Install": [
-        "https://addons.mozilla.org/firefox/downloads/latest/sidebery/latest.xpi",
-        "https://addons.mozilla.org/firefox/downloads/latest/tampermonkey/latest.xpi",
-        "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi",
         "https://addons.mozilla.org/firefox/downloads/latest/containerise/latest.xpi",
+        "https://addons.mozilla.org/firefox/downloads/latest/foxytab/latest.xpi",
+        "https://addons.mozilla.org/firefox/downloads/latest/greasemonkey/latest.xpi",
+        "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi",
         "https://addons.mozilla.org/firefox/downloads/latest/open-multiple-urls/latest.xpi",
         "https://addons.mozilla.org/firefox/downloads/latest/react-devtools/latest.xpi",
         "https://addons.mozilla.org/firefox/downloads/latest/reduxdevtools/latest.xpi",
-        "https://addons.mozilla.org/firefox/downloads/latest/foxytab/latest.xpi"
+        "https://addons.mozilla.org/firefox/downloads/latest/sidebery/latest.xpi",
+        "https://addons.mozilla.org/firefox/downloads/latest/tampermonkey/latest.xpi"
       ]
     }
   }

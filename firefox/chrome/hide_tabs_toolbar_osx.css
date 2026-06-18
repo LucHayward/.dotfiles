@@ -1,0 +1,21 @@
+/* Hide native tab bar on macOS (for use with Sidebery) */
+/* Source: https://github.com/MrOtherGuy/firefox-csshacks/blob/master/chrome/hide_tabs_toolbar_v2.css */
+
+@media not -moz-pref("sidebar.verticalTabs"){
+  #TabsToolbar:not([customizing]){
+    visibility: collapse;
+  }
+  :root[sizemode="fullscreen"] #nav-bar > .titlebar-buttonbox-container{
+    display: flex !important;
+  }
+  :root[customtitlebar] #toolbar-menubar:is([autohide=""],[autohide="true"]) ~ #nav-bar{
+    > .titlebar-buttonbox-container{
+      display: flex !important;
+    }
+    :root[sizemode="normal"] & {
+      > .titlebar-spacer{
+        display: flex !important;
+      }
+    }
+  }
+}
