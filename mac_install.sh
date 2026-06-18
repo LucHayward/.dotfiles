@@ -193,7 +193,7 @@ fi
 # Install casks
 # =============
 if ask_confirmation "Install casks"; then
-	brew install --cask \
+	brew install --adopt --cask \
 	whatsapp \
 	telegram \
 	raycast \
