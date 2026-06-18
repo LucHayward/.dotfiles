@@ -51,6 +51,8 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/mise/config.toml ~/.config/mise/config.toml
 	mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
 	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
+	mkdir -p ~/.ssh
+	ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
 
 	# Unison sync profiles
 	mkdir -p ~/.unison
