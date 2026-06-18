@@ -78,7 +78,7 @@ fi
 
 # 4. Profile data (bookmarks, history, open tabs)
 mkdir -p "$DOTFILES_FF/profile"
-for f in places.sqlite favicons.sqlite sessionstore.jsonlz4; do
+for f in places.sqlite favicons.sqlite sessionstore.jsonlz4 search.json.mozlz4; do
 	if [[ -f "$FF_PROFILE/$f" ]]; then
 		cp "$FF_PROFILE/$f" "$DOTFILES_FF/profile/"
 		echo "✓ $f copied"

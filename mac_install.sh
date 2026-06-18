@@ -307,7 +307,7 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 
 		# Import profile data (bookmarks, history, tabs)
 		if [[ -d "$HOME/.dotfiles/firefox/profile" ]]; then
-			for f in places.sqlite favicons.sqlite sessionstore.jsonlz4; do
+			for f in places.sqlite favicons.sqlite sessionstore.jsonlz4 search.json.mozlz4; do
 				if [[ -f "$HOME/.dotfiles/firefox/profile/$f" ]]; then
 					cp "$HOME/.dotfiles/firefox/profile/$f" "$FF_PROFILE/"
 				fi
