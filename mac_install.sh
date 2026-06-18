@@ -304,6 +304,16 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 			sudo cp "$HOME/.dotfiles/firefox/policies.json" "/Applications/Firefox.app/Contents/Resources/distribution/"
 			echo "✓ policies.json deployed (extensions will auto-install on next launch)"
 		fi
+
+		# Import profile data (bookmarks, history, tabs)
+		if [[ -d "$HOME/.dotfiles/firefox/profile" ]]; then
+			for f in places.sqlite favicons.sqlite sessionstore.jsonlz4; do
+				if [[ -f "$HOME/.dotfiles/firefox/profile/$f" ]]; then
+					cp "$HOME/.dotfiles/firefox/profile/$f" "$FF_PROFILE/"
+				fi
+			done
+			echo "✓ Profile data imported (bookmarks, history, tabs)"
+		fi
 	else
 		echo "WARNING: Could not find Firefox profile directory."
 	fi

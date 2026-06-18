@@ -7,6 +7,12 @@ set -euo pipefail
 DOTFILES_FF="$HOME/.dotfiles/firefox"
 FF_PROFILES="$HOME/Library/Application Support/Firefox/Profiles"
 
+# Firefox must be quit to safely copy profile databases
+if pgrep -x "firefox" &>/dev/null; then
+	echo "ERROR: Firefox is running. Quit Firefox first, then re-run this script." >&2
+	exit 1
+fi
+
 FF_PROFILE=$(find "$FF_PROFILES" -maxdepth 1 -name "*.default-release" 2>/dev/null | head -1)
 if [[ -z "$FF_PROFILE" ]]; then
 	echo "ERROR: No Firefox profile found" >&2
@@ -69,6 +75,15 @@ if [[ -f "$FF_PROFILE/user.js" ]]; then
 	cp "$FF_PROFILE/user.js" "$DOTFILES_FF/user.js"
 	echo "✓ user.js copied"
 fi
+
+# 4. Profile data (bookmarks, history, open tabs)
+mkdir -p "$DOTFILES_FF/profile"
+for f in places.sqlite favicons.sqlite sessionstore.jsonlz4; do
+	if [[ -f "$FF_PROFILE/$f" ]]; then
+		cp "$FF_PROFILE/$f" "$DOTFILES_FF/profile/"
+		echo "✓ $f copied"
+	fi
+done
 
 echo ""
 echo "Still manual:"
