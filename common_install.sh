@@ -53,6 +53,11 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 	mkdir -p ~/.ssh
 	ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+	ln -sf ~/.dotfiles/.vimrc ~/.vimrc
+	mkdir -p ~/.config/bat ~/.config/git ~/.aws
+	ln -sf ~/.dotfiles/config/bat/config ~/.config/bat/config
+	ln -sf ~/.dotfiles/config/git/excludes ~/.config/git/excludes
+	ln -sf ~/.dotfiles/aws/config ~/.aws/config
 
 	# Unison sync profiles
 	mkdir -p ~/.unison

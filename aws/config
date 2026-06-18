@@ -1,0 +1,5 @@
+
+[sso-session amzn]
+sso_start_url=https://amzn.awsapps.com/start
+sso_region=us-east-1
+sso_registration_scopes=codewhisperer:conversations,codewhisperer:transformations,codewhisperer:taskassist,codewhisperer:completions,codewhisperer:analysis
