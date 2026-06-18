@@ -346,7 +346,7 @@ fi
 # Install ccusage
 # ========================
 if ask_confirmation "Install ccusage (code context tool)"; then
-	cargo install ccusage
+	npm install -g ccusage
 fi
 
 # ========================
