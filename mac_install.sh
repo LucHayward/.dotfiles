@@ -205,7 +205,6 @@ if ask_confirmation "Install casks"; then
 	visual-studio-code \
 	mactex-no-gui \
 	discord \
-	todoist \
 	qlmarkdown \
 	syntax-highlight \
 	obsidian \
