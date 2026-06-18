@@ -193,7 +193,7 @@ fi
 # Install casks
 # =============
 if ask_confirmation "Install casks"; then
-	brew install --adopt --cask \
+	brew install --cask \
 	whatsapp \
 	telegram \
 	raycast \
@@ -201,7 +201,6 @@ if ask_confirmation "Install casks"; then
 	transmission \
 	vlc \
 	macs-fan-control \
-	iterm2 \
 	jetbrains-toolbox \
 	visual-studio-code \
 	mactex-no-gui \
