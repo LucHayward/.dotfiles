@@ -374,15 +374,13 @@ if ask_confirmation "Install Rust using rustup"; then
 fi
 
 # ========================
-# Install ccusage and Claude Code statusline
+# Install ccusage and cship (Claude Code statusline)
 # ========================
-if ask_confirmation "Install ccusage (Claude Code usage tracking)"; then
+if ask_confirmation "Install ccusage + cship (Claude Code usage & statusline)"; then
 	npm install -g ccusage
-	# Symlink statusline script
-	mkdir -p ~/.claude
-	ln -sf ~/.dotfiles/claude/statusline.sh ~/.claude/statusline.sh
+	cargo install cship
 	echo "✓ Add to ~/.claude/settings.json:"
-	echo '  "statusLine": {"type": "command", "command": "~/.claude/statusline.sh", "padding": 0}'
+	echo '  "statusLine": {"type": "command", "command": "cship"}'
 fi
 
 # ========================
