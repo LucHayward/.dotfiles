@@ -26,6 +26,11 @@ if ask_confirmation "Set mac system settings"; then
 	defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 	defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 
+	# Trackpad: 3-finger swipe down for App Exposé
+	defaults write com.apple.dock showAppExposeGestureEnabled -bool true
+	defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -int 2
+	defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -int 2
+
 	# Disable the sound effects on boot (Intel Macs only)
 	if [[ "$(uname -m)" != "arm64" ]]; then
 		sudo nvram SystemAudioVolume=" "
