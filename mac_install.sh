@@ -374,10 +374,11 @@ if ask_confirmation "Install Rust using rustup"; then
 fi
 
 # ========================
-# Install ccusage
+# Install ccusage and cship
 # ========================
-if ask_confirmation "Install ccusage (code context tool)"; then
+if ask_confirmation "Install ccusage + cship (Claude Code usage tracking & statusline)"; then
 	npm install -g ccusage
+	cargo install cship
 fi
 
 # ========================

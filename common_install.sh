@@ -47,6 +47,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sfn ~/.dotfiles/.pandoc ~/.pandoc
 	mkdir -p ~/.config
 	ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
+	ln -sf ~/.dotfiles/cship.toml ~/.config/cship.toml
 	mkdir -p ~/.config/mise
 	ln -sf ~/.dotfiles/mise/config.toml ~/.config/mise/config.toml
 	mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
