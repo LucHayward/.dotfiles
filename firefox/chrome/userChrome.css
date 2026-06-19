@@ -1,6 +1,5 @@
-@import url("window_control_placeholder_support.css");
-@import url("hide_tabs_toolbar_osx.css");
-
-
-
-/* @import url("dynamic_native_tabs.css"); */
+/* Hide Firefox's native vertical tab sidebar (using Sidebery instead) */
+/* Requires: sidebar.verticalTabs = true in about:config */
+#sidebar-main {
+  display: none !important;
+}
