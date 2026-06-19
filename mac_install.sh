@@ -348,6 +348,24 @@ if ask_confirmation "Setup Firefox (userChrome, extensions, userscripts)"; then
 	echo ""
 fi
 
+# ========================
+# Raycast configuration
+# ========================
+if [[ -d "/Applications/Raycast.app" ]]; then
+	echo ""
+	echo "━━━ Raycast: Import settings ━━━"
+	echo ""
+	if ls "$HOME/.dotfiles/raycast/"*.rayconfig 1>/dev/null 2>&1; then
+		echo "	Import: Raycast → Settings (⌘,) → Advanced → Import"
+		echo "	File: ~/.dotfiles/raycast/*.rayconfig"
+	else
+		echo "	No .rayconfig found. Export from old machine:"
+		echo "	Raycast → Settings (⌘,) → Advanced → Export"
+		echo "	Save to: ~/.dotfiles/raycast/"
+	fi
+	echo ""
+fi
+
 # ============
 # Install rust
 # ============
