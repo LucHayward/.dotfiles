@@ -6,7 +6,7 @@ lines = [
 
 [cship.model]
 symbol = " "
-style  = "bold cyan"
+style  = "bold fg:#7aa2f7"
 
 [cship.effort]
 symbol      = "⚡ "
@@ -24,9 +24,7 @@ critical_threshold = 50
 critical_style     = "bold fg:#f7768e"
 
 [cship.context_bar]
-symbol             = " "
-filled_char        = "●"
-empty_char         = "○"
+symbol             = ""
 format             = "[$symbol$value]($style)"
 width              = 10
 style              = "fg:#7dcfff"
