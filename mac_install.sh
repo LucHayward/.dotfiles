@@ -173,16 +173,32 @@ fi
 # ================
 if ask_confirmation "Install packages"; then
 	brew install \
-	git \
-	eza \
-	pandoc \
-	gh \
+	autossh \
 	bat \
-	fzf \
+	coreutils \
+	dust \
+	eza \
 	fd \
+	ffmpeg \
+	fzf \
+	gh \
+	git \
+	git-filter-repo \
+	git-lfs \
+	glow \
+	gnu-sed \
+	go \
+	graphviz \
+	grep \
 	htop \
+	hyperfine \
+	jq \
+	pandoc \
+	ripgrep \
+	ruff \
+	starship \
 	tmux \
-	starship
+	uv
 fi
 
 # ==========================
@@ -199,21 +215,22 @@ fi
 # =============
 if ask_confirmation "Install casks"; then
 	brew install --cask \
-	whatsapp \
-	telegram \
+	bluesnooze \
+	discord \
+	jetbrains-toolbox \
+	macs-fan-control \
+	mactex-no-gui \
+	obsidian \
+	qlmarkdown \
 	raycast \
 	rectangle \
-	transmission \
-	vlc \
-	macs-fan-control \
-	jetbrains-toolbox \
-	visual-studio-code \
-	mactex-no-gui \
-	discord \
-	qlmarkdown \
+	signal \
 	syntax-highlight \
-	obsidian \
-	signal
+	telegram \
+	transmission \
+	visual-studio-code \
+	vlc \
+	whatsapp
 fi
 
 # =================
