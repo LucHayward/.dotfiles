@@ -229,8 +229,7 @@ if ask_confirmation "Install casks"; then
 	telegram \
 	transmission \
 	visual-studio-code \
-	vlc \
-	whatsapp
+	vlc
 fi
 
 # =================
