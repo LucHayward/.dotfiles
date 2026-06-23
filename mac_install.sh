@@ -460,8 +460,8 @@ if ask_confirmation "Install Unison file sync (requires SSH to cloud desktop)"; 
 	echo ""
 	read "?Press enter to load the LaunchAgents (starts sync)..."
 
-	launchctl load ~/Library/LaunchAgents/local.unison-file-sync.plist
-	launchctl load ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+	launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-file-sync.plist
+	launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
 fi
 
 # ================================
