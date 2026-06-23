@@ -150,6 +150,11 @@ alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 # =============
 alias kiro='kiro-cli'
 
+# =================
+# Claude Code alias
+# =================
+alias clauded='claude --dangerously-skip-permissions'
+
 # ====================================================================
 #                            Amazon Helpers
 # https://docs.mango.ec2.aws.dev/Pawelmas%20Tips/CodeReviews/#crselect
