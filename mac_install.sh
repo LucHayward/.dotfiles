@@ -138,6 +138,13 @@ if ask_confirmation "Set mac system settings"; then
 	# Set dark mode
 	defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
+	# Disable Ctrl+Space input source switching shortcut
+	# (frees Ctrl+Space for use in Firefox/Sideberry)
+	defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 '{ enabled = 0; value = { parameters = (32, 49, 262144); type = standard; }; }'
+
+	# Disable "Search Man Page Index in Terminal" service (steals Cmd+Shift+A from IntelliJ)
+	defaults write pbs NSServicesStatus -dict-add 'com.apple.Terminal - Search Man Page Index in Terminal - searchManPages' '{ key_equivalent = ""; enabled = 0; }'
+
 	# Restart the System?
 	/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
