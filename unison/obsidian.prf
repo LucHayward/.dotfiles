@@ -6,7 +6,6 @@ root = ssh://luchay@dev-dsk-luchay-1b-ab941678.eu-west-1.amazon.com//home/luchay
 # Ignore OS/editor junk
 ignore = Name {.DS_Store,.Spotlight-V100,.Trashes,.fseventsd}
 ignore = Path {.obsidian/workspace.json,.obsidian/workspace-mobile.json}
-ignore = Path .kiro
 
 # Sync behaviour
 ignorecase = false
