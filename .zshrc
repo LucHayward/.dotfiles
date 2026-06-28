@@ -477,7 +477,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
 
-    alias tmux='/apollo/env/envImprovement/bin/tmux'
 
     # peon-ping quick controls (not in PATH on Linux, unlike Homebrew on Mac)
     alias peon="bash $HOME/.claude/hooks/peon-ping/peon.sh"
