@@ -493,5 +493,5 @@ fi
 # Added by AIM CLI
 export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
 
-source /Users/luchay/.brazil_completion/zsh_completion
+[[ -f "$HOME/.brazil_completion/zsh_completion" ]] && source "$HOME/.brazil_completion/zsh_completion"
 export USE_BUILDER_ACCOUNT=1
