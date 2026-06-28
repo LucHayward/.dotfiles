@@ -43,6 +43,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 
 
 	ln -sf ~/.dotfiles/.zshrc ~/.zshrc
+	ln -sf ~/.dotfiles/.zshenv ~/.zshenv
 	ln -sf ~/.dotfiles/.zprofile ~/.zprofile
 	ln -sfn ~/.dotfiles/.pandoc ~/.pandoc
 	mkdir -p ~/.config
