@@ -170,7 +170,7 @@ if ask_confirmation "Setup Amazon internal tools (mwinit, toolbox, etc)"; then
 	mwinit -o -s
 	
 	echo "Installing toolbox packages..."
-	toolbox install lpt brazilcli bemol ada cr batscli ripcli gordian-knot barium axe aim builder-mcp gitlfs ironhide mechanic
+	toolbox install lpt brazilcli bemol ada cr batscli ripcli gordian-knot barium axe aim builder-mcp gitlfs ironhide mechanic claude-code
 	toolbox install kiro-cli --channel nightly
 	toolbox completion zsh
 	

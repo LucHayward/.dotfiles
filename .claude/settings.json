@@ -1,0 +1,62 @@
+{
+  "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
+  "env": {
+    "AWS_REGION": "us-west-2",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "model": "global.anthropic.claude-opus-4-8[1m]",
+  "availableModels": [
+    "claude-opus-4-6",
+    "claude-opus-4-7",
+    "claude-opus-4-8",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5"
+  ],
+  "enforceAvailableModels": true,
+  "modelOverrides": {
+    "claude-opus-4-6": "global.anthropic.claude-opus-4-6-v1[1m]",
+    "claude-opus-4-7": "global.anthropic.claude-opus-4-7[1m]",
+    "claude-opus-4-8": "global.anthropic.claude-opus-4-8[1m]",
+    "claude-sonnet-4-6": "global.anthropic.claude-sonnet-4-6[1m]",
+    "claude-haiku-4-5": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "cship"
+  },
+  "enabledPlugins": {
+    "AmazonBuilderCoreAIAgents-core@aim": true,
+    "AmazonBuilderCoreAIAgents-pipeline-assistant@aim": false,
+    "AIPowerUserCapabilities-core-dev@aim": true,
+    "AIPowerUserCapabilities-code-review@aim": true,
+    "AIPowerUserCapabilities-comms@aim": false,
+    "AIPowerUserCapabilities-writing@aim": false,
+    "AIPowerUserCapabilities-research@aim": false
+  },
+  "extraKnownMarketplaces": {
+    "aim": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/luchay/.aim/cc-plugins"
+      }
+    }
+  },
+  "syntaxHighlightingDisabled": false,
+  "effortLevel": "xhigh",
+  "autoMemoryEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "editorMode": "normal",
+  "verbose": false,
+  "preferredNotifChannel": "auto",
+  "autoCompactEnabled": true,
+  "teammateMode": "auto"
+}

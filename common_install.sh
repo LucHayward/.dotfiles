@@ -61,6 +61,18 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/config/git/excludes ~/.config/git/excludes
 	ln -sf ~/.dotfiles/aws/config ~/.aws/config
 
+	# Claude Code config
+	mkdir -p ~/.claude/rules
+	ln -sf ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
+	ln -sf ~/.dotfiles/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+	for rule in ~/.dotfiles/.claude/rules/*.md; do
+		ln -sf "$rule" ~/.claude/rules/"$(basename "$rule")"
+	done
+
+	# Kiro CLI config
+	mkdir -p ~/.kiro/settings
+	ln -sf ~/.dotfiles/.kiro/settings/cli.json ~/.kiro/settings/cli.json
+
 	# Unison sync profiles
 	mkdir -p ~/.unison
 	ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf

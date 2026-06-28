@@ -1,0 +1,15 @@
+{
+  "chat.defaultAgent": "gpu-dev",
+  "chat.defaultModel": "claude-opus-4.8",
+  "mcp.loadedBefore": true,
+  "chat.terminalTitle": true,
+  "chat.showThinking": "collapsed",
+  "chat.defaultInterruptBehavior": "queue",
+  "chat.modelDefaults": {
+    "claude-opus-4.8": {
+      "output_config": {
+        "effort": "max"
+      }
+    }
+  }
+}
