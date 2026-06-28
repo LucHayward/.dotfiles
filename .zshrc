@@ -445,6 +445,9 @@ update-all() {
         [ -f "$f" ] && sed -i '/🤖 Assisted by AI/d' "$f"
     done
 
+    echo "\n🪶 Minifying AIM plugin MCP config (de-dup builder-mcp et al.)..."
+    python3 ~/.dotfiles/aim-mcp-minify.py
+
     echo "\n✅ All done!"
 }
 
@@ -492,3 +495,4 @@ fi
 export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
 
 source /Users/luchay/.brazil_completion/zsh_completion
+export USE_BUILDER_ACCOUNT=1
