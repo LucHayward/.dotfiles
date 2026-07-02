@@ -445,9 +445,6 @@ update-all() {
         [ -f "$f" ] && sed -i '/🤖 Assisted by AI/d' "$f"
     done
 
-    echo "\n🪶 Minifying AIM plugin MCP config (de-dup builder-mcp et al.)..."
-    python3 ~/.dotfiles/aim-mcp-minify.py
-
     echo "\n✅ All done!"
 }
 
