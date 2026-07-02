@@ -193,7 +193,9 @@ if ask_confirmation "Install packages"; then
     tmux \
     reattach-to-user-namespace \
     recast \
-    htop
+    htop \
+    gnu-sed \
+    grep
 fi
 
 # ==========================

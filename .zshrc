@@ -110,20 +110,6 @@ function cd() {
 
 
 # Setup colours and variables for the prompt
-# local BG_GREY='236'
-# local FG_RED='160'
-# local FG_ORANGE='208'
-# local FG_YELLOW='226'
-# local FG_LIGHTGREY='251'
-# local FG_GREY='244'
-# local FG_DARKGREY='238'
-# local FG_GREEN='46'
-# local FG_CYAN='51'
-# local FG_TURQUOISE='39'
-# local FG_DEEPBLUE='75'
-# local NO_BG='234'
-# local WHITE='255'
-# local FG_RED='196'
 
 
 # # =============================================================================
@@ -205,9 +191,10 @@ fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
 autoload -Uz compinit
 autoload -U bashcompinit
-# autoload -Uz compinit
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    stat_cmd="/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump"
+if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
+    stat_cmd=""
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    stat_cmd=$(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump)
 else
     mod_time=$(/usr/bin/stat --format='%Y' ${ZDOTDIR:-$HOME}/.zcompdump)
     stat_cmd=$(date +'%j' -d @$mod_time)
@@ -275,16 +262,17 @@ unset __conda_setup
 # Add cargo to PATH
 # ================================
 export PATH=$HOME/.cargo/bin:$PATH
-export MODULAR_HOME="$HOME/.modular"
-export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
 # ============================
-# Use GNU sed over BSD sed (macOS)
+# Use GNU sed/grep over BSD sed/grep (macOS)
 # ============================
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
     export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
 fi
+
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
 # =======================
 # Add bun globals to path

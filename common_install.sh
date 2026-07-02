@@ -41,6 +41,7 @@ if ask_confirmation "Symlink various dotfiles"; then
     ln -sf ~/.dotfiles/.condarc ~/.condarc
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
+    ln -sf ~/.dotfiles/.zprofile ~/.zprofile
     ln -sfn ~/.dotfiles/.pandoc ~/.pandoc
     mkdir -p ~/.config
     ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
