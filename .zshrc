@@ -31,6 +31,12 @@ function expand-alias() {
 zle -N expand-alias
 bindkey -M main ' ' expand-alias
 
+# ====================================
+# Fix move to line start/end Jetbrains
+# ====================================
+bindkey "[D" beginning-of-line
+bindkey "[C" end-of-line
+
 # =======================
 # Use eza instead of tree
 # =======================
@@ -40,7 +46,7 @@ alias gtd="grep -ri --exclude-dir=build --exclude-dir=.git -E \"(TODO|FIXME)\" *
 # List long showing filetypes, all files, and git info
 alias ll="eza --long --classify --all --git --time-style=long-iso"
 # List just the simple things
-alias ls="COLUMNS=80 eza --classify --all"
+alias ls="eza --classify --all"
 # Always include colours for grep
 alias grep='grep --color=auto'
 # Show diskfree with human-readable numerals
@@ -65,6 +71,21 @@ alias G="git"
 # ================
 # Allow permission bypass while using default (prompt on first use) mode
 alias claude="claude --allow-dangerously-skip-permissions --permission-mode default"
+
+# ==================
+# Convert Gif to mp4
+# ==================
+gif2vid() {
+    if [[ $# -ne 2 ]]; then
+        echo "Usage: convert_gif_to_mp4 <input_path> <output_path>"
+        return 1
+    fi
+    local input_path="$1"
+    local output_path="$2"
+    ffmpeg -loglevel error -i "$input_path" -movflags faststart -pix_fmt yuv420p -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" "$output_path"
+}
+
+alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
 
 # =================================
 # Add colours to the less/man pages
@@ -257,6 +278,14 @@ export PATH=$HOME/.cargo/bin:$PATH
 export MODULAR_HOME="$HOME/.modular"
 export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
 
+# ============================
+# Use GNU sed over BSD sed (macOS)
+# ============================
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+    export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+fi
+
 # =======================
 # Add bun globals to path
 # =======================
@@ -265,7 +294,9 @@ export PATH="/home/luch/.bun/bin:$PATH"
 # ==============
 # Add Go to PATH
 # ==============
-export PATH=$PATH:/usr/local/go/bin
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export PATH=$PATH:/usr/local/go/bin
+fi
 
 # =================================
 # Set Starship.rs as custom prompt
@@ -282,15 +313,23 @@ fi
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ==========================
-# Add NVM to path with compl
+# NVM (lazy-loaded)
 # ==========================
 export NVM_DIR="$HOME/.nvm"
 
-# Check if NVM is installed by testing the existence of the NVM directory and scripts
-if [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" && -s "$NVM_DIR/bash_completion" ]]; then
-    . "$NVM_DIR/nvm.sh"             # This loads nvm
-    . "$NVM_DIR/bash_completion"    # This loads nvm bash_completion
-fi
+_load_nvm() {
+    unfunction nvm node npm npx 2>/dev/null
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+        [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    fi
+    [[ -d "$NVM_DIR" && -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
+    [[ -d "$NVM_DIR" && -s "$NVM_DIR/bash_completion" ]] && . "$NVM_DIR/bash_completion"
+}
+nvm() { _load_nvm; nvm "$@"; }
+node() { _load_nvm; node "$@"; }
+npm() { _load_nvm; npm "$@"; }
+npx() { _load_nvm; npx "$@"; }
 
 # =======================
 # Add kubectl completions
@@ -300,8 +339,16 @@ fi
 # ==================
 # Add uv completions
 # ==================
-eval "$(uv generate-shell-completion zsh)"
-eval "$(uvx --generate-shell-completion zsh)"
+command -v uv &>/dev/null && eval "$(uv generate-shell-completion zsh)"
+command -v uvx &>/dev/null && eval "$(uvx --generate-shell-completion zsh)"
+
+rm-ssh-key () {
+    if [ -z "$1" ]; then
+        echo "Usage: rm-ssh-key <hostname>"
+        return 1
+    fi
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
+}
 
 # zprof
 [[ -d "$HOME/.toolbox/bin" ]] && export PATH=$PATH:$HOME/.toolbox/bin
@@ -316,5 +363,6 @@ fi
 command -v mise &>/dev/null && eval "$(mise activate zsh)"
 [[ -d "/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk" ]] && export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
 
 

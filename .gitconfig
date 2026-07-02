@@ -35,6 +35,7 @@
 [rebase]
     # Make the rebase command stashes before running, and pops after running
     autoStash = true
+    autosquash = true
 
 [init]
     defaultBranch = main
@@ -42,11 +43,13 @@
 [merge]
     ff = only
 [credential "https://github.com"]
-    helper = 
-    helper = !gh auth git-credential
+    helper = !/usr/bin/env gh auth git-credential
 [credential "https://gist.github.com"]
-    helper = 
-    helper = !gh auth git-credential
+    helper = !/usr/bin/env gh auth git-credential
 
-
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 

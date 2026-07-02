@@ -121,7 +121,7 @@ fi
 # Symlink sublime text settings
 # =============================
 mkdir -p ~/.config/sublime-text/Packages/User
-ln -s ~/.dotfiles/Preferences.sublime-settings ~/.config/sublime-text/Packages/User/
+ln -sf ~/.dotfiles/Preferences.sublime-settings ~/.config/sublime-text/Packages/User/
 
 
 if ask_confirmation "Install JetBrains Toolbox"; then
@@ -153,6 +153,15 @@ if ask_confirmation "Install GitHub CLI"; then
         && sudo apt install gh -y
     else
         install_packages github-cli
+    fi
+fi
+
+# ==========================
+# Authenticate GitHub CLI
+# ==========================
+if command -v gh &>/dev/null; then
+    if ask_confirmation "Authenticate GitHub CLI (gh auth login)"; then
+        gh auth login
     fi
 fi
 

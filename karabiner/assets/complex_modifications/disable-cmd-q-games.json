@@ -1,0 +1,36 @@
+{
+  "title": "Disable Cmd+Q and Cmd+W in Games",
+  "rules": [
+    {
+      "description": "Disable Cmd+Q and Cmd+W when Dota 2 is frontmost",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "q",
+            "modifiers": { "mandatory": ["command"] }
+          },
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.valvesoftware\\.dota2$"]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "w",
+            "modifiers": { "mandatory": ["command"] }
+          },
+          "conditions": [
+            {
+              "type": "frontmost_application_if",
+              "bundle_identifiers": ["^com\\.valvesoftware\\.dota2$"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

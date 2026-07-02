@@ -33,23 +33,30 @@ echo "This script will prompt for each section. Use -y to skip prompts."
 echo ""
 
 # ======================================
-# Symllink to various dotfiles and directories
+# Symlink various dotfiles and directories
 # ======================================
-if ask_confirmation "Symmlink various dotfiles"; then
-    ln -s ~/.dotfiles/.gitconfig ~/.gitconfig
-    ln -s ~/.dotfiles/.gitignore_global ~/.gitignore_global
-    ln -s ~/.dotfiles/.condarc ~/.condarc
+if ask_confirmation "Symlink various dotfiles"; then
+    ln -sf ~/.dotfiles/.gitconfig ~/.gitconfig
+    ln -sf ~/.dotfiles/.gitignore_global ~/.gitignore_global
+    ln -sf ~/.dotfiles/.condarc ~/.condarc
 
     ln -sf ~/.dotfiles/.zshrc ~/.zshrc
-    ln -sf ~/.dotfiles/.pandoc ~/.pandoc
+    ln -sfn ~/.dotfiles/.pandoc ~/.pandoc
     mkdir -p ~/.config
     ln -sf ~/.dotfiles/starship.toml ~/.config/starship.toml
     ln -sf ~/.dotfiles/cship.toml ~/.config/cship.toml
+    mkdir -p ~/.config/mise
+    ln -sf ~/.dotfiles/mise/config.toml ~/.config/mise/config.toml
+    mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
     ln -sf ~/.dotfiles/.zlogin ~/.zlogin
+    ln -sf ~/.dotfiles/.vimrc ~/.vimrc
+    mkdir -p ~/.config/bat ~/.config/git
+    ln -sf ~/.dotfiles/config/bat/config ~/.config/bat/config
+    ln -sf ~/.dotfiles/config/git/excludes ~/.config/git/excludes
 fi
 
 # ==============================
-# Run OS specific install script    
+# Run OS specific install script
 # ==============================
 if ask_confirmation "Run OS specific install script"; then
     unameOut="$(uname -s)"
@@ -71,13 +78,16 @@ if ask_confirmation "Run OS specific install script"; then
 fi
 
 # ==================================
-# Setup zsh
-# MacOS already has zsh installed
+# Setup zsh (Linux only, macOS already uses zsh)
 # ==================================
-if ask_confirmation "Set zsh to default shell"; then
-    echo -e "$RESET[D] Sudo-ing to make zsh default shell$RESET$RED"
-    sudo sh -c "echo $(which zsh) >> /etc/shells" && chsh -s $(which zsh)
-    echo -e "$RESET"
+if [[ "$(uname -s)" != "Darwin" ]]; then
+    if ask_confirmation "Set zsh to default shell"; then
+        ZSH_PATH="$(which zsh)"
+        if ! grep -q "$ZSH_PATH" /etc/shells; then
+            echo "$ZSH_PATH" | sudo tee -a /etc/shells
+        fi
+        chsh -s "$ZSH_PATH"
+    fi
 fi
 
 
@@ -99,7 +109,7 @@ fi
 # | **input lag**         |   20 |
 # =================
 if ask_confirmation "Install and run zsh-bench"; then
-    git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
+    [[ -d ~/zsh-bench ]] || git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
     ~/zsh-bench/zsh-bench
 fi
 
