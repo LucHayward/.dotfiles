@@ -180,6 +180,7 @@ fi
 # ================
 if ask_confirmation "Install packages"; then
 	brew install \
+	ast-grep \
 	autossh \
 	bat \
 	coreutils \

@@ -307,6 +307,12 @@ if command -v mise &>/dev/null; then
 fi
 
 # ==================
+# Add uv completions
+# ==================
+command -v uv &>/dev/null && eval "$(uv generate-shell-completion zsh)"
+command -v uvx &>/dev/null && eval "$(uvx --generate-shell-completion zsh)"
+
+# ==================
 # Completion stylyes
 # ==================
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
