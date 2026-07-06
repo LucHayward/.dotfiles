@@ -139,10 +139,6 @@ alias unison-status='tail -f ~/.unison/unison-launchd.log ~/.unison/unison-obsid
 alias unison-load='launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-file-sync.plist; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.unison-obsidian-sync.plist'
 alias unison-unload='launchctl bootout gui/$(id -u)/local.unison-file-sync; launchctl bootout gui/$(id -u)/local.unison-obsidian-sync'
 
-alias meshclaw-status='cat /tmp/meshclaw-tunnel.err; pgrep -f "autossh.*7777" >/dev/null && echo "✓ tunnel running" || echo "✗ tunnel not running"'
-alias meshclaw-load='launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.meshclaw.tunnel.plist'
-alias meshclaw-unload='launchctl bootout gui/$(id -u)/com.meshclaw.tunnel'
-
 alias ec2-ssh=/apollo/env/EC2SSHWrapper/bin/ec2-ssh
 
 # =============
