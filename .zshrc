@@ -497,4 +497,4 @@ fi
 export PATH="/local/home/luchay/.aim/mcp-servers:$PATH"
 
 [[ -f "$HOME/.brazil_completion/zsh_completion" ]] && source "$HOME/.brazil_completion/zsh_completion"
-export USE_BUILDER_ACCOUNT=1
+#export USE_BUILDER_ACCOUNT=1
