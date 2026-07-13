@@ -189,6 +189,7 @@ gif2vid() {
 }
 
 alias tc="autossh -M 0 -A -t clouddesk /apollo/env/envImprovement/bin/tmux -u -CC new-session -AD -s tc"
+alias tfix="ssh clouddesk /apollo/env/envImprovement/bin/tmux detach-client -a -s tc"
 
 alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
 
