@@ -2,26 +2,44 @@
   "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_REGION": "us-west-2",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "global.anthropic.claude-sonnet-5[1m]"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
     "defaultMode": "auto"
   },
   "model": "global.anthropic.claude-opus-4-8[1m]",
+  "fallbackModel": [
+    "global.anthropic.claude-sonnet-5[1m]"
+  ],
   "availableModels": [
+    "claude-opus-4-6[1m]",
     "claude-opus-4-6",
+    "claude-opus-4-7[1m]",
     "claude-opus-4-7",
+    "claude-opus-4-8[1m]",
     "claude-opus-4-8",
     "claude-sonnet-4-6",
+    "claude-sonnet-4-6[1m]",
+    "claude-sonnet-5",
+    "claude-fable-5",
+    "claude-fable-5[1m]",
     "claude-haiku-4-5"
   ],
   "enforceAvailableModels": true,
   "modelOverrides": {
-    "claude-opus-4-6": "global.anthropic.claude-opus-4-6-v1[1m]",
-    "claude-opus-4-7": "global.anthropic.claude-opus-4-7[1m]",
-    "claude-opus-4-8": "global.anthropic.claude-opus-4-8[1m]",
-    "claude-sonnet-4-6": "global.anthropic.claude-sonnet-4-6[1m]",
+    "claude-opus-4-6[1m]": "global.anthropic.claude-opus-4-6-v1[1m]",
+    "claude-opus-4-6": "global.anthropic.claude-opus-4-6-v1",
+    "claude-opus-4-7[1m]": "global.anthropic.claude-opus-4-7[1m]",
+    "claude-opus-4-7": "global.anthropic.claude-opus-4-7",
+    "claude-opus-4-8[1m]": "global.anthropic.claude-opus-4-8[1m]",
+    "claude-opus-4-8": "global.anthropic.claude-opus-4-8",
+    "claude-sonnet-4-6": "global.anthropic.claude-sonnet-4-6",
+    "claude-sonnet-4-6[1m]": "global.anthropic.claude-sonnet-4-6[1m]",
+    "claude-sonnet-5": "global.anthropic.claude-sonnet-5",
+    "claude-fable-5": "global.anthropic.claude-fable-5",
+    "claude-fable-5[1m]": "global.anthropic.claude-fable-5[1m]",
     "claude-haiku-4-5": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
   },
   "worktree": {
@@ -33,7 +51,7 @@
   },
   "enabledPlugins": {
     "AmazonBuilderCoreAIAgents-core@aim": true,
-    "AmazonBuilderCoreAIAgents-pipeline-assistant@aim": false,
+    "AmazonBuilderCoreAIAgents-pipeline-assistant@aim": true,
     "AIPowerUserCapabilities-core-dev@aim": true,
     "AIPowerUserCapabilities-code-review@aim": true,
     "AIPowerUserCapabilities-comms@aim": false,
@@ -49,7 +67,7 @@
     }
   },
   "syntaxHighlightingDisabled": false,
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "autoMemoryEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
@@ -58,8 +76,5 @@
   "verbose": false,
   "preferredNotifChannel": "auto",
   "autoCompactEnabled": true,
-  "teammateMode": "auto",
-  "fallbackModel": [
-    "global.anthropic.claude-opus-4-6-v1[1m]"
-  ]
+  "teammateMode": "auto"
 }
