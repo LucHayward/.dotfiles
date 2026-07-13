@@ -1,1 +1,4 @@
 .DS_Store
+
+# Ephemeral Claude Code agent worktrees (auto-created/removed per session)
+.claude/worktrees/
