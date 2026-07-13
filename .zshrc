@@ -448,6 +448,29 @@ update-all() {
         [ -f "$f" ] && sed -i '/🤖 Assisted by AI/d' "$f"
     done
 
+    echo "\n🔀 De-duping bundled builder-mcp from AIM plugins..."
+    # Every AIM plugin vendors its own scoped builder-mcp, which Claude Code
+    # can't dedupe (each is namespaced plugin_<name>_builder-mcp). We keep the
+    # single standalone builder-mcp in ~/.claude.json and strip the key from
+    # each plugin's .mcp.json. Only the builder-mcp key is removed; co-located
+    # servers (cr-guide, pippin, spec-studio, ...) are left intact.
+    for f in ~/.aim/cc-plugins/*/.mcp.json; do
+        [ -f "$f" ] || continue
+        python3 - "$f" <<'PY'
+import json, sys
+p = sys.argv[1]
+with open(p) as fh:
+    d = json.load(fh)
+servers = d.get("mcpServers", {})
+if "builder-mcp" in servers:
+    del servers["builder-mcp"]
+    with open(p, "w") as fh:
+        json.dump(d, fh, indent=2)
+        fh.write("\n")
+    print(f"  stripped builder-mcp from {p.split('/cc-plugins/')[-1]}")
+PY
+    done
+
     echo "\n✅ All done!"
 }
 
