@@ -20,6 +20,14 @@ ignore = Path .unison
 # Ignore rules for node_modules
 ignore = Name node_modules
 
+# Ignore coverage.py files. Parallel/pytest-xdist runs write transient
+# .coverage.<host>.<pid>.<rand> files that coverage.py combines-and-deletes
+# within seconds. Unison races to sync them, the source vanishes mid-transfer,
+# and it leaves orphaned .unison..coverage*.unison.tmp files behind forever.
+# The .coverage DB itself is a build artifact and shouldn't be synced either.
+ignore = Name {.coverage,.coverage.*}
+ignore = Name .unison..coverage*.unison.tmp
+
 # Ignore rules for Eclipse
 ignore = Path */{.metadata,.settings,.project,.classpath}
 
