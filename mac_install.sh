@@ -398,16 +398,6 @@ if ask_confirmation "Install Rust using rustup"; then
 fi
 
 # ========================
-# Install ccusage and cship (Claude Code statusline)
-# ========================
-if ask_confirmation "Install ccusage + cship (Claude Code usage & statusline)"; then
-	npm install -g ccusage
-	cargo install cship
-	echo "✓ Add to ~/.claude/settings.json:"
-	echo '  "statusLine": {"type": "command", "command": "cship"}'
-fi
-
-# ========================
 # SSH, Midway, and WSSH
 # ========================
 if ask_confirmation "Setup SSH key and authenticate Midway"; then
