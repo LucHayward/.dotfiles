@@ -3,3 +3,8 @@
 sso_start_url=https://amzn.awsapps.com/start
 sso_region=us-east-1
 sso_registration_scopes=codewhisperer:conversations,codewhisperer:transformations,codewhisperer:taskassist,codewhisperer:completions,codewhisperer:analysis
+
+[profile codex-DO-NOT-DELETE]
+# credential_process resolves `codex` via PATH (~/.toolbox/bin on both mac and Linux),
+# so this stays portable across machines — no absolute $HOME path.
+credential_process = codex credential-process
