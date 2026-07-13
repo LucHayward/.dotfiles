@@ -146,3 +146,17 @@ if ask_confirmation "Install and run zsh-bench"; then
 	[[ -d ~/zsh-bench ]] || git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
 	~/zsh-bench/zsh-bench
 fi
+
+# ================
+# Install cship + ccusage (Claude Code statusline & usage)
+# cargo install and npm install work identically on macOS and Linux, so
+# these live here rather than the OS-specific scripts. Only starship
+# differs per-OS (brew on macOS, curl installer on Linux) and stays there.
+# Prereqs (rustup, node via mise) are set up by the OS-specific script
+# that ran earlier. cship is wired up as the statusline in
+# .claude/settings.json (statusLine.command: cship).
+# ================
+if ask_confirmation "Install cship + ccusage (Claude Code statusline & usage)"; then
+	cargo install cship
+	npm install -g ccusage
+fi
