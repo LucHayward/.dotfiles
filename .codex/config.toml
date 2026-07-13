@@ -1,0 +1,73 @@
+model_provider = "amazon-bedrock"
+forced_login_method = "api"
+check_for_update_on_startup = false
+commit_attribution = ""
+chatgpt_base_url = "http://127.0.0.1:9"
+approvals_reviewer = "user"
+model_reasoning_effort = "high"
+model = "openai.gpt-5.5"
+
+[mcp_servers.builder-mcp]
+args = [
+    "--include-tools",
+    "*",
+    "--exclude-tools",
+    "SkillsTool,WorkspaceSearch,Delegate,ToolReactivationTool",
+]
+command = "builder-mcp"
+
+[mcp_servers.builder-mcp.env]
+TOOL_PERSONALIZATION_ENABLED = "false"
+TOOL_PERSONALIZATION_MIN_EXECUTIONS = "0"
+TOOL_PERSONALIZATION_ROLLOUT_PERCENTAGE = "100"
+TOOL_PERSONALIZATION_TRAINING_DAYS = "0"
+
+[shell_environment_policy]
+inherit = "all"
+
+[analytics]
+enabled = true
+
+[feedback]
+enabled = false
+
+[otel]
+exporter = "none"
+metrics_exporter = "none"
+trace_exporter = "none"
+log_user_prompt = true
+environment = "stable"
+
+[model_providers.amazon-bedrock.aws]
+region = "us-east-2"
+
+[marketplaces.aim]
+source_type = "local"
+source = "/Users/luchay/.aim/cc-plugins"
+
+[plugins."AIPowerUserCapabilities-comms@aim"]
+enabled = true
+
+[plugins."AIPowerUserCapabilities-writing@aim"]
+enabled = true
+
+[plugins."AIPowerUserCapabilities-research@aim"]
+enabled = true
+
+[plugins."AIPowerUserCapabilities-core-dev@aim"]
+enabled = true
+
+[plugins."AIPowerUserCapabilities-code-review@aim"]
+enabled = true
+
+[plugins."AmazonBuilderCoreAIAgents-pipeline-assistant@aim"]
+enabled = true
+
+[plugins."AmazonBuilderCoreAIAgents-core@aim"]
+enabled = true
+
+[features]
+memories = true
+
+[notice]
+hide_full_access_warning = true

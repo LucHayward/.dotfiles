@@ -73,6 +73,12 @@ if ask_confirmation "Symlink various dotfiles"; then
 	mkdir -p ~/.kiro/settings
 	ln -sf ~/.dotfiles/.kiro/settings/cli.json ~/.kiro/settings/cli.json
 
+	# Codex config
+	mkdir -p ~/.codex/rules ~/.codex/skills/web-search
+	ln -sf ~/.dotfiles/.codex/config.toml ~/.codex/config.toml
+	ln -sf ~/.dotfiles/.codex/rules/default.rules ~/.codex/rules/default.rules
+	ln -sf ~/.dotfiles/.codex/skills/web-search/SKILL.md ~/.codex/skills/web-search/SKILL.md
+
 	# Unison sync profiles
 	mkdir -p ~/.unison
 	ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf
