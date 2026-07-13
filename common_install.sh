@@ -115,12 +115,17 @@ if ask_confirmation "Install and run zsh-bench"; then
 fi
 
 # ================
-# Install cship (Claude Code statusline)
-# Requires cargo (install rustup first via OS-specific script)
+# Install cship + ccusage (Claude Code statusline & usage)
+# cargo install works the same on macOS and Linux, so these live here
+# rather than the OS-specific scripts. Only starship differs per-OS
+# (brew on macOS, curl installer on Linux) and stays OS-specific.
+# Requires cargo (rustup) and npm (node via mise), set up by the
+# OS-specific script that runs earlier.
 # ================
 if ask_confirmation "Install eza and cship via Cargo"; then
     cargo install eza
     cargo install cship
     cargo install uv
     cargo install ast-grep
+    npm install -g ccusage
 fi

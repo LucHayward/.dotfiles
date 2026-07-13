@@ -171,12 +171,3 @@ fi
 if ask_confirmation "Install Starship.rs prompt"; then
     curl -fsSL https://starship.rs/install.sh | sh
 fi
-
-# ========================
-# Install ccusage and cship (Claude Code statusline)
-# ========================
-if ask_confirmation "Install ccusage + cship (Claude Code usage & statusline)"; then
-    npm install -g ccusage
-    cargo install cship
-    echo "✓ cship configured via .claude/settings.json statusLine (command: cship)"
-fi
