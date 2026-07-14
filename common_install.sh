@@ -54,7 +54,14 @@ if ask_confirmation "Symlink various dotfiles"; then
 	mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
 	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 	mkdir -p ~/.ssh
-	ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+	# ssh/config is the WSSH-generated laptop config (ProxyCommand=/usr/local/bin/wssh …)
+	# which only makes sense on macOS off-VPN. CloudDesks are already inside the corp
+	# network and reach git.amazon.com directly via their own native ~/.ssh/config
+	# (Include bastions-config, ProxyCommand none), so only symlink this on macOS —
+	# clobbering the desk config breaks all git-over-SSH since wssh isn't installed there.
+	if [[ "$(uname -s)" == "Darwin" ]]; then
+		ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+	fi
 	ln -sf ~/.dotfiles/.vimrc ~/.vimrc
 	mkdir -p ~/.config/bat ~/.config/git ~/.aws
 	ln -sf ~/.dotfiles/config/bat/config ~/.config/bat/config
@@ -145,4 +152,18 @@ fi
 if ask_confirmation "Install and run zsh-bench"; then
 	[[ -d ~/zsh-bench ]] || git clone https://github.com/romkatv/zsh-bench ~/zsh-bench
 	~/zsh-bench/zsh-bench
+fi
+
+# ================
+# Install cship + ccusage (Claude Code statusline & usage)
+# cargo install and npm install work identically on macOS and Linux, so
+# these live here rather than the OS-specific scripts. Only starship
+# differs per-OS (brew on macOS, curl installer on Linux) and stays there.
+# Prereqs (rustup, node via mise) are set up by the OS-specific script
+# that ran earlier. cship is wired up as the statusline in
+# .claude/settings.json (statusLine.command: cship).
+# ================
+if ask_confirmation "Install cship + ccusage (Claude Code statusline & usage)"; then
+	cargo install cship
+	npm install -g ccusage
 fi
