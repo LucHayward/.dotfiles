@@ -54,7 +54,14 @@ if ask_confirmation "Symlink various dotfiles"; then
 	mise trust ~/.dotfiles/mise/config.toml 2>/dev/null
 	ln -sf ~/.dotfiles/.zlogin ~/.zlogin
 	mkdir -p ~/.ssh
-	ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+	# ssh/config is the WSSH-generated laptop config (ProxyCommand=/usr/local/bin/wssh …)
+	# which only makes sense on macOS off-VPN. CloudDesks are already inside the corp
+	# network and reach git.amazon.com directly via their own native ~/.ssh/config
+	# (Include bastions-config, ProxyCommand none), so only symlink this on macOS —
+	# clobbering the desk config breaks all git-over-SSH since wssh isn't installed there.
+	if [[ "$(uname -s)" == "Darwin" ]]; then
+		ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+	fi
 	ln -sf ~/.dotfiles/.vimrc ~/.vimrc
 	mkdir -p ~/.config/bat ~/.config/git ~/.aws
 	ln -sf ~/.dotfiles/config/bat/config ~/.config/bat/config
