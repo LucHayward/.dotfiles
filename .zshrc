@@ -298,16 +298,52 @@ fi
 # Enable autocompletion for mechanic.
 [ -f "$HOME/.local/share/mechanic/complete.zsh" ] && source "$HOME/.local/share/mechanic/complete.zsh"
 
-# Set up mise for runtime management
-if command -v mise &>/dev/null; then
-  eval "$(mise activate zsh)"
-fi
+# Cache the output of a slow `eval "$(cmd ...)"` to a file and source it,
+# regenerating only when the underlying binary is newer than the cache.
+# Usage: cached_eval <cache-name> <binary> <full command...>
+cached_eval() {
+  local name="$1" bin="$2"; shift 2
+  command -v "$bin" &>/dev/null || return 0
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh-init"
+  local cache="$cache_dir/$name.zsh"
+  local bin_path=${commands[$bin]}
+  # Regenerate if cache is missing/empty or older than the resolved binary.
+  if [[ ! -s "$cache" || "$bin_path" -nt "$cache" ]]; then
+    mkdir -p "$cache_dir"
+    "$@" > "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}
+
+# Like cached_eval, but defers sourcing until the command is first tab-completed.
+# The heavy completion script (uv's is ~550k) never loads in shells where you
+# don't complete that command. Usage: lazy_cached_eval <name> <binary> <cmd...>
+# zsh functions don't close over locals, so the deferred command is stashed in
+# a global keyed by name and read back when completion first fires.
+typeset -gA _LAZY_EVAL_CMDS
+_lazy_eval_load() {
+  local name="$1"; shift
+  unfunction "_lazy_complete_${name}"
+  local cmd=("${(z)_LAZY_EVAL_CMDS[$name]}")
+  cached_eval "$name" "${cmd[@]}"
+  _normal  # re-trigger completion now that the real completer is installed
+}
+lazy_cached_eval() {
+  local name="$1" bin="$2"; shift 1
+  command -v "$bin" &>/dev/null || return 0
+  _LAZY_EVAL_CMDS[$name]="$*"          # bin + full command, e.g. "uv uv generate-shell-completion zsh"
+  functions[_lazy_complete_${name}]="_lazy_eval_load ${name}"
+  compdef "_lazy_complete_${name}" "$bin"
+}
+
+# Set up mise for runtime management (cached; see cached_eval above)
+cached_eval mise mise mise activate zsh
 
 # ==================
-# Add uv completions
+# Add uv completions (lazy: loaded on first `uv`/`uvx` tab-completion)
 # ==================
-command -v uv &>/dev/null && eval "$(uv generate-shell-completion zsh)"
-command -v uvx &>/dev/null && eval "$(uvx --generate-shell-completion zsh)"
+lazy_cached_eval uv uv uv generate-shell-completion zsh
+lazy_cached_eval uvx uvx uvx --generate-shell-completion zsh
 
 # ==================
 # Completion stylyes
