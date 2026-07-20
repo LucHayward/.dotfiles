@@ -1,5 +1,5 @@
 {
-  "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "\"/home/luchay/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_REGION": "us-west-2",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -76,5 +76,18 @@
   "verbose": false,
   "preferredNotifChannel": "auto",
   "autoCompactEnabled": true,
-  "teammateMode": "auto"
+  "teammateMode": "auto",
+  "hooks": {
+    "SessionStart": [],
+    "SessionEnd": [],
+    "SubagentStart": [],
+    "SubagentStop": [],
+    "UserPromptSubmit": [],
+    "Stop": [],
+    "Notification": [],
+    "PermissionRequest": [],
+    "PreToolUse": [],
+    "PostToolUseFailure": [],
+    "PreCompact": []
+  }
 }
