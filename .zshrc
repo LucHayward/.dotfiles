@@ -240,10 +240,17 @@ fi
 if command -v fzf &> /dev/null; then
     source <(fzf --zsh)
 
-    # Exclude .unison, .git, and build directories from all fzf commands using fd
-    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .unison --exclude .git --exclude build'
+    # Exclude .unison, .git, and build directories from all fzf commands using fd.
+    # --max-depth 6 keeps deep monorepo trees (e.g. ~/workplace with dozens of
+    # Brazil packages) tractable: without it fd walks ~17k files per invocation.
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --max-depth 6 --exclude .unison --exclude .git --exclude build'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .unison --exclude .git --exclude build'
+    # Alt+C (cd): breadth-first ordering. fd emits in nondeterministic parallel
+    # order, so the pre-typing view is random; sorting by path depth (slash count)
+    # surfaces shallow dirs first. fzf re-ranks by match score once you type.
+    # No --hidden here: we rarely cd into dotfolders, and it drops macOS system
+    # dirs (.Trashes, .fseventsd) from the menu.
+    export FZF_ALT_C_COMMAND='fd --type d --max-depth 6 --exclude .unison --exclude .git --exclude build | awk -F/ "{print NF-1\"\t\"\$0}" | sort -n -k1,1 -s | cut -f2-'
 
     # Bind the ç character (Alt+C on macOS) to fzf-cd-widget
     bindkey 'ç' fzf-cd-widget
