@@ -1,5 +1,5 @@
 {
-  "awsCredentialExport": "\"/home/luchay/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "\"$HOME/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_REGION": "us-west-2",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
@@ -56,13 +56,15 @@
     "AIPowerUserCapabilities-code-review@aim": true,
     "AIPowerUserCapabilities-comms@aim": false,
     "AIPowerUserCapabilities-writing@aim": false,
-    "AIPowerUserCapabilities-research@aim": false
+    "AIPowerUserCapabilities-research@aim": false,
+    "ChorusAIM-all@aim": true,
+    "MfArbalestAICapabilities-all@aim": true
   },
   "extraKnownMarketplaces": {
     "aim": {
       "source": {
         "source": "directory",
-        "path": "/Users/luchay/.aim/cc-plugins"
+        "path": "~/.aim/cc-plugins"
       }
     }
   },
@@ -76,18 +78,5 @@
   "verbose": false,
   "preferredNotifChannel": "auto",
   "autoCompactEnabled": true,
-  "teammateMode": "auto",
-  "hooks": {
-    "SessionStart": [],
-    "SessionEnd": [],
-    "SubagentStart": [],
-    "SubagentStop": [],
-    "UserPromptSubmit": [],
-    "Stop": [],
-    "Notification": [],
-    "PermissionRequest": [],
-    "PreToolUse": [],
-    "PostToolUseFailure": [],
-    "PreCompact": []
-  }
+  "teammateMode": "auto"
 }

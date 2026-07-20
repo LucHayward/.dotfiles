@@ -4,8 +4,13 @@ check_for_update_on_startup = false
 commit_attribution = ""
 chatgpt_base_url = "http://127.0.0.1:9"
 approvals_reviewer = "auto_review"
-model_reasoning_effort = "high"
+model_reasoning_effort = "max"
 model = "openai.gpt-5.6-sol"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = true
 
 [mcp_servers.builder-mcp]
 args = [
@@ -21,6 +26,9 @@ TOOL_PERSONALIZATION_ENABLED = "false"
 TOOL_PERSONALIZATION_MIN_EXECUTIONS = "0"
 TOOL_PERSONALIZATION_ROLLOUT_PERCENTAGE = "100"
 TOOL_PERSONALIZATION_TRAINING_DAYS = "0"
+
+[mcp_servers.builder-mcp.tools.CodeReviewReadActions]
+approval_mode = "approve"
 
 [shell_environment_policy]
 inherit = "all"
@@ -42,9 +50,8 @@ environment = "stable"
 region = "us-east-2"
 
 [marketplaces.aim]
-last_updated = "2026-07-17T12:45:07Z"
 source_type = "local"
-source = "/local/home/luchay/.aim/cc-plugins"
+source = "/Users/luchay/.aim/cc-plugins"
 
 [plugins."AIPowerUserCapabilities-comms@aim"]
 enabled = true
@@ -88,81 +95,28 @@ memories = true
 [notice]
 hide_full_access_warning = true
 
-[hooks.state]
-
-[hooks.state."/home/luchay/.codex/config.toml:permission_request:0:0"]
-trusted_hash = "sha256:ad7b9eba81d9c588a4b5f3f692d42c4205fd16188cc981254e55f4eae9e859ab"
-
-[hooks.state."/home/luchay/.codex/config.toml:pre_compact:0:0"]
-trusted_hash = "sha256:33b95ce1092a17319f17dec68db896d690fcde0a711174099aed898d8861ead4"
-
-[hooks.state."/home/luchay/.codex/config.toml:session_start:0:0"]
-trusted_hash = "sha256:adb56ad9bb713f03fc03387825af99f7a2e587ffdfba56e9992ba0a646e8431e"
-
-[hooks.state."/home/luchay/.codex/config.toml:user_prompt_submit:0:0"]
-trusted_hash = "sha256:e7bc0429a4828ce0b76b3de7f9287de736862cb131f215573d6e6cc496b6157a"
-
-[hooks.state."/home/luchay/.codex/config.toml:subagent_start:0:0"]
-trusted_hash = "sha256:90b30bfbe22b5cef99b5c3c6f7cb9c172b4c202c4ca65d1d2b8452e328da7b91"
-
-[hooks.state."/home/luchay/.codex/config.toml:subagent_stop:0:0"]
-trusted_hash = "sha256:e2c014609563ce9a97b3301a55508e2ea55db8e13d41988267bb7cc907b9b4b9"
-
-[hooks.state."/home/luchay/.codex/config.toml:stop:0:0"]
-trusted_hash = "sha256:f36e708f9f4565a972dd7f8d80eed5c00649fe022bb8333cf3b50a3a2c0a38b9"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:permission_request:0:0"]
-trusted_hash = "sha256:ad7b9eba81d9c588a4b5f3f692d42c4205fd16188cc981254e55f4eae9e859ab"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:pre_compact:0:0"]
-trusted_hash = "sha256:33b95ce1092a17319f17dec68db896d690fcde0a711174099aed898d8861ead4"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:session_start:0:0"]
-trusted_hash = "sha256:adb56ad9bb713f03fc03387825af99f7a2e587ffdfba56e9992ba0a646e8431e"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:user_prompt_submit:0:0"]
-trusted_hash = "sha256:e7bc0429a4828ce0b76b3de7f9287de736862cb131f215573d6e6cc496b6157a"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:subagent_start:0:0"]
-trusted_hash = "sha256:90b30bfbe22b5cef99b5c3c6f7cb9c172b4c202c4ca65d1d2b8452e328da7b91"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:subagent_stop:0:0"]
-trusted_hash = "sha256:e2c014609563ce9a97b3301a55508e2ea55db8e13d41988267bb7cc907b9b4b9"
-
-[hooks.state."/local/home/luchay/.dotfiles/.codex/config.toml:stop:0:0"]
-trusted_hash = "sha256:f36e708f9f4565a972dd7f8d80eed5c00649fe022bb8333cf3b50a3a2c0a38b9"
-
-[projects."/workplace/luchay"]
-trust_level = "trusted"
-
-[projects."/local/home/luchay/ObsidianVault/experiments/git-churn-analysis"]
-trust_level = "trusted"
-
-[projects."/local/home/luchay/.dotfiles"]
-trust_level = "trusted"
-
 # peon-ping Codex hooks begin
-# install_dir = /home/luchay/.claude/hooks/peon-ping
+# install_dir = $HOME/.claude/hooks/peon-ping
 [[hooks.SessionStart]]
 matcher = "startup|resume|clear"
 
 [[hooks.SessionStart.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.UserPromptSubmit]]
 
 [[hooks.UserPromptSubmit.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.PermissionRequest]]
 
 [[hooks.PermissionRequest.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.PreCompact]]
@@ -170,28 +124,59 @@ matcher = "manual|auto"
 
 [[hooks.PreCompact.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.SubagentStart]]
 
 [[hooks.SubagentStart.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.SubagentStop]]
 
 [[hooks.SubagentStop.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
 [[hooks.Stop]]
 
 [[hooks.Stop.hooks]]
 type = "command"
-command = "if [ -f /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=/home/luchay/.claude/hooks/peon-ping bash /home/luchay/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
+command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
+[hooks.state]
+
+[hooks.state."/Users/luchay/.codex/config.toml:permission_request:0:0"]
+trusted_hash = "sha256:72cad7d9e4b1390ec65b4c121b30c80e97d5f1bc7cb9b84566e52f3edff80236"
+
+[hooks.state."/Users/luchay/.codex/config.toml:pre_compact:0:0"]
+trusted_hash = "sha256:91d21474fd67739ebf1e5087fa1a6d3f3ade85c85c2d397b47ca69d2000ecc22"
+
+[hooks.state."/Users/luchay/.codex/config.toml:session_start:0:0"]
+trusted_hash = "sha256:0b6179caa92f93b48aecd5a339599f44d133d1ec30f0eb140dc033bddf066312"
+
+[hooks.state."/Users/luchay/.codex/config.toml:user_prompt_submit:0:0"]
+trusted_hash = "sha256:b56253a13a16a5dfd9d61debffa5b2c632bfe051c76c7da776b8d195678d7b05"
+
+[hooks.state."/Users/luchay/.codex/config.toml:subagent_start:0:0"]
+trusted_hash = "sha256:caaff930a12e035d557eeb77b2f57891c232aa4fa942ec6099e306ed3de00a66"
+
+[hooks.state."/Users/luchay/.codex/config.toml:subagent_stop:0:0"]
+trusted_hash = "sha256:f1e2ef08351c0f1b67c2341a12a5f8f6db5efeba9cd735d1779008b5340252b3"
+
+[hooks.state."/Users/luchay/.codex/config.toml:stop:0:0"]
+trusted_hash = "sha256:972beb9a83a2df9c84c9247f532455c9905beb82bdedc2ded09be33be6b7c92f"
+
 # peon-ping Codex hooks end
+
+[tui]
+status_line = ["current-dir", "git-branch", "project-name", "model-with-reasoning"]
+status_line_use_colors = true
+session_picker_view = "dense"
+
+[projects."/Volumes/workplace/TouchlessDNSService/src/TouchlessDNSService"]
+trust_level = "trusted"
