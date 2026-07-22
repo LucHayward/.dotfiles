@@ -1,17 +1,16 @@
 {
-  "awsCredentialExport": "\"$HOME/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_REGION": "us-west-2",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "global.anthropic.claude-sonnet-5[1m]"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "global.anthropic.claude-opus-4-8[1m]",
+  "model": "global.anthropic.claude-sonnet-5",
   "fallbackModel": [
-    "global.anthropic.claude-sonnet-5[1m]"
+    "global.anthropic.claude-opus-4-8[1m]"
   ],
   "availableModels": [
     "claude-opus-4-6[1m]",
@@ -38,9 +37,101 @@
     "claude-sonnet-4-6": "global.anthropic.claude-sonnet-4-6",
     "claude-sonnet-4-6[1m]": "global.anthropic.claude-sonnet-4-6[1m]",
     "claude-sonnet-5": "global.anthropic.claude-sonnet-5",
-    "claude-fable-5": "global.anthropic.claude-fable-5",
+    "claude-fable-5": "global.anthropic.claude-fable-5[1m]",
     "claude-fable-5[1m]": "global.anthropic.claude-fable-5[1m]",
     "claude-haiku-4-5": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/peon-ping/peon.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ]
   },
   "worktree": {
     "baseRef": "fresh"
@@ -69,7 +160,11 @@
     }
   },
   "syntaxHighlightingDisabled": false,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
+  "askUserQuestionTimeout": "never",
+  "companyAnnouncements": [
+    "Claude Code usage is cleared for Business Data per the AI For Me Guidance.\nITAR, PII, Customer Data, and more are strictly prohibited for use within this tool.\nRead more: https://w.amazon.com/bin/view/Security/AI-Security/AIforMe-Guidance#HDATAANDEXAMPLESQUICKREFERENCETABLE"
+  ],
   "autoMemoryEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,

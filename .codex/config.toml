@@ -4,7 +4,7 @@ check_for_update_on_startup = false
 commit_attribution = ""
 chatgpt_base_url = "http://127.0.0.1:9"
 approvals_reviewer = "auto_review"
-model_reasoning_effort = "max"
+model_reasoning_effort = "xhigh"
 model = "openai.gpt-5.6-sol"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
@@ -51,7 +51,7 @@ region = "us-east-2"
 
 [marketplaces.aim]
 source_type = "local"
-source = "/Users/luchay/.aim/cc-plugins"
+source = "/Users/luchay/.aim/plugins/codex"
 
 [plugins."AIPowerUserCapabilities-comms@aim"]
 enabled = true
@@ -105,13 +105,6 @@ type = "command"
 command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
-[[hooks.UserPromptSubmit]]
-
-[[hooks.UserPromptSubmit.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
 [[hooks.PermissionRequest]]
 
 [[hooks.PermissionRequest.hooks]]
@@ -123,20 +116,6 @@ timeout = 30
 matcher = "manual|auto"
 
 [[hooks.PreCompact.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
-[[hooks.SubagentStart]]
-
-[[hooks.SubagentStart.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
-[[hooks.SubagentStop]]
-
-[[hooks.SubagentStop.hooks]]
 type = "command"
 command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
@@ -158,15 +137,6 @@ trusted_hash = "sha256:91d21474fd67739ebf1e5087fa1a6d3f3ade85c85c2d397b47ca69d20
 
 [hooks.state."/Users/luchay/.codex/config.toml:session_start:0:0"]
 trusted_hash = "sha256:0b6179caa92f93b48aecd5a339599f44d133d1ec30f0eb140dc033bddf066312"
-
-[hooks.state."/Users/luchay/.codex/config.toml:user_prompt_submit:0:0"]
-trusted_hash = "sha256:b56253a13a16a5dfd9d61debffa5b2c632bfe051c76c7da776b8d195678d7b05"
-
-[hooks.state."/Users/luchay/.codex/config.toml:subagent_start:0:0"]
-trusted_hash = "sha256:caaff930a12e035d557eeb77b2f57891c232aa4fa942ec6099e306ed3de00a66"
-
-[hooks.state."/Users/luchay/.codex/config.toml:subagent_stop:0:0"]
-trusted_hash = "sha256:f1e2ef08351c0f1b67c2341a12a5f8f6db5efeba9cd735d1779008b5340252b3"
 
 [hooks.state."/Users/luchay/.codex/config.toml:stop:0:0"]
 trusted_hash = "sha256:972beb9a83a2df9c84c9247f532455c9905beb82bdedc2ded09be33be6b7c92f"

@@ -69,9 +69,14 @@ if ask_confirmation "Symlink various dotfiles"; then
 		ln -sf "$rule" ~/.claude/rules/"$(basename "$rule")"
 	done
 
-	# Kiro CLI config
+	# Kiro CLI config and global hooks
 	mkdir -p ~/.kiro/settings
 	ln -sf ~/.dotfiles/.kiro/settings/cli.json ~/.kiro/settings/cli.json
+	if [[ ! -e ~/.kiro/hooks || -L ~/.kiro/hooks ]]; then
+		ln -sfn ~/.dotfiles/.kiro/hooks ~/.kiro/hooks
+	else
+		echo "Skipping Kiro hooks symlink: ~/.kiro/hooks is an existing directory."
+	fi
 
 	# Codex config
 	mkdir -p ~/.codex/rules ~/.codex/skills/web-search

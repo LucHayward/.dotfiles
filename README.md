@@ -29,7 +29,7 @@ ideally with shared config on `main` and thin machine-specific overlays on top.
 - **Shell** — `.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, [starship](starship.toml) prompt, [mise](mise/config.toml) runtime manager
 - **Git** — `.gitconfig`, global ignores
 - **Terminal / editors** — iTerm2, Sublime, `.vimrc`, `bat`
-- **AI tooling** — Claude Code, Kiro, and Codex configs and rules under `.claude/`, `.kiro/`, `.codex/`
+- **AI tooling** — Claude Code, Kiro, and Codex configs and rules under `.claude/`, `.kiro/`, `.codex/`; PeonPing notifications are installed and configured by the macOS installer
 - **Apps** — Firefox, Obsidian, Raycast, Karabiner, Unison sync
 - **Install scripts** — `common_install.sh` plus per-OS scripts
 

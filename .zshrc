@@ -483,9 +483,6 @@ update-all() {
     aim mcp update
     aim skills update
 
-    echo "\n🔧 Patching peon-ping hooks into Kiro agents..."
-    bash ~/.kiro/patch-peon-hooks.sh
-
     echo "\n🧹 Stripping 'Assisted by AI' from AGENTS.md files..."
     for f in ~/.aim/packages/*/eventId-*/context/*/AGENTS.md; do
         [ -f "$f" ] && sed -i '/🤖 Assisted by AI/d' "$f"

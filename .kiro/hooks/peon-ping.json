@@ -1,0 +1,25 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "PeonPing session start",
+      "description": "Notify when a Kiro session starts",
+      "trigger": "SessionStart",
+      "action": {
+        "type": "command",
+        "command": "bash \"$HOME/.dotfiles/.kiro/peon-ping-hook.sh\""
+      },
+      "timeout": 10
+    },
+    {
+      "name": "PeonPing task complete",
+      "description": "Notify when Kiro finishes a turn",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "bash \"$HOME/.dotfiles/.kiro/peon-ping-hook.sh\""
+      },
+      "timeout": 10
+    }
+  ]
+}

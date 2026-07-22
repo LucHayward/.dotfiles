@@ -12,6 +12,65 @@ function ensure_cask() {
 	fi
 }
 
+# Remove noisy events and make the remaining shared hook paths portable.
+function configure_peon_ping_hooks() {
+	local settings_file="${1:-$HOME/.claude/settings.json}"
+
+	python3 - "$settings_file" <<'PY'
+import json
+import os
+import sys
+
+settings_path = sys.argv[1]
+if not os.path.isfile(settings_path):
+    raise SystemExit(0)
+
+with open(settings_path) as settings_file:
+    settings = json.load(settings_file)
+
+absolute_hook = os.path.join(
+    os.path.expanduser("~"), ".claude", "hooks", "peon-ping", "peon.sh"
+)
+portable_hook = "$HOME/.claude/hooks/peon-ping/peon.sh"
+disabled_events = {
+    "SubagentStart",
+    "SubagentStop",
+    "UserPromptSubmit",
+    "PreToolUse",
+    "PostToolUse",
+}
+changed = False
+
+hooks = settings.get("hooks", {})
+for event_name, event_hooks in list(hooks.items()):
+    retained_entries = []
+    for entry in event_hooks:
+        retained_hooks = []
+        for hook in entry.get("hooks", []):
+            command = hook.get("command", "")
+            is_peon_hook = "/peon-ping/peon.sh" in command
+            if is_peon_hook and event_name in disabled_events:
+                changed = True
+                continue
+            if is_peon_hook and command == absolute_hook:
+                hook["command"] = portable_hook
+                changed = True
+            retained_hooks.append(hook)
+        if retained_hooks:
+            entry["hooks"] = retained_hooks
+            retained_entries.append(entry)
+    if retained_entries:
+        hooks[event_name] = retained_entries
+    else:
+        del hooks[event_name]
+
+if changed:
+    with open(settings_path, "w") as settings_file:
+        json.dump(settings, settings_file, indent=2)
+        settings_file.write("\n")
+PY
+}
+
 # ========================
 # Set mac system settings
 # ========================
@@ -207,6 +266,15 @@ if ask_confirmation "Install packages"; then
 	starship \
 	tmux \
 	uv
+fi
+
+# ==============================
+# Install and configure PeonPing
+# ==============================
+if ask_confirmation "Install and configure PeonPing"; then
+	brew install PeonPing/tap/peon-ping
+	peon-ping-setup --packs=aom_greek,deadpool,glados,peasant,peon,rick-and-morty
+	configure_peon_ping_hooks
 fi
 
 # ==========================
