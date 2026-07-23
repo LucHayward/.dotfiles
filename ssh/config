@@ -15,7 +15,6 @@ Host clouddesk
   ProxyCommand=/usr/local/bin/wssh proxy %h
   ServerAliveInterval 15
   ServerAliveCountMax 44
-  # RemoteForward 19998 127.0.0.1:19998  # disabled 2026-07-06: stale reverse tunnel, no Mac-side listener on 19998 caused "connect_to 127.0.0.1 port 19998: failed." spam
 
 
 ## End of CNAME and SSH alias configs ##
@@ -48,6 +47,10 @@ Host github.audible.com
 Match all
 
 ### End of WSSH Config Block ###
+
+# Forward remote PeonPing events to the relay running on this Mac.
+Host clouddesk
+  RemoteForward 19998 127.0.0.1:19998
 
 ### Don't save ops hosts to known_hosts ###
 Host aws-foundry-ops-*
