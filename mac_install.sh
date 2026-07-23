@@ -15,6 +15,7 @@ function ensure_cask() {
 # Remove noisy events and make the remaining shared hook paths portable.
 function configure_peon_ping_hooks() {
 	local settings_file="${1:-$HOME/.claude/settings.json}"
+	local codex_config="${2:-$HOME/.codex/config.toml}"
 
 	python3 - "$settings_file" <<'PY'
 import json
@@ -69,6 +70,8 @@ if changed:
         json.dump(settings, settings_file, indent=2)
         settings_file.write("\n")
 PY
+
+	python3 "$HOME/.dotfiles/prune_peon_ping_codex_permission.py" "$codex_config"
 }
 
 # ========================

@@ -105,13 +105,6 @@ type = "command"
 command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
 timeout = 30
 
-[[hooks.PermissionRequest]]
-
-[[hooks.PermissionRequest.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
 [[hooks.PreCompact]]
 matcher = "manual|auto"
 
@@ -128,9 +121,6 @@ command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUD
 timeout = 30
 
 [hooks.state]
-
-[hooks.state."/Users/luchay/.codex/config.toml:permission_request:0:0"]
-trusted_hash = "sha256:72cad7d9e4b1390ec65b4c121b30c80e97d5f1bc7cb9b84566e52f3edff80236"
 
 [hooks.state."/Users/luchay/.codex/config.toml:pre_compact:0:0"]
 trusted_hash = "sha256:91d21474fd67739ebf1e5087fa1a6d3f3ade85c85c2d397b47ca69d2000ecc22"

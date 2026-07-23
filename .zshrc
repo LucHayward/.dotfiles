@@ -468,6 +468,7 @@ update-all() {
     else
         bash "$HOME/.claude/hooks/peon-ping/peon.sh" update
     fi
+    python3 "$HOME/.dotfiles/prune_peon_ping_codex_permission.py"
 
     echo "\n🧰 Toolbox"
     echo "──────────"
