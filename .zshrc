@@ -241,9 +241,9 @@ if command -v fzf &> /dev/null; then
     source <(fzf --zsh)
 
     # Exclude .unison, .git, and build directories from all fzf commands using fd.
-    # --max-depth 6 keeps deep monorepo trees (e.g. ~/workplace with dozens of
-    # Brazil packages) tractable: without it fd walks ~17k files per invocation.
-    export FZF_DEFAULT_COMMAND='fd --type f --hidden --max-depth 6 --exclude .unison --exclude .git --exclude build'
+    # File search allows nested plugin content while retaining a depth cap to keep
+    # large monorepo trees tractable. Alt+C remains independently capped at 6.
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --max-depth 10 --exclude .unison --exclude .git --exclude build'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     # Alt+C (cd): breadth-first ordering. fd emits in nondeterministic parallel
     # order, so the pre-typing view is random; sorting by path depth (slash count)
