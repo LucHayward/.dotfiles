@@ -71,7 +71,7 @@ if changed:
         settings_file.write("\n")
 PY
 
-	python3 "$HOME/.dotfiles/prune_peon_ping_codex_permission.py" "$codex_config"
+	python3 "$HOME/.dotfiles/prune_peon_ping_codex_hooks.py" "$codex_config"
 }
 
 # ========================
