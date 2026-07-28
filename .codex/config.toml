@@ -134,7 +134,7 @@ trusted_hash = "sha256:972beb9a83a2df9c84c9247f532455c9905beb82bdedc2ded09be33be
 # peon-ping Codex hooks end
 
 [tui]
-status_line = ["current-dir", "git-branch", "project-name", "model-with-reasoning"]
+status_line = ["current-dir", "git-branch", "project-name", "model-with-reasoning", "context-used", "branch-changes", "task-progress", "run-state", "approval-mode"]
 status_line_use_colors = true
 session_picker_view = "dense"
 
