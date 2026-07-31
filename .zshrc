@@ -191,57 +191,63 @@ gif2vid() {
 alias tc="autossh -M 0 -A -t clouddesk /apollo/env/envImprovement/bin/tmux -u -CC new-session -AD -s tc"
 alias tfix="ssh clouddesk /apollo/env/envImprovement/bin/tmux detach-client -a -s tc"
 
+_clouddesk_path() {
+    local local_dir="${1:-$PWD}"
+    local remote_home="/home/$USER"
+    local remote_dir
+    case "$local_dir" in
+        /Volumes/workplace)
+            remote_dir="$remote_home/workplace"
+            ;;
+        /Volumes/workplace/*)
+            remote_dir="$remote_home/workplace/${local_dir#/Volumes/workplace/}"
+            ;;
+        "$HOME/workplace")
+            remote_dir="$remote_home/workplace"
+            ;;
+        "$HOME/workplace"/*)
+            remote_dir="$remote_home/workplace/${local_dir#"$HOME/workplace"/}"
+            ;;
+        "$HOME")
+            remote_dir="$remote_home"
+            ;;
+        "$HOME"/*)
+            remote_dir="$remote_home/${local_dir#"$HOME"/}"
+            ;;
+        *)
+            echo "CloudDesk: cannot map '$local_dir' to a remote path" >&2
+            return 1
+            ;;
+    esac
+
+    print -r -- "$remote_dir"
+}
+
 ssht() {
     if (( $# > 1 )); then
         echo "Usage: ssht [session-name]" >&2
         return 2
     fi
 
-    local remote_home="/home/$USER"
     local remote_dir
-    local workplace_relative
-    local -i in_workplace=0
-    case "$PWD" in
-        /Volumes/workplace)
-            remote_dir="$remote_home/workplace"
-            workplace_relative=""
-            in_workplace=1
-            ;;
-        /Volumes/workplace/*)
-            workplace_relative="${PWD#/Volumes/workplace/}"
-            remote_dir="$remote_home/workplace/$workplace_relative"
-            in_workplace=1
-            ;;
-        "$HOME/workplace")
-            remote_dir="$remote_home/workplace"
-            workplace_relative=""
-            in_workplace=1
-            ;;
-        "$HOME/workplace"/*)
-            workplace_relative="${PWD#"$HOME/workplace"/}"
-            remote_dir="$remote_home/workplace/$workplace_relative"
-            in_workplace=1
-            ;;
-        "$HOME")
-            remote_dir="$remote_home"
-            ;;
-        "$HOME"/*)
-            remote_dir="$remote_home/${PWD#"$HOME"/}"
-            ;;
-        *)
-            echo "ssht: cannot map '$PWD' to a CloudDesk path" >&2
-            return 1
-            ;;
-    esac
+    remote_dir="$(_clouddesk_path "$PWD")" || return
 
     local session_name="$1"
     if [[ -z "$session_name" ]]; then
-        if (( in_workplace )); then
-            session_name="${workplace_relative%%/*}"
-            [[ -n "$session_name" ]] || session_name="workplace"
-        else
-            session_name="${PWD:t}"
-        fi
+        local remote_workplace
+        remote_workplace="$(_clouddesk_path "$HOME/workplace")" || return
+        case "$remote_dir" in
+            "$remote_workplace")
+                session_name="workplace"
+                ;;
+            "$remote_workplace"/*)
+                session_name="${remote_dir#"$remote_workplace"/}"
+                session_name="${session_name%%/*}"
+                ;;
+            *)
+                session_name="${PWD:t}"
+                ;;
+        esac
     fi
     session_name="${session_name//[^A-Za-z0-9_-]/_}"
 
@@ -255,6 +261,22 @@ ssht() {
     local remote_command="${(j: :)escaped_command}"
 
     autossh -M 0 -A -t clouddesk "$remote_command"
+}
+
+ssh-here() {
+    if (( $# != 0 )); then
+        echo "Usage: ssh-here" >&2
+        return 2
+    fi
+
+    local remote_dir
+    remote_dir="$(_clouddesk_path "$PWD")" || return
+
+    local -a cd_command=(cd -- "$remote_dir")
+    local -a escaped_cd_command=("${(@q)cd_command}")
+    local remote_command="${(j: :)escaped_cd_command} && exec \"\${SHELL:-zsh}\" -l"
+
+    /usr/bin/ssh -2 -t clouddesk "$remote_command"
 }
 
 alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
