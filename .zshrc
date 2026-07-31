@@ -191,6 +191,72 @@ gif2vid() {
 alias tc="autossh -M 0 -A -t clouddesk /apollo/env/envImprovement/bin/tmux -u -CC new-session -AD -s tc"
 alias tfix="ssh clouddesk /apollo/env/envImprovement/bin/tmux detach-client -a -s tc"
 
+ssht() {
+    if (( $# > 1 )); then
+        echo "Usage: ssht [session-name]" >&2
+        return 2
+    fi
+
+    local remote_home="/home/$USER"
+    local remote_dir
+    local workplace_relative
+    local -i in_workplace=0
+    case "$PWD" in
+        /Volumes/workplace)
+            remote_dir="$remote_home/workplace"
+            workplace_relative=""
+            in_workplace=1
+            ;;
+        /Volumes/workplace/*)
+            workplace_relative="${PWD#/Volumes/workplace/}"
+            remote_dir="$remote_home/workplace/$workplace_relative"
+            in_workplace=1
+            ;;
+        "$HOME/workplace")
+            remote_dir="$remote_home/workplace"
+            workplace_relative=""
+            in_workplace=1
+            ;;
+        "$HOME/workplace"/*)
+            workplace_relative="${PWD#"$HOME/workplace"/}"
+            remote_dir="$remote_home/workplace/$workplace_relative"
+            in_workplace=1
+            ;;
+        "$HOME")
+            remote_dir="$remote_home"
+            ;;
+        "$HOME"/*)
+            remote_dir="$remote_home/${PWD#"$HOME"/}"
+            ;;
+        *)
+            echo "ssht: cannot map '$PWD' to a CloudDesk path" >&2
+            return 1
+            ;;
+    esac
+
+    local session_name="$1"
+    if [[ -z "$session_name" ]]; then
+        if (( in_workplace )); then
+            session_name="${workplace_relative%%/*}"
+            [[ -n "$session_name" ]] || session_name="workplace"
+        else
+            session_name="${PWD:t}"
+        fi
+    fi
+    session_name="${session_name//[^A-Za-z0-9_-]/_}"
+
+    local -a tmux_command=(
+        /apollo/env/envImprovement/bin/tmux
+        -u new-session -A
+        -s "$session_name"
+        -c "$remote_dir"
+    )
+    local -a escaped_command=("${(@q)tmux_command}")
+    local remote_command="${(j: :)escaped_command}"
+
+    autossh -M 0 -A -t clouddesk "$remote_command"
+}
+
 alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
 
 # =================================
