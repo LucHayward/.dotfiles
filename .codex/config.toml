@@ -91,6 +91,7 @@ enabled = true
 
 [features]
 memories = true
+default_mode_request_user_input = true
 
 [notice]
 hide_full_access_warning = true
