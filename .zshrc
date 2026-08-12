@@ -260,6 +260,10 @@ ssht() {
     local -a escaped_command=("${(@q)tmux_command}")
     local remote_command="${(j: :)escaped_command}"
 
+    # Decision (2026-08-12): WSSH's 15 x 44 (~11 min) default favors generic
+    # long-lived tunnels. ssht has autossh supervision and persistent tmux, so
+    # fail after four missed probes (~60s) and rebuild the WSSH transport.
+    # Context: https://w.amazon.com/bin/view/WSSH/faq/
     autossh -M 0 -A -t -o ServerAliveCountMax=4 clouddesk "$remote_command"
 }
 
