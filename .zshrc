@@ -260,7 +260,7 @@ ssht() {
     local -a escaped_command=("${(@q)tmux_command}")
     local remote_command="${(j: :)escaped_command}"
 
-    autossh -M 0 -A -t clouddesk "$remote_command"
+    autossh -M 0 -A -t -o ServerAliveCountMax=4 clouddesk "$remote_command"
 }
 
 ssh-here() {
@@ -369,6 +369,36 @@ if [[ "$HOME" == /Users/* ]]; then
         echo "⚠ Brazil completions not found. Run: brazil setup completion" >&2
     fi
 fi
+
+# Generate Codex's large completion function only when Codex changes, then let
+# compinit autoload it from the cache when completion is actually requested.
+_codex_completion_setup() {
+    (( $+commands[codex] )) || return 0
+
+    local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh-init/completions"
+    local completion_file="$cache_dir/_codex"
+    local codex_stamp="$HOME/.toolbox/tools/codex/info.json"
+    local refresh_source="${commands[codex]}"
+
+    # Toolbox's codex command is a stable wrapper, while info.json changes on
+    # Codex upgrades. Fall back to the executable timestamp elsewhere.
+    [[ -f "$codex_stamp" ]] && refresh_source="$codex_stamp"
+
+    if [[ ! -s "$completion_file" || "$refresh_source" -nt "$completion_file" ]]; then
+        mkdir -p "$cache_dir" || return 0
+        local temporary_file="$completion_file.tmp.$$"
+        if command codex completion zsh >| "$temporary_file" 2>/dev/null &&
+           [[ -s "$temporary_file" ]]; then
+            mv -f "$temporary_file" "$completion_file"
+        else
+            rm -f "$temporary_file"
+        fi
+    fi
+
+    [[ -s "$completion_file" ]] && fpath=("$cache_dir" $fpath)
+}
+_codex_completion_setup
+
 autoload -Uz compinit
 autoload -U bashcompinit
 if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
@@ -387,6 +417,13 @@ if [ "$current_day" != "$stat_cmd" ]; then
 else
     compinit -C
     bashcompinit -C
+fi
+
+# Explicit registration keeps Codex completion available even when compinit's
+# daily dump predates the generated cache file; the function body stays lazy.
+if [[ -s "${XDG_CACHE_HOME:-$HOME/.cache}/zsh-init/completions/_codex" ]]; then
+    autoload -Uz _codex
+    compdef _codex codex
 fi
 # eval "$(pandoc --bash-completion)"
 
