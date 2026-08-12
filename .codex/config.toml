@@ -6,6 +6,10 @@ chatgpt_base_url = "http://127.0.0.1:9"
 approvals_reviewer = "auto_review"
 model_reasoning_effort = "xhigh"
 model = "openai.gpt-5.6-sol"
+# Regenerate after Codex updates: ~/.dotfiles/.codex/generate-bedrock-1m-model-catalog.sh
+model_context_window = 1048576
+model_auto_compact_token_limit = 800000
+model_catalog_json = "~/.codex/model_catalog.json"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
