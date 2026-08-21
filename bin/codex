@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+# Toolbox retains only the current and previous package versions. Run Codex from
+# a content-addressed user-owned copy so long-lived sessions keep a valid helper
+# executable even after Toolbox rotates its managed version directories.
+toolbox_codex_root="${CODEX_TOOLBOX_ROOT:-${HOME}/.toolbox/tools/codex}"
+cache_root="${CODEX_STABLE_CACHE_ROOT:-${HOME}/.local/share/codex-stable}"
+info_path="${toolbox_codex_root}/info.json"
+
+if [[ ! -r "${info_path}" ]]; then
+  print -u2 "codex launcher: cannot read ${info_path}"
+  exit 1
+fi
+
+python_bin="${commands[python3]:-}"
+if [[ -z "${python_bin}" ]]; then
+  print -u2 "codex launcher: python3 is required to read Toolbox metadata"
+  exit 1
+fi
+
+version="$("${python_bin}" -c 'import json, sys; print(json.load(open(sys.argv[1]))["CurrentVersion"]["Version"])' "${info_path}")"
+source_bin="${toolbox_codex_root}/${version}/codex"
+
+if [[ ! -x "${source_bin}" ]]; then
+  print -u2 "codex launcher: current Toolbox binary is missing: ${source_bin}"
+  exit 1
+fi
+
+digest="$("${python_bin}" -c 'import hashlib, sys; h = hashlib.sha256(); f = open(sys.argv[1], "rb"); [h.update(chunk) for chunk in iter(lambda: f.read(1024 * 1024), b"")]; print(h.hexdigest())' "${source_bin}")"
+cached_dir="${cache_root}/${digest}"
+cached_bin="${cached_dir}/codex"
+
+if [[ ! -x "${cached_bin}" ]]; then
+  mkdir -p "${cached_dir}"
+  temporary_bin="${cached_dir}/.codex.${$}"
+  cp -p "${source_bin}" "${temporary_bin}"
+  chmod 755 "${temporary_bin}"
+  mv -f "${temporary_bin}" "${cached_bin}"
+fi
+
+exec "${cached_bin}" "$@"

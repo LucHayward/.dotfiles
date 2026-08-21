@@ -79,7 +79,10 @@ if ask_confirmation "Symlink various dotfiles"; then
 	fi
 
 	# Codex config
-	mkdir -p ~/.codex/rules ~/.codex/skills/web-search
+	mkdir -p ~/.codex/rules ~/.codex/skills/web-search ~/.local/bin
+	# Launch Codex from a user-owned content-addressed copy. Toolbox only keeps
+	# two package versions, which breaks apply_patch in long-lived sessions.
+	ln -sf ~/.dotfiles/bin/codex ~/.local/bin/codex
 	ln -sf ~/.dotfiles/.codex/config.toml ~/.codex/config.toml
 	ln -sf ~/.dotfiles/.codex/rules/default.rules ~/.codex/rules/default.rules
 	ln -sf ~/.dotfiles/.codex/skills/web-search/SKILL.md ~/.codex/skills/web-search/SKILL.md
