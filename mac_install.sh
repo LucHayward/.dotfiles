@@ -305,7 +305,6 @@ if ask_confirmation "Install casks"; then
 	rectangle \
 	signal \
 	syntax-highlight \
-	telegram \
 	transmission \
 	visual-studio-code \
 	vlc
