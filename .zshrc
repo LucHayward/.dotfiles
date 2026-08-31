@@ -594,10 +594,7 @@ update-all() {
     echo "──────────────────"
     if [[ "$OSTYPE" != "linux-gnu"* ]]; then
         brew update && brew upgrade && brew cleanup
-    else
-        bash "$HOME/.claude/hooks/peon-ping/peon.sh" update
     fi
-    python3 "$HOME/.dotfiles/prune_peon_ping_codex_hooks.py"
 
     echo "\n🧰 Toolbox"
     echo "──────────"
@@ -648,14 +645,6 @@ PY
 # Added by AIM CLI
 export PATH="$HOME/.aim/mcp-servers:$PATH"
 
-# Peon-ping relay reminder (mac only — linux checks the reverse direction)
-if [[ "$OSTYPE" != "linux-gnu"* ]]; then
-  if command -v peon &>/dev/null && ! peon relay --status &>/dev/null; then
-    echo "⚠️  peon relay is not running. Start it with:"
-    echo "  peon relay --daemon"
-  fi
-fi
-
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # =====================
     # Add SlamUtils to PATH
@@ -670,10 +659,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     export PATH=/apollo/env/ApolloCommandLine/bin:/apollo/env/envImprovement/bin:$PATH
 
-
-    # peon-ping quick controls (not in PATH on Linux, unlike Homebrew on Mac)
-    alias peon="bash $HOME/.claude/hooks/peon-ping/peon.sh"
-    [ -f "$HOME/.claude/hooks/peon-ping/completions.bash" ] && source "$HOME/.claude/hooks/peon-ping/completions.bash"
 
     # Kiro CLI post block. Keep at the bottom of this file.
     # [[ -f "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/kiro-cli/shell/zshrc.post.zsh"

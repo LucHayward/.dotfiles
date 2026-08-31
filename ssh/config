@@ -48,10 +48,6 @@ Match all
 
 ### End of WSSH Config Block ###
 
-# Forward remote PeonPing events to the relay running on this Mac.
-Host clouddesk
-  RemoteForward 19998 127.0.0.1:19998
-
 ### Don't save ops hosts to known_hosts ###
 Host aws-foundry-ops-*
   UserKnownHostsFile /dev/null

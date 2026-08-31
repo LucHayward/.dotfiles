@@ -100,44 +100,6 @@ default_mode_request_user_input = true
 [notice]
 hide_full_access_warning = true
 
-# peon-ping Codex hooks begin
-# install_dir = $HOME/.claude/hooks/peon-ping
-[[hooks.SessionStart]]
-matcher = "startup|resume|clear"
-
-[[hooks.SessionStart.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
-[[hooks.PreCompact]]
-matcher = "manual|auto"
-
-[[hooks.PreCompact.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
-[[hooks.Stop]]
-
-[[hooks.Stop.hooks]]
-type = "command"
-command = "if [ -f $HOME/.claude/hooks/peon-ping/adapters/codex.sh ]; then CLAUDE_PEON_DIR=$HOME/.claude/hooks/peon-ping bash $HOME/.claude/hooks/peon-ping/adapters/codex.sh >/dev/null 2>&1 || true; fi"
-timeout = 30
-
-[hooks.state]
-
-[hooks.state."/Users/luchay/.codex/config.toml:pre_compact:0:0"]
-trusted_hash = "sha256:91d21474fd67739ebf1e5087fa1a6d3f3ade85c85c2d397b47ca69d2000ecc22"
-
-[hooks.state."/Users/luchay/.codex/config.toml:session_start:0:0"]
-trusted_hash = "sha256:0b6179caa92f93b48aecd5a339599f44d133d1ec30f0eb140dc033bddf066312"
-
-[hooks.state."/Users/luchay/.codex/config.toml:stop:0:0"]
-trusted_hash = "sha256:972beb9a83a2df9c84c9247f532455c9905beb82bdedc2ded09be33be6b7c92f"
-
-# peon-ping Codex hooks end
-
 [tui]
 status_line = ["current-dir", "git-branch", "project-name", "model-with-reasoning", "context-used", "branch-changes", "task-progress", "run-state", "approval-mode"]
 status_line_use_colors = true
