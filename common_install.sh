@@ -74,10 +74,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/.kiro/settings/cli.json ~/.kiro/settings/cli.json
 
 	# Codex config
-	mkdir -p ~/.codex/rules ~/.codex/skills/web-search ~/.local/bin
-	# Launch Codex from a user-owned content-addressed copy. Toolbox only keeps
-	# two package versions, which breaks apply_patch in long-lived sessions.
-	ln -sf ~/.dotfiles/bin/codex ~/.local/bin/codex
+	mkdir -p ~/.codex/rules ~/.codex/skills/web-search
 	ln -sf ~/.dotfiles/.codex/config.toml ~/.codex/config.toml
 	ln -sf ~/.dotfiles/.codex/rules/default.rules ~/.codex/rules/default.rules
 	ln -sf ~/.dotfiles/.codex/skills/web-search/SKILL.md ~/.codex/skills/web-search/SKILL.md
