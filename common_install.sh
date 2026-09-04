@@ -56,6 +56,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 	mkdir -p ~/.ssh
 	ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
 	ln -sf ~/.dotfiles/.vimrc ~/.vimrc
+	ln -sf ~/.dotfiles/.tmux.conf ~/.tmux.conf
 	mkdir -p ~/.config/bat ~/.config/git ~/.aws
 	ln -sf ~/.dotfiles/config/bat/config ~/.config/bat/config
 	ln -sf ~/.dotfiles/config/git/excludes ~/.config/git/excludes
