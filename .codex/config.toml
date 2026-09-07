@@ -4,7 +4,7 @@ check_for_update_on_startup = false
 commit_attribution = ""
 chatgpt_base_url = "http://127.0.0.1:9"
 approvals_reviewer = "auto_review"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 model = "openai.gpt-5.6-sol"
 # Regenerate after Codex updates: ~/.dotfiles/.codex/generate-bedrock-1m-model-catalog.sh
 model_context_window = 1048576
@@ -58,22 +58,22 @@ source_type = "local"
 source = "/Users/luchay/.aim/plugins/codex"
 
 [plugins."AIPowerUserCapabilities-comms@aim"]
-enabled = true
+enabled = false
 
 [plugins."AIPowerUserCapabilities-writing@aim"]
-enabled = true
+enabled = false
 
 [plugins."AIPowerUserCapabilities-research@aim"]
-enabled = true
+enabled = false
 
 [plugins."AIPowerUserCapabilities-core-dev@aim"]
-enabled = true
+enabled = false
 
 [plugins."AIPowerUserCapabilities-code-review@aim"]
 enabled = true
 
 [plugins."AmazonBuilderCoreAIAgents-pipeline-assistant@aim"]
-enabled = true
+enabled = false
 
 [plugins."AmazonBuilderCoreAIAgents-core@aim"]
 enabled = true
@@ -90,7 +90,7 @@ enabled = true
 [plugins."MeshClawAICapabilities-all@aim"]
 enabled = true
 
-[plugins."MfArbalestAICapabilities-all@aim"]
+[plugins."MfArbalestAICapabilities-arbalest@aim"]
 enabled = true
 
 [features]
@@ -104,6 +104,7 @@ hide_full_access_warning = true
 status_line = ["current-dir", "git-branch", "project-name", "model-with-reasoning", "context-used", "branch-changes", "task-progress", "run-state", "approval-mode"]
 status_line_use_colors = true
 session_picker_view = "dense"
+pet = "disabled"
 
 [projects."/Volumes/workplace/TouchlessDNSService/src/TouchlessDNSService"]
 trust_level = "trusted"

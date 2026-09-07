@@ -2,3 +2,6 @@
 
 # Ephemeral Claude Code agent worktrees (auto-created/removed per session)
 .claude/worktrees/
+
+# Runtime lock created while Codex rewrites its live configuration
+.codex/config.toml.lock
