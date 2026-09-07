@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Sync ~/.claude/settings.json into the dotfiles repo (or back out again).
+#
+# This file cannot be symlinked or hardlinked into the repo: Claude Code
+# rewrites it via atomic rename on session exit, which replaces a symlink with
+# a regular file and strands a hardlink on the old inode holding stale content.
+# Copying is the only arrangement that survives, so the copy is explicit.
+#
+#   claude-settings-sync pull    live -> repo   (capture settings for backup)
+#   claude-settings-sync push    repo -> live   (restore onto a new host)
+#   claude-settings-sync diff    show drift without writing anything
+
+set -euo pipefail
+
+LIVE="$HOME/.claude/settings.json"
+REPO="$HOME/.dotfiles/.claude/settings.json"
+
+valid_json() { python3 -m json.tool "$1" >/dev/null 2>&1; }
+
+case "${1:-diff}" in
+pull)
+	[[ -f $LIVE ]] || { echo "no live settings at $LIVE" >&2; exit 1; }
+	valid_json "$LIVE" || { echo "live settings are not valid JSON, refusing" >&2; exit 1; }
+	cp "$LIVE" "$REPO"
+	echo "pulled $LIVE -> $REPO"
+	;;
+push)
+	[[ -f $REPO ]] || { echo "no repo settings at $REPO" >&2; exit 1; }
+	valid_json "$REPO" || { echo "repo settings are not valid JSON, refusing" >&2; exit 1; }
+	[[ -f $LIVE ]] && cp "$LIVE" "$LIVE.bak"
+	cp "$REPO" "$LIVE"
+	echo "pushed $REPO -> $LIVE"
+	;;
+diff)
+	if diff -u "$REPO" "$LIVE"; then
+		echo "in sync"
+	fi
+	;;
+*)
+	echo "usage: claude-settings-sync [pull|push|diff]" >&2
+	exit 2
+	;;
+esac

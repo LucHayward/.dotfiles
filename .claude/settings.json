@@ -8,39 +8,21 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "global.anthropic.claude-sonnet-5",
+  "model": "opus[1m]",
   "fallbackModel": [
-    "global.anthropic.claude-opus-4-8[1m]"
+    "global.anthropic.claude-opus-4-8[1m]",
+    "global.anthropic.claude-opus-4-7[1m]",
+    "global.anthropic.claude-opus-4-6-v1[1m]"
   ],
   "availableModels": [
-    "claude-opus-4-6[1m]",
-    "claude-opus-4-6",
-    "claude-opus-4-7[1m]",
-    "claude-opus-4-7",
-    "claude-opus-4-8[1m]",
-    "claude-opus-4-8",
-    "claude-sonnet-4-6",
-    "claude-sonnet-4-6[1m]",
-    "claude-sonnet-5",
-    "claude-fable-5",
-    "claude-fable-5[1m]",
-    "claude-haiku-4-5"
+    "fable[1m]",
+    "opus[1m]",
+    "opus",
+    "opusplan",
+    "sonnet",
+    "haiku"
   ],
   "enforceAvailableModels": true,
-  "modelOverrides": {
-    "claude-opus-4-6[1m]": "global.anthropic.claude-opus-4-6-v1[1m]",
-    "claude-opus-4-6": "global.anthropic.claude-opus-4-6-v1",
-    "claude-opus-4-7[1m]": "global.anthropic.claude-opus-4-7[1m]",
-    "claude-opus-4-7": "global.anthropic.claude-opus-4-7",
-    "claude-opus-4-8[1m]": "global.anthropic.claude-opus-4-8[1m]",
-    "claude-opus-4-8": "global.anthropic.claude-opus-4-8",
-    "claude-sonnet-4-6": "global.anthropic.claude-sonnet-4-6",
-    "claude-sonnet-4-6[1m]": "global.anthropic.claude-sonnet-4-6[1m]",
-    "claude-sonnet-5": "global.anthropic.claude-sonnet-5",
-    "claude-fable-5": "global.anthropic.claude-fable-5[1m]",
-    "claude-fable-5[1m]": "global.anthropic.claude-fable-5[1m]",
-    "claude-haiku-4-5": "global.anthropic.claude-haiku-4-5-20251001-v1:0"
-  },
   "worktree": {
     "baseRef": "fresh"
   },
@@ -57,7 +39,7 @@
     "AIPowerUserCapabilities-writing@aim": false,
     "AIPowerUserCapabilities-research@aim": false,
     "ChorusAIM-all@aim": true,
-    "MfArbalestAICapabilities-all@aim": true
+    "MfArbalestAICapabilities-arbalest@aim": true
   },
   "extraKnownMarketplaces": {
     "aim": {
@@ -67,12 +49,14 @@
       }
     }
   },
+  "outputStyle": "Concise",
   "syntaxHighlightingDisabled": false,
-  "effortLevel": "xhigh",
+  "effortLevel": "medium",
   "askUserQuestionTimeout": "never",
   "companyAnnouncements": [
     "Claude Code usage is cleared for Business Data per the AI For Me Guidance.\nITAR, PII, Customer Data, and more are strictly prohibited for use within this tool.\nRead more: https://w.amazon.com/bin/view/Security/AI-Security/AIforMe-Guidance#HDATAANDEXAMPLESQUICKREFERENCETABLE"
   ],
+  "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,

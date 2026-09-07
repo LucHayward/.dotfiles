@@ -64,11 +64,29 @@ if ask_confirmation "Symlink various dotfiles"; then
 
 	# Claude Code config
 	mkdir -p ~/.claude/rules
-	ln -sf ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
+	# settings.json is copied, not symlinked: Claude Code rewrites it via
+	# atomic rename on session exit, which replaces a symlink with a regular
+	# file (and would leave a hardlink silently stale on the old inode).
+	# Seed it only when absent so a re-run never clobbers live settings;
+	# use claude-settings-sync to capture live changes back into the repo.
+	if [[ ! -e ~/.claude/settings.json ]]; then
+		cp ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
+	fi
 	ln -sf ~/.dotfiles/.claude/CLAUDE.md ~/.claude/CLAUDE.md
 	for rule in ~/.dotfiles/.claude/rules/*.md; do
 		ln -sf "$rule" ~/.claude/rules/"$(basename "$rule")"
 	done
+
+	echo ""
+	echo "━━━ Claude Code: settings.json is copied, not symlinked ━━━"
+	echo ""
+	echo "	Claude Code and AIM rewrite ~/.claude/settings.json as you use them, so it"
+	echo "	drifts from the repo. Capture live changes before committing:"
+	echo ""
+	echo "	~/.dotfiles/claude-settings-sync diff	# show drift"
+	echo "	~/.dotfiles/claude-settings-sync pull	# live -> repo, then commit"
+	echo "	~/.dotfiles/claude-settings-sync push	# repo -> live, on a new host"
+	echo ""
 
 	# Kiro CLI config
 	mkdir -p ~/.kiro/settings
