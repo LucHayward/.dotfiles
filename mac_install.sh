@@ -269,6 +269,7 @@ if ask_confirmation "Install and setup iTerm2"; then
 	killall iTerm2 2>/dev/null && sleep 1
 
 	# Import saved preferences if they exist in the repo
+	ITERM_CUSTOM_FOLDER=false
 	if [[ -f "${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist" ]]; then
 		echo "Importing iTerm2 preferences from dotfiles..."
 		# Remove active prefs so iTerm2 reads from custom folder on next launch
@@ -276,16 +277,34 @@ if ask_confirmation "Install and setup iTerm2"; then
 		defaults delete com.googlecode.iterm2 2>/dev/null
 		defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${HOME}/.dotfiles/iterm2"
 		defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+		ITERM_CUSTOM_FOLDER=true
 	else
 		echo "No saved iTerm2 preferences found. Importing color scheme..."
 		open "${HOME}/.dotfiles/iterm2/One Dark whiter.itermcolors"
 	fi
 
 	echo ""
-	echo "To save your iTerm2 settings (keybindings, profiles, etc.) for future machines:"
-	echo "	mkdir -p ~/.dotfiles/iterm2"
-	echo "	cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/.dotfiles/iterm2/"
-	echo "	cd ~/.dotfiles && git add iterm2/ && git commit -m 'feat: Save iTerm2 preferences'"
+	echo "━━━ iTerm2: How to save settings for future machines ━━━"
+	echo ""
+	if [[ "$ITERM_CUSTOM_FOLDER" == true ]]; then
+		# The custom folder IS the repo, so ~/Library/Preferences is no longer the
+		# source of truth: copying from there would overwrite good prefs with stale ones.
+		echo "	iTerm2 now reads and writes its plist directly in ~/.dotfiles/iterm2/,"
+		echo "	so there is nothing to copy. It writes changes out when it quits."
+		echo ""
+		echo "	# quit iTerm2, then:"
+		echo "	cd ~/.dotfiles && git add iterm2/ && git commit -m 'feat(iterm2): Save preferences'"
+	else
+		echo "	Point iTerm2 at the repo so it saves settings there itself:"
+		echo ""
+		echo "	iTerm2 → Settings → General → Settings"
+		echo "	  ✓ Load settings from a custom folder or URL → ~/.dotfiles/iterm2"
+		echo "	  Save changes: Automatically"
+		echo ""
+		echo "	# quit iTerm2, then:"
+		echo "	cd ~/.dotfiles && git add iterm2/ && git commit -m 'feat(iterm2): Save preferences'"
+	fi
+	echo ""
 fi
 
 # ==========================
