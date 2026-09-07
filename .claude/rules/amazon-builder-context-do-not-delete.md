@@ -59,7 +59,7 @@ After navigating to the package directory:
 2. If custom instructions exist, follow those specific build steps
 3. If no custom instructions are found, use one of the standard Brazil build processes:
 
-   **Option 1: BrazilBuildAnalyzerTool (if builder-mcp is available)**
+   **Option 1: `brazil-build-analyzer-skill`**
    
    **Option 2: Standard build with log redirection to manage verbose output:**
    brazil-build commands can take a long time to run and the output can be very large, so you MUST save brazil-build output to a temp file. You SHOULD then parse the temp file with tools like grep or tail.
@@ -111,14 +111,27 @@ When adding new package dependencies to a Brazil package:
 3. Look at existing packages with similar functionality to find the right dependencies and versions.
 4. After adding new dependencies to the Config file, you may encounter build errors about missing dependencies in the version set. To resolve this:
    ```
-   brazil workspace merge
+   brazil workspace merge --local
    ```
-   This command:
-   - Identifies missing dependencies
-   - Creates a dry-run merge build
-   - Merges the dependencies into your local copy of the version set
-   - After this, `brazil-build release` should work
+   This command resolves any missing dependencies and adds them to the local workspace. After this, `brazil-build release` should work.
 
-5. If you see errors about dependencies not being in the version set, always try `brazil workspace merge` first before making other changes.
+5. If you see errors about dependencies not being in the version set, always try `brazil workspace sync --metadata` first, followed by `brazil workspace merge --local` if that doesn't fix the problem.
 
 Exception case: If the package is using NpmPrettyMuch, e.g., CDK code packages use this, then dependencies usually just go in package.json like usual. To understand what package versions are available, you can search this internal website: https://npmpm.corp.amazon.com/pkg/<package name> Example: `https://npmpm.corp.amazon.com/pkg/@amzn/pipelines`
+
+### Dependency Sources
+
+To pull down the source code for a Brazil dependency, run:
+
+```
+brazil-path '[PackageName]pkg.src'
+```
+
+This will return a filesystem path containing the package sources. Note that
+this invocation only works when run from a Brazil package whose `Config` file
+declares a direct dependency on `PackageName`. To obtain the sources for a
+transitive dependency, the major version must be spelled out using `@`:
+
+```
+brazil-path '[PackageName@MV]pkg.src'
+```
