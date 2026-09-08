@@ -1,5 +1,5 @@
 {
-  "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "\"$HOME/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_REGION": "us-west-2",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
