@@ -1,43 +1,45 @@
 {
   "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
   "env": {
-    "AWS_REGION": "us-west-2",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "AWS_EC2_METADATA_DISABLED": "true",
+    "AWS_REGION": "us-west-2"
   },
-  "includeCoAuthoredBy": false,
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
-  "fallbackModel": [
-    "global.anthropic.claude-opus-4-8[1m]",
-    "global.anthropic.claude-opus-4-7[1m]",
-    "global.anthropic.claude-opus-4-6-v1[1m]"
-  ],
-  "availableModels": [
-    "fable[1m]",
-    "opus[1m]",
-    "opus",
-    "opusplan",
-    "sonnet",
-    "haiku"
-  ],
-  "enforceAvailableModels": true,
-  "worktree": {
-    "baseRef": "fresh"
+  "enforceAvailableModels": false,
+  "modelOverrides": {
+    "claude-sonnet-5-5[1m]": "global.anthropic.claude-sonnet-5-5[1m]",
+    "claude-sonnet-5-5": "global.anthropic.claude-sonnet-5-5"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/luchay/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
-    "type": "command",
-    "command": "cship"
+    "command": "\"/Users/luchay/.toolbox/bin/claude\" amzn-statusline",
+    "refreshInterval": 300,
+    "type": "command"
   },
   "enabledPlugins": {
-    "AmazonBuilderCoreAIAgents-core@aim": true,
+    "AmazonBuilderCoreAIAgents-runtime-configuration-assistant@aim": true,
     "AmazonBuilderCoreAIAgents-pipeline-assistant@aim": true,
+    "AmazonBuilderCoreAIAgents-core@aim": true,
+    "AIPowerUserCapabilities-comms@aim": true,
+    "AIPowerUserCapabilities-research@aim": true,
     "AIPowerUserCapabilities-core-dev@aim": true,
     "AIPowerUserCapabilities-code-review@aim": true,
-    "AIPowerUserCapabilities-comms@aim": false,
-    "AIPowerUserCapabilities-writing@aim": false,
-    "AIPowerUserCapabilities-research@aim": false,
+    "AIPowerUserCapabilities-writing@aim": true,
     "ChorusAIM-all@aim": true,
     "MfArbalestAICapabilities-arbalest@aim": true
   },
@@ -45,25 +47,16 @@
     "aim": {
       "source": {
         "source": "directory",
-        "path": "~/.aim/cc-plugins"
+        "path": "/Users/luchay/.aim/cc-plugins"
       }
     }
   },
-  "outputStyle": "Concise",
-  "syntaxHighlightingDisabled": false,
-  "effortLevel": "medium",
-  "askUserQuestionTimeout": "never",
-  "companyAnnouncements": [
-    "Claude Code usage is cleared for Business Data per the AI For Me Guidance.\nITAR, PII, Customer Data, and more are strictly prohibited for use within this tool.\nRead more: https://w.amazon.com/bin/view/Security/AI-Security/AIforMe-Guidance#HDATAANDEXAMPLESQUICKREFERENCETABLE"
-  ],
-  "tui": "fullscreen",
-  "autoMemoryEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "skipWorkflowUsageWarning": true,
-  "theme": "dark",
-  "editorMode": "normal",
-  "verbose": false,
-  "preferredNotifChannel": "auto",
-  "autoCompactEnabled": true,
-  "teammateMode": "auto"
+  "modelSettings": {
+    "claude-fable-5": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    }
+  }
 }

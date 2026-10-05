@@ -64,28 +64,23 @@ if ask_confirmation "Symlink various dotfiles"; then
 
 	# Claude Code config
 	mkdir -p ~/.claude/rules
-	# settings.json is copied, not symlinked: Claude Code rewrites it via
-	# atomic rename on session exit, which replaces a symlink with a regular
-	# file (and would leave a hardlink silently stale on the old inode).
-	# Seed it only when absent so a re-run never clobbers live settings;
-	# use claude-settings-sync to capture live changes back into the repo.
-	if [[ ! -e ~/.claude/settings.json ]]; then
-		cp ~/.dotfiles/.claude/settings.json ~/.claude/settings.json
-	fi
+	# Capture any live replacement before restoring the settings symlink.
+	# Keep a newer live write if settings change during capture.
+	~/.dotfiles/claude-settings-sync repair || exit 1
 	ln -sf ~/.dotfiles/.claude/CLAUDE.md ~/.claude/CLAUDE.md
 	for rule in ~/.dotfiles/.claude/rules/*.md; do
 		ln -sf "$rule" ~/.claude/rules/"$(basename "$rule")"
 	done
 
 	echo ""
-	echo "━━━ Claude Code: settings.json is copied, not symlinked ━━━"
+	echo "━━━ Claude Code: settings.json is captured before relinking ━━━"
 	echo ""
-	echo "	Claude Code and AIM rewrite ~/.claude/settings.json as you use them, so it"
-	echo "	drifts from the repo. Capture live changes before committing:"
+	echo "	Toolbox updates and update-all repair the link automatically."
+	echo "	macOS also repairs daily at 09:00 and when the job loads at login."
 	echo ""
 	echo "	~/.dotfiles/claude-settings-sync diff	# show drift"
-	echo "	~/.dotfiles/claude-settings-sync pull	# live -> repo, then commit"
-	echo "	~/.dotfiles/claude-settings-sync push	# repo -> live, on a new host"
+	echo "	~/.dotfiles/claude-settings-sync repair	# capture live -> repo, then relink"
+	echo "	~/.dotfiles/claude-settings-sync push	# explicitly restore repo -> live"
 	echo ""
 
 	# Kiro CLI config
@@ -108,6 +103,11 @@ if ask_confirmation "Symlink various dotfiles"; then
 		mkdir -p ~/Library/LaunchAgents
 		ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
 		ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
+
+		# Capture Claude settings once daily, even without a Toolbox update.
+		ln -sf ~/.dotfiles/.claude/local.claude-settings-repair.plist ~/Library/LaunchAgents/local.claude-settings-repair.plist
+		launchctl print "gui/$(id -u)/local.claude-settings-repair" >/dev/null 2>&1 ||
+			launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/local.claude-settings-repair.plist
 
 		# Obsidian vault registry (points Obsidian at ~/ObsidianVault)
 		mkdir -p ~/Library/Application\ Support/obsidian

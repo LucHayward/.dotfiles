@@ -589,57 +589,19 @@ rm-ssh-key () {
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 }
 
-update-all() {
-    echo "\n📦 System packages"
-    echo "──────────────────"
-    if [[ "$OSTYPE" != "linux-gnu"* ]]; then
-        brew update && brew upgrade && brew cleanup
+# Toolbox may replace Claude's settings symlink with a regular file.
+# Capture the new contents before repairing the link, even after a failed update.
+toolbox() {
+    local toolbox_exit_code=0
+    command toolbox "$@" || toolbox_exit_code=$?
+    if [[ "${1:-}" == update && -x "$HOME/.dotfiles/claude-settings-sync" ]]; then
+        "$HOME/.dotfiles/claude-settings-sync" repair ||
+            print -u2 "Claude settings repair failed; the live file was preserved."
     fi
-
-    echo "\n🧰 Toolbox"
-    echo "──────────"
-    toolbox update
-
-    echo "\n🛠  Mise"
-    echo "────────"
-    mise upgrade
-
-    echo "\n🤖 AIM"
-    echo "───────"
-    aim agents update
-    aim mcp update
-    aim skills update
-
-    echo "\n🧹 Stripping 'Assisted by AI' from AGENTS.md files..."
-    for f in ~/.aim/packages/*/eventId-*/context/*/AGENTS.md; do
-        [ -f "$f" ] && sed -i '/🤖 Assisted by AI/d' "$f"
-    done
-
-    echo "\n🔀 De-duping bundled builder-mcp from AIM plugins..."
-    # Every AIM plugin vendors its own scoped builder-mcp, which Claude Code
-    # can't dedupe (each is namespaced plugin_<name>_builder-mcp). We keep the
-    # single standalone builder-mcp in ~/.claude.json and strip the key from
-    # each plugin's .mcp.json. Only the builder-mcp key is removed; co-located
-    # servers (cr-guide, pippin, spec-studio, ...) are left intact.
-    for f in ~/.aim/cc-plugins/*/.mcp.json; do
-        [ -f "$f" ] || continue
-        python3 - "$f" <<'PY'
-import json, sys
-p = sys.argv[1]
-with open(p) as fh:
-    d = json.load(fh)
-servers = d.get("mcpServers", {})
-if "builder-mcp" in servers:
-    del servers["builder-mcp"]
-    with open(p, "w") as fh:
-        json.dump(d, fh, indent=2)
-        fh.write("\n")
-    print(f"  stripped builder-mcp from {p.split('/cc-plugins/')[-1]}")
-PY
-    done
-
-    echo "\n✅ All done!"
+    return "$toolbox_exit_code"
 }
+
+alias update-all="$HOME/.dotfiles/update-all"
 
 
 # Added by AIM CLI

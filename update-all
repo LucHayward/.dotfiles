@@ -1,0 +1,68 @@
+#!/usr/bin/env zsh
+# Update the machine's tools, then repair Claude settings after AIM finishes.
+
+echo "\n📦 System packages"
+echo "──────────────────"
+if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+    brew update && brew upgrade && brew cleanup
+fi
+
+echo "\n🧰 Toolbox"
+echo "──────────"
+# Repair once at the end, after AIM has finished updating Claude settings.
+command toolbox update
+
+echo "\n🛠  Mise"
+echo "────────"
+mise upgrade
+
+echo "\n🤖 AIM"
+echo "───────"
+aim agents update
+aim mcp update
+aim skills update
+
+echo "\n🧹 Stripping 'Assisted by AI' from AGENTS.md files..."
+for f in "$HOME"/.aim/packages/*/eventId-*/context/*/AGENTS.md(N); do
+    [ -f "$f" ] || continue
+    python3 - "$f" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+original = path.read_bytes()
+marker = "🤖 Assisted by AI".encode()
+updated = b"".join(line for line in original.splitlines(keepends=True) if marker not in line)
+if updated != original:
+    path.write_bytes(updated)
+PY
+done
+
+echo "\n🔀 De-duping bundled builder-mcp from AIM plugins..."
+# Every AIM plugin vendors its own scoped builder-mcp, which Claude Code
+# can't dedupe (each is namespaced plugin_<name>_builder-mcp). We keep the
+# single standalone builder-mcp in ~/.claude.json and strip the key from
+# each plugin's .mcp.json. Only the builder-mcp key is removed; co-located
+# servers (cr-guide, pippin, spec-studio, ...) are left intact.
+for f in "$HOME"/.aim/cc-plugins/*/.mcp.json(N); do
+    [ -f "$f" ] || continue
+    python3 - "$f" <<'PY'
+import json, sys
+p = sys.argv[1]
+with open(p) as fh:
+    d = json.load(fh)
+servers = d.get("mcpServers", {})
+if "builder-mcp" in servers:
+    del servers["builder-mcp"]
+    with open(p, "w") as fh:
+        json.dump(d, fh, indent=2)
+        fh.write("\n")
+    print(f"  stripped builder-mcp from {p.split('/cc-plugins/')[-1]}")
+PY
+done
+
+# AIM can also rewrite settings after the Toolbox step.
+"$HOME/.dotfiles/claude-settings-sync" repair ||
+    print -u2 "Claude settings repair failed; the live file was preserved."
+
+echo "\n✅ All done!"

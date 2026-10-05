@@ -1,43 +1,136 @@
-#!/usr/bin/env bash
-# Sync ~/.claude/settings.json into the dotfiles repo (or back out again).
-#
-# This file cannot be symlinked or hardlinked into the repo: Claude Code
-# rewrites it via atomic rename on session exit, which replaces a symlink with
-# a regular file and strands a hardlink on the old inode holding stale content.
-# Copying is the only arrangement that survives, so the copy is explicit.
-#
-#   claude-settings-sync pull    live -> repo   (capture settings for backup)
-#   claude-settings-sync push    repo -> live   (restore onto a new host)
-#   claude-settings-sync diff    show drift without writing anything
+#!/usr/bin/env python3
+"""Capture Claude settings before repairing the live symlink."""
 
-set -euo pipefail
+import argparse
+import difflib
+import fcntl
+import json
+import os
+from pathlib import Path
+import shutil
+import stat
+import tempfile
+from datetime import datetime, timezone
 
-LIVE="$HOME/.claude/settings.json"
-REPO="$HOME/.dotfiles/.claude/settings.json"
 
-valid_json() { python3 -m json.tool "$1" >/dev/null 2>&1; }
+HOME_DIR = Path.home()
+LIVE = HOME_DIR / ".claude/settings.json"
+REPO = Path(__file__).resolve().parent / ".claude/settings.json"
+BACKUPS = HOME_DIR / ".claude/settings-backups"
 
-case "${1:-diff}" in
-pull)
-	[[ -f $LIVE ]] || { echo "no live settings at $LIVE" >&2; exit 1; }
-	valid_json "$LIVE" || { echo "live settings are not valid JSON, refusing" >&2; exit 1; }
-	cp "$LIVE" "$REPO"
-	echo "pulled $LIVE -> $REPO"
-	;;
-push)
-	[[ -f $REPO ]] || { echo "no repo settings at $REPO" >&2; exit 1; }
-	valid_json "$REPO" || { echo "repo settings are not valid JSON, refusing" >&2; exit 1; }
-	[[ -f $LIVE ]] && cp "$LIVE" "$LIVE.bak"
-	cp "$REPO" "$LIVE"
-	echo "pushed $REPO -> $LIVE"
-	;;
-diff)
-	if diff -u "$REPO" "$LIVE"; then
-		echo "in sync"
-	fi
-	;;
-*)
-	echo "usage: claude-settings-sync [pull|push|diff]" >&2
-	exit 2
-	;;
-esac
+
+def read_settings(path):
+    contents = path.read_bytes()
+    if not isinstance(json.loads(contents), dict):
+        raise ValueError(f"{path} must contain a JSON object")
+    return contents
+
+
+def backup(path, label):
+    if path.exists():
+        BACKUPS.mkdir(mode=0o700, parents=True, exist_ok=True)
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
+        destination = BACKUPS / f"{label}.{stamp}.json"
+        shutil.copyfile(path, destination)
+        destination.chmod(0o600)
+
+
+def atomic_write(path, contents):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o600
+    descriptor, temporary = tempfile.mkstemp(prefix=".settings-sync-", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            os.fchmod(stream.fileno(), mode)
+            stream.write(contents)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.lexists(temporary):
+            os.unlink(temporary)
+
+
+def capture():
+    contents = read_settings(LIVE)
+    if REPO.exists() and REPO.read_bytes() == contents:
+        return contents
+    backup(REPO, "repo-settings")
+    atomic_write(REPO, contents)
+    print(f"Captured {LIVE} -> {REPO}")
+    return contents
+
+
+def link_live():
+    descriptor, temporary = tempfile.mkstemp(prefix=".settings-link-", dir=LIVE.parent)
+    os.close(descriptor)
+    try:
+        os.unlink(temporary)
+        os.symlink(REPO, temporary)
+        os.replace(temporary, LIVE)
+    finally:
+        if os.path.lexists(temporary):
+            os.unlink(temporary)
+    print(f"Linked {LIVE} -> {REPO}")
+
+
+def repair():
+    if LIVE.is_symlink() and LIVE.resolve() == REPO:
+        read_settings(REPO)
+        return
+    identity = LIVE.lstat() if os.path.lexists(LIVE) else None
+    captured_live = LIVE.exists()
+    contents = capture() if captured_live else read_settings(REPO)
+    if identity:
+        current = LIVE.lstat()
+        if (current.st_dev, current.st_ino, current.st_mtime_ns, current.st_size) != (
+            identity.st_dev, identity.st_ino, identity.st_mtime_ns, identity.st_size
+        ) or (captured_live and LIVE.read_bytes() != contents) or (
+            not captured_live and LIVE.exists()
+        ):
+            print("Live settings changed during capture; relinking is deferred.")
+            return
+    elif os.path.lexists(LIVE):
+        print("Live settings appeared during repair; relinking is deferred.")
+        return
+    link_live()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("action", nargs="?", default="diff",
+                        choices=["repair", "pull", "push", "diff"])
+    action = parser.parse_args().action
+    if REPO.is_symlink():
+        raise ValueError(f"The repo settings must be a regular file: {REPO}")
+    if action == "diff":
+        previous = read_settings(REPO).decode()
+        current = read_settings(LIVE).decode()
+        if previous == current:
+            print("in sync")
+            return
+        print("".join(difflib.unified_diff(
+            previous.splitlines(keepends=True), current.splitlines(keepends=True),
+            fromfile=str(REPO), tofile=str(LIVE)
+        )), end="")
+        raise SystemExit(1)
+    LIVE.parent.mkdir(parents=True, exist_ok=True)
+    with (LIVE.parent / ".settings-sync.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if action == "repair":
+            repair()
+        elif action == "pull":
+            capture()
+        else:
+            read_settings(REPO)
+            if LIVE.is_symlink() and LIVE.resolve() == REPO:
+                return
+            backup(LIVE, "live-settings")
+            link_live()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"claude-settings-sync: {error}")

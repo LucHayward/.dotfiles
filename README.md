@@ -36,6 +36,12 @@ ideally with shared config on `main` and thin machine-specific overlays on top.
 Configs live in this repo and are symlinked to their expected locations, so
 edits here take effect directly.
 
+## Updating tools
+
+Run `update-all` in your shell, or `~/.dotfiles/update-all` directly. The
+standalone script updates Homebrew on macOS, Toolbox, mise, and AIM, cleans up
+AIM's generated files, then repairs the Claude settings symlink once at the end.
+
 ## Shell startup caching
 
 To keep shell startup fast, `.zshrc` avoids re-running slow `eval "$(tool ...)"`
