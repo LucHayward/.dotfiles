@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
+# Use system zsh; relocated Apollo builds can have missing module paths.
 # Update the machine's tools, then repair Claude settings after AIM finishes.
 
 echo "\n📦 System packages"

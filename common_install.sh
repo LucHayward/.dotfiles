@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
 # ==========================================
 # Common installation script
 # Runs specific scripts for macOS and ubuntu
