@@ -90,7 +90,7 @@ alias tree="eza --tree -la --classify --git --git-ignore --ignore-glob=.git"
 # Search for all TODOs / FIXMEs from the current directory
 alias gtd="grep -ri --exclude-dir=build --exclude-dir=.git -E \"(TODO|FIXME)\" *"
 # List long showing filetypes, all files, and git info
-alias ll="eza --long --classify --all --git --time-style=long-iso"
+alias ll="eza --long --classify --all --git --time-style=long-iso --group-directories-first"
 # List just the simple things
 alias ls="eza --classify --all"
 # Always include colours for grep
