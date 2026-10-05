@@ -1,5 +1,5 @@
 {
-  "awsCredentialExport": "\"$HOME/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "~/.toolbox/bin/claude default-credential-export",
   "env": {
     "AWS_EC2_METADATA_DISABLED": "true",
     "AWS_REGION": "us-west-2"
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash '/Users/luchay/.claude/hooks/herdr-agent-state.sh' session",
+            "command": "bash ~/.claude/hooks/herdr-agent-state.sh session",
             "timeout": 10
           }
         ]
@@ -27,7 +27,7 @@
     ]
   },
   "statusLine": {
-    "command": "\"/Users/luchay/.toolbox/bin/claude\" amzn-statusline",
+    "command": "~/.toolbox/bin/claude amzn-statusline",
     "refreshInterval": 300,
     "type": "command"
   },
@@ -42,14 +42,6 @@
     "AIPowerUserCapabilities-writing@aim": true,
     "ChorusAIM-all@aim": true,
     "MfArbalestAICapabilities-arbalest@aim": true
-  },
-  "extraKnownMarketplaces": {
-    "aim": {
-      "source": {
-        "source": "directory",
-        "path": "/Users/luchay/.aim/cc-plugins"
-      }
-    }
   },
   "modelSettings": {
     "claude-fable-5": {
