@@ -1,15 +1,15 @@
-model_provider = "amazon-bedrock"
+model_provider = "amazon-bedrock-runtime"
 forced_login_method = "api"
 check_for_update_on_startup = false
-commit_attribution = ""
 chatgpt_base_url = "http://127.0.0.1:9"
 approvals_reviewer = "auto_review"
 model_reasoning_effort = "high"
-model = "openai.gpt-5.6-sol"
+model = "global.openai.gpt-6.1-sol"
+model_reasoning_summary = "none"
 # Regenerate after Codex updates: ~/.dotfiles/.codex/generate-bedrock-1m-model-catalog.sh
-model_context_window = 1048576
-model_auto_compact_token_limit = 800000
-model_catalog_json = "~/.codex/model_catalog.json"
+# model_context_window = 1048576
+# model_auto_compact_token_limit = 800000
+# model_catalog_json = "~/.codex/model_catalog.json"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
@@ -17,13 +17,8 @@ sandbox_mode = "workspace-write"
 network_access = true
 
 [mcp_servers.builder-mcp]
-args = [
-    "--include-tools",
-    "*",
-    "--exclude-tools",
-    "SkillsTool,WorkspaceSearch,Delegate,ToolReactivationTool",
-]
 command = "builder-mcp"
+args = ["--include-tools", "*", "--exclude-tools", "SkillsTool,WorkspaceSearch,Delegate,ToolReactivationTool"]
 
 [mcp_servers.builder-mcp.env]
 TOOL_PERSONALIZATION_ENABLED = "false"
@@ -33,6 +28,9 @@ TOOL_PERSONALIZATION_TRAINING_DAYS = "0"
 
 [mcp_servers.builder-mcp.tools.CodeReviewReadActions]
 approval_mode = "approve"
+
+[mcp_servers.slack-enterprise-mcp]
+command = "slack-enterprise-mcp"
 
 [shell_environment_policy]
 inherit = "all"
@@ -50,12 +48,20 @@ trace_exporter = "none"
 log_user_prompt = true
 environment = "stable"
 
-[model_providers.amazon-bedrock.aws]
+[model_providers.amazon-bedrock-runtime.aws]
 region = "us-east-2"
+
+[model_providers.amazon-bedrock-runtime.aws.credential_export]
+command = "/Users/luchay/.toolbox/bin/codex"
+args = ["amzn", "credential-process"]
 
 [marketplaces.aim]
 source_type = "local"
 source = "/Users/luchay/.aim/plugins/codex"
+
+[marketplaces.openai-primary-runtime]
+source_type = "local"
+source = "/Users/luchay/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [plugins."AIPowerUserCapabilities-comms@aim"]
 enabled = false
@@ -73,7 +79,7 @@ enabled = false
 enabled = true
 
 [plugins."AmazonBuilderCoreAIAgents-pipeline-assistant@aim"]
-enabled = false
+enabled = true
 
 [plugins."AmazonBuilderCoreAIAgents-core@aim"]
 enabled = true
@@ -93,9 +99,29 @@ enabled = true
 [plugins."MfArbalestAICapabilities-arbalest@aim"]
 enabled = true
 
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."AmazonBuilderCoreAIAgents-runtime-configuration-assistant@aim"]
+enabled = true
+
 [features]
+hooks = true
 memories = true
 default_mode_request_user_input = true
+guardian_reuse_parent_compaction = false
 
 [notice]
 hide_full_access_warning = true
