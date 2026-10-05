@@ -89,6 +89,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 
 	# Codex config
 	mkdir -p ~/.codex/rules ~/.codex/skills/web-search
+	ln -sf ~/.dotfiles/.codex/AGENTS.md ~/.codex/AGENTS.md
 	ln -sf ~/.dotfiles/.codex/config.toml ~/.codex/config.toml
 	ln -sf ~/.dotfiles/.codex/rules/default.rules ~/.codex/rules/default.rules
 	ln -sf ~/.dotfiles/.codex/skills/web-search/SKILL.md ~/.codex/skills/web-search/SKILL.md

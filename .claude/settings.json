@@ -1,5 +1,5 @@
 {
-  "awsCredentialExport": "\"/Users/luchay/.toolbox/bin/claude\" default-credential-export",
+  "awsCredentialExport": "\"$HOME/.toolbox/bin/claude\" default-credential-export",
   "env": {
     "AWS_EC2_METADATA_DISABLED": "true",
     "AWS_REGION": "us-west-2"
