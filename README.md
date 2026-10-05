@@ -29,7 +29,7 @@ ideally with shared config on `main` and thin machine-specific overlays on top.
 - **Shell** — `.zshrc`, `.zshenv`, `.zprofile`, `.zlogin`, [starship](starship.toml) prompt, [mise](mise/config.toml) runtime manager
 - **Git** — `.gitconfig`, global ignores
 - **Terminal / editors** — iTerm2, Sublime, `.vimrc`, `bat`
-- **AI tooling** — Claude Code, Kiro, and Codex configs and rules under `.claude/`, `.kiro/`, and `.codex/`
+- **AI tooling** — Claude Code, Kiro, and Codex configs and rules under `.claude/`, `.kiro/`, and `.codex/`; Amazon Codex wrapper settings under `config/amzn-openaicodex/`
 - **Apps** — Firefox, Obsidian, Raycast, Karabiner, Unison sync
 - **Install scripts** — `common_install.sh` plus per-OS scripts
 
@@ -41,6 +41,25 @@ edits here take effect directly.
 Run `update-all` in your shell, or `~/.dotfiles/update-all` directly. The
 standalone script updates Homebrew on macOS, Toolbox, mise, and AIM, cleans up
 AIM's generated files, then repairs the Claude settings symlink once at the end.
+
+## Codex configuration
+
+Native Codex reads `~/.codex/config.toml`, `AGENTS.md`, and `rules/default.rules`,
+which the installer links to `.codex/` in this repo. Its config writer and the
+Amazon wrapper's enterprise settings writer preserve the config symlink.
+
+The Amazon wrapper has a separate config for its Bedrock provider choice.
+The installer links its entire config directory to
+[`config/amzn-openaicodex/`](config/amzn-openaicodex/config.toml):
+
+- **macOS:** `~/Library/Application Support/com.amazon.Amzn-OpenAICodex`
+- **Linux:** `${XDG_CONFIG_HOME:-$HOME/.config}/amzn-openaicodex`
+
+Run `codex amzn directories` to confirm the wrapper paths. An existing config
+directory is retained as a dated backup when the installer first replaces it.
+The directory symlink keeps any defaults added by the Toolbox post-install
+hook in the repo, even when the hook replaces `config.toml` atomically.
+Wrapper caches and logs stay local in the reported `cache_dir`.
 
 ## Shell startup caching
 

@@ -94,6 +94,25 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/.codex/rules/default.rules ~/.codex/rules/default.rules
 	ln -sf ~/.dotfiles/.codex/skills/web-search/SKILL.md ~/.codex/skills/web-search/SKILL.md
 
+	# Amazon Codex wrapper config (separate from the native ~/.codex config).
+	# Link the directory so post-install's atomic config writes stay in dotfiles.
+	codex_wrapper_config_dir=""
+	case "$(uname -s)" in
+		Darwin) codex_wrapper_config_dir="$HOME/Library/Application Support/com.amazon.Amzn-OpenAICodex" ;;
+		Linux) codex_wrapper_config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/amzn-openaicodex" ;;
+	esac
+	if [[ -n "$codex_wrapper_config_dir" ]]; then
+		codex_wrapper_repo_dir="$HOME/.dotfiles/config/amzn-openaicodex"
+		mkdir -p "${codex_wrapper_config_dir:h}" || exit 1
+		if [[ ( -e "$codex_wrapper_config_dir" || -L "$codex_wrapper_config_dir" ) &&
+			( ! -L "$codex_wrapper_config_dir" || "${codex_wrapper_config_dir:A}" != "${codex_wrapper_repo_dir:A}" ) ]]; then
+			codex_wrapper_backup="${codex_wrapper_config_dir}.dotfiles-backup-$(date -u +%Y%m%dT%H%M%SZ)-$$"
+			mv "$codex_wrapper_config_dir" "$codex_wrapper_backup" || exit 1
+			echo "	Previous Codex wrapper config saved to $codex_wrapper_backup"
+		fi
+		ln -sfn "$codex_wrapper_repo_dir" "$codex_wrapper_config_dir" || exit 1
+	fi
+
 	# Unison sync profiles
 	mkdir -p ~/.unison
 	ln -sf ~/.dotfiles/unison/default.prf ~/.unison/default.prf
