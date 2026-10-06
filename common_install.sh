@@ -157,6 +157,14 @@ if ask_confirmation "Run OS specific install script"; then
 	fi
 fi
 
+# ==============================
+# Install cship on both platforms, after Rust setup
+# ==============================
+if ask_confirmation "Install cship using Cargo (Claude Code statusline)"; then
+	"$HOME/.dotfiles/install-cship" || exit 1
+	echo 'Claude statusLine: {"type": "command", "command": "cship"}'
+fi
+
 # ==================================
 # Setup zsh (Linux only, macOS already uses zsh)
 # ==================================

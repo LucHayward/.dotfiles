@@ -416,13 +416,10 @@ if ask_confirmation "Install Rust using rustup"; then
 fi
 
 # ========================
-# Install ccusage and cship (Claude Code statusline)
+# Install ccusage (cship is installed by the common installer)
 # ========================
-if ask_confirmation "Install ccusage + cship (Claude Code usage & statusline)"; then
+if ask_confirmation "Install ccusage (Claude Code usage)"; then
 	npm install -g ccusage
-	cargo install cship
-	echo "✓ Add to ~/.claude/settings.json:"
-	echo '  "statusLine": {"type": "command", "command": "cship"}'
 fi
 
 # ========================

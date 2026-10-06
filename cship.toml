@@ -1,7 +1,7 @@
 [cship]
 lines = [
   "$starship_prompt",
-  "$cship.model $cship.effort $cship.cost $cship.context_window.used_percentage $cship.usage_limits",
+  "$cship.model $cship.effort $cship.cost $cship.context_window.used_tokens $cship.usage_limits",
 ]
 
 [cship.model]
@@ -24,12 +24,17 @@ critical_threshold = 50
 critical_style     = "bold fg:#f7768e"
 
 [cship.context_window]
-format             = "[$value%]($style)"
 style              = "fg:#7dcfff"
 warn_threshold     = 40.0
 warn_style         = "fg:#e0af68"
 critical_threshold = 70.0
 critical_style     = "bold fg:#f7768e"
+
+[cship.context_window.used_percentage]
+format = "[$value%]($style)"
+
+[cship.context_window.used_tokens]
+format = "[$value]($style)"
 
 [cship.usage_limits]
 five_hour_format   = "⌛ 5h {pct}% ({reset})"

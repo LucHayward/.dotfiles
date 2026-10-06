@@ -39,8 +39,28 @@ edits here take effect directly.
 ## Updating tools
 
 Run `update-all` in your shell, or `~/.dotfiles/update-all` directly. The
-standalone script updates Homebrew on macOS, Toolbox, mise, and AIM, cleans up
-AIM's generated files, then repairs the Claude settings symlink once at the end.
+standalone script updates Homebrew on macOS, cship through Cargo, Toolbox, mise,
+and AIM, cleans up AIM's generated files, then repairs the Claude settings
+symlink once at the end.
+
+## Claude status line
+
+The common installer installs [cship](https://github.com/stephenleo/cship) through
+Cargo on both macOS and Linux, after the OS-specific Rust setup. It links
+`~/.config/cship.toml` to [`cship.toml`](cship.toml). Claude uses it through
+`"statusLine": {"type": "command", "command": "cship"}` in its settings.
+
+Run `~/.dotfiles/install-cship` to install or update just cship. The same helper
+runs during `update-all`. It uses `cargo install --locked cship`: Cargo selects
+the latest release, uses its locked dependencies, and skips an already current
+installation. Rust must be installed first; the helper finds Cargo in
+`${CARGO_HOME:-$HOME/.cargo}/bin` or on `PATH`.
+
+The second status-line row shows model, effort, cost, context percentage and
+token counts, plus usage limits when available. Usage limits remain configured
+for regular Claude subscriptions and render empty when unavailable on Bedrock.
+Percentage formatting is scoped to percentage fields so token counts and
+context size display without extra percent signs.
 
 ## Codex configuration
 
