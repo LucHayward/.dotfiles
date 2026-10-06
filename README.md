@@ -50,11 +50,11 @@ Cargo on both macOS and Linux, after the OS-specific Rust setup. It links
 `~/.config/cship.toml` to [`cship.toml`](cship.toml). Claude uses it through
 `"statusLine": {"type": "command", "command": "cship"}` in its settings.
 
-Run `~/.dotfiles/install-cship` to install or update just cship. The same helper
-runs during `update-all`. It uses `cargo install --locked cship`: Cargo selects
-the latest release, uses its locked dependencies, and skips an already current
-installation. Rust must be installed first; the helper finds Cargo in
-`${CARGO_HOME:-$HOME/.cargo}/bin` or on `PATH`.
+Run `cargo install --locked cship` to install or update just cship. The installer
+and `update-all` run this command directly using Cargo from
+`${CARGO_HOME:-$HOME/.cargo}/bin`. Cargo selects the latest release, uses its
+locked dependencies, and skips an already current installation. Rust must be
+installed first.
 
 The second status-line row shows model, effort, cost, context percentage and
 token counts, plus usage limits when available. Usage limits remain configured

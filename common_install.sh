@@ -161,7 +161,7 @@ fi
 # Install cship on both platforms, after Rust setup
 # ==============================
 if ask_confirmation "Install cship using Cargo (Claude Code statusline)"; then
-	"$HOME/.dotfiles/install-cship" || exit 1
+	"${CARGO_HOME:-$HOME/.cargo}/bin/cargo" install --locked cship || exit 1
 	echo 'Claude statusLine: {"type": "command", "command": "cship"}'
 fi
 

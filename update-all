@@ -10,7 +10,7 @@ fi
 
 echo "\n🦀 Cargo: cship"
 echo "────────────────"
-"$HOME/.dotfiles/install-cship" ||
+"${CARGO_HOME:-$HOME/.cargo}/bin/cargo" install --locked cship ||
     print -u2 "cship update failed; continuing with the remaining updates."
 
 echo "\n🧰 Toolbox"
