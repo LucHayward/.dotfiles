@@ -163,6 +163,13 @@ if ask_confirmation "Install Starship.rs prompt"; then
 fi
 
 # ================
+# Install herdr (agent multiplexer)
+# ================
+if ask_confirmation "Install herdr (terminal multiplexer for coding agents)"; then
+	curl -fsSL https://herdr.dev/install.sh | sh
+fi
+
+# ================
 # Amazon Internal Tools
 # ================
 if ask_confirmation "Setup Amazon internal tools (mwinit, toolbox, etc)"; then

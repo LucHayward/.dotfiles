@@ -13,6 +13,14 @@ echo "────────────────"
 "${CARGO_HOME:-$HOME/.cargo}/bin/cargo" install --locked cship ||
     print -u2 "cship update failed; continuing with the remaining updates."
 
+# macOS gets herdr from Homebrew above; Linux uses the herdr.dev installer.
+if [[ "$OSTYPE" == "linux-gnu"* ]] && command -v herdr &>/dev/null; then
+    echo "\n🐑 Herdr"
+    echo "────────"
+    herdr update ||
+        print -u2 "herdr update failed; continuing with the remaining updates."
+fi
+
 echo "\n🧰 Toolbox"
 echo "──────────"
 # Repair once at the end, after AIM has finished updating Claude settings.

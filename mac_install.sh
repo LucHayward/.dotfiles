@@ -197,6 +197,7 @@ if ask_confirmation "Install packages"; then
 	gnu-sed \
 	go \
 	graphviz \
+	herdr \
 	grep \
 	htop \
 	hyperfine \
