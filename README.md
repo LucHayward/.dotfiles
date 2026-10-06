@@ -47,8 +47,18 @@ symlink once at the end.
 
 The common installer installs [cship](https://github.com/stephenleo/cship) through
 Cargo on both macOS and Linux, after the OS-specific Rust setup. It links
-`~/.config/cship.toml` to [`cship.toml`](cship.toml). Claude uses it through
-`"statusLine": {"type": "command", "command": "cship"}` in its settings.
+`~/.config/cship.toml` to [`cship.toml`](cship.toml). Claude uses
+[`.claude/statusline.sh`](.claude/statusline.sh) through
+`"statusLine": {"type": "command", "command": "bash ~/.dotfiles/.claude/statusline.sh", "refreshInterval": 300}`
+in its settings.
+
+The script sends the same session JSON to Amazon's `amzn-statusline` and cship.
+Amazon shows relevant service incidents and a Midway login-expiry row, followed
+by the existing cship rows. Its custom format avoids duplicating model and
+context information. `claude amzn-statusline snooze --for 1h` hides service
+alerts temporarily. If the Amazon renderer is missing or fails, cship still
+runs. The script finds cship in `${CARGO_HOME:-$HOME/.cargo}/bin` before trying
+`PATH`, so it also works when Claude starts with a minimal environment.
 
 Run `cargo install --locked cship` to install or update just cship. The installer
 and `update-all` run this command directly using Cargo from
@@ -56,7 +66,7 @@ and `update-all` run this command directly using Cargo from
 locked dependencies, and skips an already current installation. Rust must be
 installed first.
 
-The second status-line row shows model, effort, cost, context percentage and
+The final cship row shows model, effort, cost, context percentage and
 token counts, plus usage limits when available. Usage limits remain configured
 for regular Claude subscriptions and render empty when unavailable on Bedrock.
 Percentage formatting is scoped to percentage fields so token counts and

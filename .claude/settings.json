@@ -23,7 +23,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "cship"
+    "command": "bash ~/.dotfiles/.claude/statusline.sh",
+    "refreshInterval": 300
   },
   "enabledPlugins": {
     "AmazonBuilderCoreAIAgents-runtime-configuration-assistant@aim": true,

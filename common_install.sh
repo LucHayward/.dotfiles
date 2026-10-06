@@ -162,7 +162,7 @@ fi
 # ==============================
 if ask_confirmation "Install cship using Cargo (Claude Code statusline)"; then
 	"${CARGO_HOME:-$HOME/.cargo}/bin/cargo" install --locked cship || exit 1
-	echo 'Claude statusLine: {"type": "command", "command": "cship"}'
+	echo 'Claude statusLine: {"type": "command", "command": "bash ~/.dotfiles/.claude/statusline.sh", "refreshInterval": 300}'
 fi
 
 # ==================================
