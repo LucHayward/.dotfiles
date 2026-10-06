@@ -7,7 +7,13 @@ payload="$(cat)"
 if [[ -x "$HOME/.toolbox/bin/claude" ]]; then
     printf '%s\n' "$payload" |
         "$HOME/.toolbox/bin/claude" amzn-statusline \
-            --format '🔑 Midway: {midway_session_length}' || true
+            --format '🔑 Midway: {midway_session_length}' |
+        awk '{
+            plain = $0
+            gsub(/\033\[[0-9;]*m/, "", plain)
+            # Keep alerts and login failures; hide countdowns of at least 1h.
+            if (plain !~ /^🔑 Midway: [1-9][0-9]*h /) print
+        }' || true
 fi
 
 # Use the Cargo installation even when Claude's PATH omits ~/.cargo/bin.

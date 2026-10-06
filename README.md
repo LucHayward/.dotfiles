@@ -54,7 +54,10 @@ in its settings.
 
 The script sends the same session JSON to Amazon's `amzn-statusline` and cship.
 Amazon shows relevant service incidents and a Midway login-expiry row, followed
-by the existing cship rows. Its custom format avoids duplicating model and
+by the existing cship rows. The Midway row appears only with less than one hour
+remaining, or when the login is expired or its expiry cannot be read. Service
+alerts remain visible regardless of the login countdown.
+Its custom format avoids duplicating model and
 context information. `claude amzn-statusline snooze --for 1h` hides service
 alerts temporarily. If the Amazon renderer is missing or fails, cship still
 runs. The script finds cship in `${CARGO_HOME:-$HOME/.cargo}/bin` before trying
