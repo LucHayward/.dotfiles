@@ -280,7 +280,7 @@ ssh-here() {
     local -a escaped_cd_command=("${(@q)cd_command}")
     local remote_command="${(j: :)escaped_cd_command} && exec \"\${SHELL:-zsh}\" -l"
 
-    /usr/bin/ssh -2 -t clouddesk "$remote_command"
+    autossh -M 0 -A -t -o ServerAliveCountMax=4 clouddesk "$remote_command"
 }
 
 alias rsync="rsync -avhP --delete --exclude='.DS_Store'"
