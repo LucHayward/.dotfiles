@@ -28,7 +28,7 @@ set-title() {
 
 ssh() {
     set-title $*;
-    /usr/bin/ssh -2 $*;
+    /usr/bin/ssh $*;
     set-title $HOST
 }
 
