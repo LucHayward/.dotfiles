@@ -1,132 +1,110 @@
 #!/usr/bin/env python3
-"""Capture Claude settings before repairing the live symlink."""
+"""Keep ~/.claude linked to the dotfiles copy so every write lands in the repo.
+
+Claude, Toolbox and AIM replace files with atomic renames, which breaks
+per-file symlinks. Linking the whole directory makes those renames happen
+inside the repo instead. The repo's .gitignore tracks only curated files.
+"""
 
 import argparse
-import difflib
 import fcntl
-import json
 import os
 from pathlib import Path
 import shutil
-import stat
-import tempfile
+import subprocess
 from datetime import datetime, timezone
 
 
 HOME_DIR = Path.home()
-LIVE = HOME_DIR / ".claude/settings.json"
-REPO = Path(__file__).resolve().parent / ".claude/settings.json"
-BACKUPS = HOME_DIR / ".claude/settings-backups"
+LIVE = HOME_DIR / ".claude"
+DOTFILES = Path(__file__).resolve().parent
+REPO = DOTFILES / ".claude"
+BACKUPS = REPO / "settings-backups"
+STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
-def read_settings(path):
-    contents = path.read_bytes()
-    if not isinstance(json.loads(contents), dict):
-        raise ValueError(f"{path} must contain a JSON object")
-    return contents
+def is_linked():
+    return LIVE.is_symlink() and LIVE.resolve() == REPO.resolve()
 
 
-def backup(path, label):
-    if path.exists():
-        BACKUPS.mkdir(mode=0o700, parents=True, exist_ok=True)
-        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
-        destination = BACKUPS / f"{label}.{stamp}.json"
-        shutil.copyfile(path, destination)
-        destination.chmod(0o600)
+def points_into_repo(path):
+    target = Path(os.path.realpath(path))
+    return target == REPO.resolve() or REPO.resolve() in target.parents
 
 
-def atomic_write(path, contents):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o600
-    descriptor, temporary = tempfile.mkstemp(prefix=".settings-sync-", dir=path.parent)
-    try:
-        with os.fdopen(descriptor, "wb") as stream:
-            os.fchmod(stream.fileno(), mode)
-            stream.write(contents)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, path)
-    finally:
-        if os.path.lexists(temporary):
-            os.unlink(temporary)
+def backup(path):
+    BACKUPS.mkdir(mode=0o700, parents=True, exist_ok=True)
+    destination = BACKUPS / f"{path.name}.{STAMP}"
+    os.replace(path, destination)
+    print(f"Backed up {path} -> {destination}")
 
 
-def capture():
-    contents = read_settings(LIVE)
-    if REPO.exists() and REPO.read_bytes() == contents:
-        return contents
-    backup(REPO, "repo-settings")
-    atomic_write(REPO, contents)
-    print(f"Captured {LIVE} -> {REPO}")
-    return contents
+def merge(source, destination):
+    """Move live entries into the repo, keeping live files on conflict."""
+    for entry in sorted(source.iterdir()):
+        target = destination / entry.name
+        if entry.is_symlink() and (points_into_repo(entry) or not entry.exists()):
+            # Old per-file links into the repo, or links that no longer resolve.
+            entry.unlink()
+        elif entry.is_dir() and not entry.is_symlink() and target.is_dir() and not target.is_symlink():
+            merge(entry, target)
+            entry.rmdir()
+        else:
+            if os.path.lexists(target):
+                backup(target)
+            shutil.move(entry, target)
 
 
 def link_live():
-    descriptor, temporary = tempfile.mkstemp(prefix=".settings-link-", dir=LIVE.parent)
-    os.close(descriptor)
-    try:
-        os.unlink(temporary)
-        os.symlink(REPO, temporary)
-        os.replace(temporary, LIVE)
-    finally:
-        if os.path.lexists(temporary):
-            os.unlink(temporary)
+    temporary = LIVE.with_name(f".claude.link-{os.getpid()}")
+    os.symlink(REPO, temporary)
+    os.replace(temporary, LIVE)
     print(f"Linked {LIVE} -> {REPO}")
 
 
 def repair():
-    if LIVE.is_symlink() and LIVE.resolve() == REPO:
-        read_settings(REPO)
+    if is_linked():
         return
-    identity = LIVE.lstat() if os.path.lexists(LIVE) else None
-    captured_live = LIVE.exists()
-    contents = capture() if captured_live else read_settings(REPO)
-    if identity:
-        current = LIVE.lstat()
-        if (current.st_dev, current.st_ino, current.st_mtime_ns, current.st_size) != (
-            identity.st_dev, identity.st_ino, identity.st_mtime_ns, identity.st_size
-        ) or (captured_live and LIVE.read_bytes() != contents) or (
-            not captured_live and LIVE.exists()
-        ):
-            print("Live settings changed during capture; relinking is deferred.")
-            return
-    elif os.path.lexists(LIVE):
-        print("Live settings appeared during repair; relinking is deferred.")
-        return
-    link_live()
+    if LIVE.is_symlink():
+        raise ValueError(f"{LIVE} links elsewhere ({os.readlink(LIVE)}); fix it by hand")
+    if LIVE.exists():
+        merge(LIVE, REPO)
+        # Swap the emptied directory for the link, then sweep anything a
+        # running session wrote in between.
+        stale = LIVE.with_name(f".claude.migrating-{STAMP}")
+        os.replace(LIVE, stale)
+        link_live()
+        merge(stale, REPO)
+        try:
+            stale.rmdir()
+        except OSError:
+            print(f"Leftover entries remain in {stale}; rerun repair to sweep them")
+    else:
+        link_live()
+
+
+def status():
+    if is_linked():
+        print(f"{LIVE} -> {REPO}")
+    else:
+        print(f"{LIVE} is not linked to {REPO}; run: {__file__} repair")
+    subprocess.run(["git", "-C", DOTFILES, "status", "--short", "--", REPO], check=False)
+    if not is_linked():
+        raise SystemExit(1)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", nargs="?", default="diff",
-                        choices=["repair", "pull", "push", "diff"])
+    parser.add_argument("action", nargs="?", default="status", choices=["repair", "status"])
     action = parser.parse_args().action
-    if REPO.is_symlink():
-        raise ValueError(f"The repo settings must be a regular file: {REPO}")
-    if action == "diff":
-        previous = read_settings(REPO).decode()
-        current = read_settings(LIVE).decode()
-        if previous == current:
-            print("in sync")
-            return
-        print("".join(difflib.unified_diff(
-            previous.splitlines(keepends=True), current.splitlines(keepends=True),
-            fromfile=str(REPO), tofile=str(LIVE)
-        )), end="")
-        raise SystemExit(1)
-    LIVE.parent.mkdir(parents=True, exist_ok=True)
-    with (LIVE.parent / ".settings-sync.lock").open("a") as lock:
+    if not REPO.is_dir() or REPO.is_symlink():
+        raise ValueError(f"The repo copy must be a real directory: {REPO}")
+    if action == "status":
+        status()
+        return
+    with (REPO / ".settings-sync.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        if action == "repair":
-            repair()
-        elif action == "pull":
-            capture()
-        else:
-            read_settings(REPO)
-            if LIVE.is_symlink() and LIVE.resolve() == REPO:
-                return
-            backup(LIVE, "live-settings")
-            link_live()
+        repair()
 
 
 if __name__ == "__main__":

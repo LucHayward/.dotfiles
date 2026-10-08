@@ -63,24 +63,18 @@ if ask_confirmation "Symlink various dotfiles"; then
 	ln -sf ~/.dotfiles/aws/config ~/.aws/config
 
 	# Claude Code config
-	mkdir -p ~/.claude/rules
-	# Capture any live replacement before restoring the settings symlink.
-	# Keep a newer live write if settings change during capture.
+	# Link the whole directory so atomic settings writes stay in dotfiles.
+	# An existing ~/.claude is merged in first, keeping live files.
 	~/.dotfiles/claude-settings-sync repair || exit 1
-	ln -sf ~/.dotfiles/.claude/CLAUDE.md ~/.claude/CLAUDE.md
-	for rule in ~/.dotfiles/.claude/rules/*.md; do
-		ln -sf "$rule" ~/.claude/rules/"$(basename "$rule")"
-	done
 
 	echo ""
-	echo "━━━ Claude Code: settings.json is captured before relinking ━━━"
+	echo "━━━ Claude Code: ~/.claude links to ~/.dotfiles/.claude ━━━"
 	echo ""
 	echo "	Toolbox updates and update-all repair the link automatically."
 	echo "	macOS also repairs daily at 09:00 and when the job loads at login."
 	echo ""
-	echo "	~/.dotfiles/claude-settings-sync diff	# show drift"
-	echo "	~/.dotfiles/claude-settings-sync repair	# capture live -> repo, then relink"
-	echo "	~/.dotfiles/claude-settings-sync push	# explicitly restore repo -> live"
+	echo "	~/.dotfiles/claude-settings-sync	# show link and tracked changes"
+	echo "	~/.dotfiles/claude-settings-sync repair	# merge a real ~/.claude, then link"
 	echo ""
 
 	# Kiro CLI config
@@ -124,7 +118,7 @@ if ask_confirmation "Symlink various dotfiles"; then
 		ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
 		ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
 
-		# Capture Claude settings once daily, even without a Toolbox update.
+		# Check the Claude directory link once daily, even without a Toolbox update.
 		ln -sf ~/.dotfiles/.claude/local.claude-settings-repair.plist ~/Library/LaunchAgents/local.claude-settings-repair.plist
 		launchctl print "gui/$(id -u)/local.claude-settings-repair" >/dev/null 2>&1 ||
 			launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/local.claude-settings-repair.plist

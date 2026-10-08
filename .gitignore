@@ -1,7 +1,17 @@
 .DS_Store
 
-# Ephemeral Claude Code agent worktrees (auto-created/removed per session)
-.claude/worktrees/
+# ~/.claude links to .claude/, so Claude's runtime state lives there too.
+# Track only the curated files; history, sessions and caches stay local.
+.claude/*
+!.claude/CLAUDE.md
+!.claude/README.md
+!.claude/settings.json
+!.claude/statusline.sh
+!.claude/local.claude-settings-repair.plist
+!.claude/rules/
+.claude/rules/*
+!.claude/rules/amazon-builder-context-do-not-delete.md
+!.claude/rules/amazon-production-safety-do-not-delete.md
 
 # Runtime lock created while Codex rewrites its live configuration
 .codex/config.toml.lock

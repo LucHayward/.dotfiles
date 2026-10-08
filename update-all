@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Use system zsh; relocated Apollo builds can have missing module paths.
-# Update the machine's tools, then repair Claude settings after AIM finishes.
+# Update the machine's tools, then repair the ~/.claude link after AIM finishes.
 
 echo "\n📦 System packages"
 echo "──────────────────"
@@ -23,7 +23,7 @@ fi
 
 echo "\n🧰 Toolbox"
 echo "──────────"
-# Repair once at the end, after AIM has finished updating Claude settings.
+# Repair the ~/.claude link once at the end, after AIM has finished.
 command toolbox update
 
 echo "\n🛠  Mise"
@@ -75,8 +75,8 @@ if "builder-mcp" in servers:
 PY
 done
 
-# AIM can also rewrite settings after the Toolbox step.
+# AIM can also recreate ~/.claude after the Toolbox step.
 "$HOME/.dotfiles/claude-settings-sync" repair ||
-    print -u2 "Claude settings repair failed; the live file was preserved."
+    print -u2 "Claude settings repair failed; ~/.claude was left as is."
 
 echo "\n✅ All done!"
