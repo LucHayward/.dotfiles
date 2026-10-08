@@ -20,6 +20,7 @@ LIVE = HOME_DIR / ".claude"
 DOTFILES = Path(__file__).resolve().parent
 REPO = DOTFILES / ".claude"
 BACKUPS = REPO / "settings-backups"
+LOCK = ".settings-sync.lock"
 STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
@@ -43,8 +44,8 @@ def merge(source, destination):
     """Move live entries into the repo, keeping live files on conflict."""
     for entry in sorted(source.iterdir()):
         target = destination / entry.name
-        if entry.is_symlink() and (points_into_repo(entry) or not entry.exists()):
-            # Old per-file links into the repo, or links that no longer resolve.
+        if entry.name == LOCK or (entry.is_symlink() and (points_into_repo(entry) or not entry.exists())):
+            # The old lock, per-file links into the repo, or dangling links.
             entry.unlink()
         elif entry.is_dir() and not entry.is_symlink() and target.is_dir() and not target.is_symlink():
             merge(entry, target)
@@ -85,9 +86,9 @@ def repair():
 
 def status():
     if is_linked():
-        print(f"{LIVE} -> {REPO}")
+        print(f"{LIVE} -> {REPO}", flush=True)
     else:
-        print(f"{LIVE} is not linked to {REPO}; run: {__file__} repair")
+        print(f"{LIVE} is not linked to {REPO}; run: {__file__} repair", flush=True)
     subprocess.run(["git", "-C", DOTFILES, "status", "--short", "--", REPO], check=False)
     if not is_linked():
         raise SystemExit(1)
@@ -102,7 +103,7 @@ def main():
     if action == "status":
         status()
         return
-    with (REPO / ".settings-sync.lock").open("a") as lock:
+    with (REPO / LOCK).open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         repair()
 
