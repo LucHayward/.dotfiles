@@ -64,18 +64,17 @@ if ask_confirmation "Symlink various dotfiles"; then
 
 	# Claude Code config
 	# Link the whole directory so atomic settings writes stay in dotfiles.
-	# An existing ~/.claude is merged in first, keeping live files.
-	~/.dotfiles/claude-settings-sync repair || exit 1
-
-	echo ""
-	echo "━━━ Claude Code: ~/.claude links to ~/.dotfiles/.claude ━━━"
-	echo ""
-	echo "	Toolbox updates and update-all repair the link automatically."
-	echo "	macOS also repairs daily at 09:00 and when the job loads at login."
-	echo ""
-	echo "	~/.dotfiles/claude-settings-sync	# show link and tracked changes"
-	echo "	~/.dotfiles/claude-settings-sync repair	# merge a real ~/.claude, then link"
-	echo ""
+	# This runs before Toolbox installs claude-code, so a fresh machine
+	# writes straight through the link; an existing ~/.claude is moved aside.
+	claude_config_dir="$HOME/.claude"
+	claude_repo_dir="$HOME/.dotfiles/.claude"
+	if [[ ( -e "$claude_config_dir" || -L "$claude_config_dir" ) &&
+		( ! -L "$claude_config_dir" || "${claude_config_dir:A}" != "${claude_repo_dir:A}" ) ]]; then
+		claude_backup="${claude_config_dir}.dotfiles-backup-$(date -u +%Y%m%dT%H%M%SZ)-$$"
+		mv "$claude_config_dir" "$claude_backup" || exit 1
+		echo "	Previous Claude config saved to $claude_backup"
+	fi
+	ln -sfn "$claude_repo_dir" "$claude_config_dir" || exit 1
 
 	# Kiro CLI config
 	mkdir -p ~/.kiro/settings
@@ -117,11 +116,6 @@ if ask_confirmation "Symlink various dotfiles"; then
 		mkdir -p ~/Library/LaunchAgents
 		ln -sf ~/.dotfiles/unison/local.unison-file-sync.plist ~/Library/LaunchAgents/local.unison-file-sync.plist
 		ln -sf ~/.dotfiles/unison/local.unison-obsidian-sync.plist ~/Library/LaunchAgents/local.unison-obsidian-sync.plist
-
-		# Check the Claude directory link once daily, even without a Toolbox update.
-		ln -sf ~/.dotfiles/.claude/local.claude-settings-repair.plist ~/Library/LaunchAgents/local.claude-settings-repair.plist
-		launchctl print "gui/$(id -u)/local.claude-settings-repair" >/dev/null 2>&1 ||
-			launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/local.claude-settings-repair.plist
 
 		# Obsidian vault registry (points Obsidian at ~/ObsidianVault)
 		mkdir -p ~/Library/Application\ Support/obsidian

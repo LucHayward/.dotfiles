@@ -589,18 +589,6 @@ rm-ssh-key () {
     ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
 }
 
-# Toolbox may recreate ~/.claude as a real directory.
-# Merge it back into dotfiles and relink, even after a failed update.
-toolbox() {
-    local toolbox_exit_code=0
-    command toolbox "$@" || toolbox_exit_code=$?
-    if [[ "${1:-}" == update && -x "$HOME/.dotfiles/claude-settings-sync" ]]; then
-        "$HOME/.dotfiles/claude-settings-sync" repair ||
-            print -u2 "Claude settings repair failed; ~/.claude was left as is."
-    fi
-    return "$toolbox_exit_code"
-}
-
 alias update-all="$HOME/.dotfiles/update-all"
 
 

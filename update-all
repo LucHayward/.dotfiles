@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Use system zsh; relocated Apollo builds can have missing module paths.
-# Update the machine's tools, then repair the ~/.claude link after AIM finishes.
+# Update the machine's tools.
 
 echo "\n📦 System packages"
 echo "──────────────────"
@@ -23,7 +23,6 @@ fi
 
 echo "\n🧰 Toolbox"
 echo "──────────"
-# Repair the ~/.claude link once at the end, after AIM has finished.
 command toolbox update
 
 echo "\n🛠  Mise"
@@ -74,9 +73,5 @@ if "builder-mcp" in servers:
     print(f"  stripped builder-mcp from {p.split('/cc-plugins/')[-1]}")
 PY
 done
-
-# AIM can also recreate ~/.claude after the Toolbox step.
-"$HOME/.dotfiles/claude-settings-sync" repair ||
-    print -u2 "Claude settings repair failed; ~/.claude was left as is."
 
 echo "\n✅ All done!"

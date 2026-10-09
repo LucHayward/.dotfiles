@@ -6,14 +6,11 @@ Git is the sync mechanism: the root `.gitignore` tracks only the curated files
 listed there. History, sessions, plugins and caches stay local and untracked.
 To track another file, add a `!.claude/<path>` line to `.gitignore`.
 
-`claude-settings-sync repair` keeps the link in place. If `~/.claude` is a real
-directory (a fresh machine, or a tool recreated it), it moves the contents in
-here, keeps live files on conflict, backs up the replaced repo copies to
-`settings-backups/`, and then links the directory. Moves are renames, so
-running Claude sessions keep working.
+`common_install.sh` creates the link in its symlink step, before Toolbox
+installs claude-code. An existing `~/.claude` is moved aside to
+`~/.claude.dotfiles-backup-*` first. Rerun that step if a tool ever replaces
+the link with a real directory.
 
-The shell repairs after direct `toolbox update` commands. The standalone
-`~/.dotfiles/update-all` script repairs once at the end, after AIM finishes.
-The macOS installer loads a daily 09:00 LaunchAgent that also runs when loaded
-at login. Run `~/.dotfiles/claude-settings-sync` to see the link state and
-tracked changes. Commits and pushes remain normal manual steps.
+`settings.json` is shared by every host, so keep paths in it portable: write
+`~/...` rather than an absolute home directory. Put host-only environment
+variables in the shell config instead of the `env` block.

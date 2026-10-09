@@ -7,7 +7,6 @@
 !.claude/README.md
 !.claude/settings.json
 !.claude/statusline.sh
-!.claude/local.claude-settings-repair.plist
 !.claude/rules/
 .claude/rules/*
 !.claude/rules/amazon-builder-context-do-not-delete.md
